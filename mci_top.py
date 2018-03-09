@@ -336,7 +336,7 @@ while msize > 0:
 
 while MODULE[8].check_thread() or MODULE[7].check_thread() or MODULE[6].check_thread():
     if (MODULE[8].check_thread()): transfer_spi('BTM')
-    if (MDOULE[7].check_thread()): transfer_spi('VELM') 
+    if (MODULE[7].check_thread()): transfer_spi('VELM') 
     if (MODULE[6].check_thread()): transfer_spi('SAM') 
 
 # Kill SPI clock
