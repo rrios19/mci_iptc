@@ -8,6 +8,7 @@
 #           -------   .json    -------
 
 import json
+import sys
 
 class macro:
     def __init__(self,cmd,params,values):
@@ -23,7 +24,7 @@ class macro:
     def join_macro(self):
         pair = {par:val for (par,val) in zip(self.params,self.values)} 
         self.macro = {self.cmd:[pair]}
-        print(self.macro)
+        #print(self.macro)
 
     def get_json(self):
         self.str_json = json.dumps(self.macro,indent=2) 
@@ -31,12 +32,18 @@ class macro:
         FH.write(self.str_json)
         FH.close()
         print(self.str_json)    
-    
-params = ['ten','cor','cic']
-values = [12,1,5]
 
-new = macro('on',params,values)
-new.show_macro()
+#params = ['ten','cor','cic']
+#values = [12,1,5]
+
+ARGV = sys.argv
+
+cmd = ARGV.pop(1)
+params = [ARGV[odd] for odd in list(range(1,len(ARGV),2))]
+values = [ARGV[even] for even in list(range(2,len(ARGV),2))]
+
+new = macro(cmd,params,values)
+#new.show_macro()
 new.join_macro()
 new.get_json()
 
