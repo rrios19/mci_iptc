@@ -24,14 +24,14 @@ class macro:
     def join_macro(self):
         pair = {par:val for (par,val) in zip(self.params,self.values)} 
         self.macro = {self.cmd:[pair]}
-        #print(self.macro)
+        return self.macro
 
-    def get_json(self):
+    def set_json(self):
         self.str_json = json.dumps(self.macro,indent=2) 
         FH = open('data.json','w')
         FH.write(self.str_json)
         FH.close()
-        print(self.str_json)    
+        return self.str_json   
 
 #params = ['ten','cor','cic']
 #values = [12,1,5]
@@ -45,7 +45,7 @@ values = [ARGV[even] for even in list(range(2,len(ARGV),2))]
 new = macro(cmd,params,values)
 #new.show_macro()
 new.join_macro()
-new.get_json()
+new.set_json()
 
 #print(macro_test["on"][0]['ten'])
 
