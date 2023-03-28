@@ -13,37 +13,40 @@ import serial
 class command_management:
     def __init__(self):
         self.macro  = {} 
-        self.cmd    = ''
+        self.cmd    = {}
         self.params = []
+        self.values = []
 	
-    def get_macro(self):
+    def get_macro(self): # Recibir macros del GUI, watchdog 
         FH = open('data.json')
         self.macro = json.load(FH)
         FH.close()
         return self.macro
 
-    def send_macro(self,argv):
-        param = {"a":argv, "b":argv}
-        str_json = json.dumps(param,indent=2)
-        FH = open('data.json','w')
-        FH.write(str_json)
-        FH.close
-        #return f"Macro: {self.macro}"
+    def send_macro(self,argv): # Enviar macros al GUI
+        #FH = open('output.json','w')
+        #FH.write(str_json)
+        #FH.close
+        print('Enviar macro')
 
     def split_macro(self):
-        self.cmd = self.macro['cmd']
-        return f"Hello {self.macro}"
+        self.cmd = list(self.macro.keys())[0] # One command
+        self.params = list(self.macro[self.cmd].keys())
+        self.values = list(self.macro[self.cmd].values())
 
     def join_macro(self):
         return f"Hello {self.macro}"
 
     def sequence_cmd(self):
-        return f"Hello {self.macro}"
+        header = 0x0001
+        footer = 0x0002
+        chain = hex((header<<16) | footer)
+        print(f"{chain}")
 
 new = command_management()
-test = new.get_macro()
-print(test['test'][0]['p'])
-
+new.get_macro()
+new.split_macro()
+new.sequence_cmd()
 
 #print (command.get_macro())
 #str_test = command.get_macro()

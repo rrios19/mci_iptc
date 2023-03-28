@@ -23,7 +23,7 @@ class macro:
 
     def join_macro(self):
         pair = {par:val for (par,val) in zip(self.params,self.values)} 
-        self.macro = {self.cmd:[pair]}
+        self.macro = {self.cmd:pair}
         return self.macro
 
     def set_json(self):
@@ -32,9 +32,6 @@ class macro:
         FH.write(self.str_json)
         FH.close()
         return self.str_json   
-
-#params = ['ten','cor','cic']
-#values = [12,1,5]
 
 ARGV = sys.argv
 
@@ -47,5 +44,4 @@ new = macro(cmd,params,values)
 new.join_macro()
 new.set_json()
 
-#print(macro_test["on"][0]['ten'])
 
