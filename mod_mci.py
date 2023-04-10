@@ -9,6 +9,7 @@
 
 import json
 import serial
+from interfaces.spi_if import *
 
 class command_management:
     def __init__(self):
