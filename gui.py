@@ -9,6 +9,16 @@
 
 import json
 import sys
+import subprocess
+import socket
+
+host_name = socket.gethostname()
+host_ip = socket.gethostbyname(host_name)
+print(f'Host: {host_name}')
+print(f'IP: {host_ip}')
+
+MCI = "pi@192.168.1.9"
+DATA = "data.json"
 
 class macro:
     def __init__(self,cmd,params,values):
@@ -28,10 +38,13 @@ class macro:
 
     def set_json(self):
         self.str_json = json.dumps(self.macro,indent=2) 
-        FH = open('data.json','w')
+        FH = open(DATA,'w')
         FH.write(self.str_json)
         FH.close()
         return self.str_json   
+
+    def send_json(self):
+        subprocess.run(['scp',DATA,f"{MCI}:mci_iptc/tmp/{DATA}"])                
 
 ARGV = sys.argv
 
