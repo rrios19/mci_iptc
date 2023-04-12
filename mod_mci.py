@@ -9,7 +9,8 @@
 
 import json
 import serial
-from interfaces.spi_if import *
+import logging
+#from interfaces.spi_if import *
 
 class command_management:
     def __init__(self):
@@ -44,6 +45,15 @@ class command_management:
         chain = hex((header<<16) | footer)
         print(f"{chain}")
 
+def log_handler():
+    logging.basicConfig(filename='std.log',
+                        format='%(asctime)s %(message)s',
+                        filemode='w')
+    logger = logging.getLogger()
+    logger.setLevel(logging.DEBUG)
+
+
+
 new = command_management()
 new.get_macro()
 new.split_macro()
@@ -58,4 +68,6 @@ new.sequence_cmd()
 #for i in str_test:
 #    print (i)
 #command.send_macro('hola')    
+
+log_handler()
 
