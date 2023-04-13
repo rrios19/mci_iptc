@@ -14,10 +14,13 @@ import socket
 
 host_name = socket.gethostname()
 host_ip = socket.gethostbyname(host_name)
+print('----------DEBUG----------')
 print(f'Host: {host_name}')
 print(f'IP: {host_ip}')
+print('-------------------------')
 
-MCI = "pi@192.168.1.9"
+#MCI = "pi@192.168.1.9" #Yocto
+MCI = "pi@192.168.1.196" #Raspbian 1
 DATA = "data.json"
 
 class macro:
@@ -53,8 +56,9 @@ params = [ARGV[odd] for odd in list(range(1,len(ARGV),2))]
 values = [ARGV[even] for even in list(range(2,len(ARGV),2))]
 
 new = macro(cmd,params,values)
-#new.show_macro()
 new.join_macro()
 new.set_json()
-
+print('Sending')
+new.send_json()
+print('Running')
 
