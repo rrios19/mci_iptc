@@ -7,10 +7,22 @@
 # -------> | MCI | -------> | MCP | ...
 #  .json   -------          -------
 
+import sys
 import json
-import serial
 import logging
 #from interfaces.spi_if import *
+
+# Load local configuration
+def fetch_conf(mod):
+    try:
+        path_file = 'conf/local_confi.json'
+        confhandle = open(path_file,'r')
+        conf = json.load(confhandle)
+        confhandle.close()
+        return conf[mod]
+    except OSError as err:
+        print(f"Can not open local configuration file.\n{err}")
+        sys.exit()
 
 class command_management:
     def __init__(self):

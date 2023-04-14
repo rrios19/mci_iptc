@@ -1,6 +1,6 @@
 import json
 
-usr_dic = {'target':'pi@192.168.1.196','filename':'data.json'}
+usr_dic = {'target':'pi@192.168.1.196','filename':'data.json','logpath':'log/usr_if.log'}
 dic_json = {'usr':usr_dic}
 
 str_json = json.dumps(dic_json,indent=2)
