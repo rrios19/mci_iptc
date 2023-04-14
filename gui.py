@@ -51,7 +51,7 @@ class macro:
     def send_json(self):
         target = conf['gui']['target']
         filename = conf['gui']['filename']
-        subprocess.run(['scp',target,f"{target}:mci_iptc/tmp/{filename}"])
+        subprocess.run(['scp',filename,f"{target}:mci_iptc/tmp/{filename}"])
 
 conf = load_conf()
 
@@ -65,6 +65,6 @@ new = macro(cmd,params,values)
 new.join_macro()
 new.set_json()
 print('Sending')
-#new.send_json()
+new.send_json()
 print('Running')
 
