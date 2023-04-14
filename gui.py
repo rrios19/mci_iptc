@@ -19,9 +19,11 @@ print(f'Host: {host_name}')
 print(f'IP: {host_ip}')
 print('-------------------------')
 
-#MCI = "pi@192.168.1.9" #Yocto
-MCI = "pi@192.168.1.196" #Raspbian 1
-DATA = "data.json"
+def load_conf():
+    confhandle = open('conf/local_conf.json','r')
+    conf = json.load(confhandle)
+    confhandle.close()
+    return conf
 
 class macro:
     def __init__(self,cmd,params,values):
@@ -41,13 +43,17 @@ class macro:
 
     def set_json(self):
         self.str_json = json.dumps(self.macro,indent=2) 
-        FH = open(DATA,'w')
+        FH = open(conf['gui']['filename'],'w')
         FH.write(self.str_json)
         FH.close()
         return self.str_json   
 
     def send_json(self):
-        subprocess.run(['scp',DATA,f"{MCI}:mci_iptc/tmp/{DATA}"])                
+        target = conf['gui']['target']
+        filename = conf['gui']['filename']
+        subprocess.run(['scp',target,f"{target}:mci_iptc/tmp/{filename}"])
+
+conf = load_conf()
 
 ARGV = sys.argv
 
@@ -59,6 +65,6 @@ new = macro(cmd,params,values)
 new.join_macro()
 new.set_json()
 print('Sending')
-new.send_json()
+#new.send_json()
 print('Running')
 
