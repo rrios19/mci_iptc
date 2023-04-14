@@ -1,0 +1,11 @@
+import json
+
+usr_dic = {'target':'pi@192.168.1.196','filename':'data.json'}
+dic_json = {'usr':usr_dic}
+
+str_json = json.dumps(dic_json,indent=2)
+
+filehandle = open('local_conf.json','w')
+filehandle.write(str_json)
+filehandle.close()
+

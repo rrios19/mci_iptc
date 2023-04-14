@@ -7,8 +7,8 @@ use warnings;
 use strict;
 use Net::SSH qw{ssh};
 
-my $ip = 192.168.1.19; #Static IP
-my $command = qw{perl -e 'print "Hello from PI\n"'};
+my $ip = 192.168.1.9;
+my $command = qw{python3 mod_mci.py};
 
 ssh("pi\@$ip", $command) 
 
