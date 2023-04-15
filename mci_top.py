@@ -24,6 +24,17 @@ def fetch_conf(mod):
         print(f"Can not open local configuration file.\n{err}")
         sys.exit()
 
+def configure_log():
+    path = conf['logpath']
+    if not os.path.exists(path):
+        print(f"Creating new log file '{path}'")
+    form = '%(levelname)s %(asctime)s %(message)s'
+    date = '%H:%M:%S %d/%m/%y'
+    verbose = logging.DEBUG
+    logging.basicConfig(filename=path,format=form,datefmt=date,level=verbose,filemode='a')
+
+
+
 class command_management:
     def __init__(self):
         self.macro  = {} 
@@ -57,14 +68,15 @@ class command_management:
         chain = hex((header<<16) | footer)
         print(f"{chain}")
 
-def log_handler():
-    logging.basicConfig(filename='std.log',
-                        format='%(asctime)s %(message)s',
-                        filemode='w')
-    logger = logging.getLogger()
-    logger.setLevel(logging.DEBUG)
 
 
+
+
+
+
+fetch_conf('mci')
+
+configure_log()
 
 new = command_management()
 new.get_macro()
@@ -81,6 +93,5 @@ new.sequence_cmd()
 #    print (i)
 #command.send_macro('hola')    
 
-log_handler()
 
 
