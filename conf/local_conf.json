@@ -2,7 +2,8 @@
   "usr": {
     "target": "pi@192.168.1.9",
     "filename": "data.json",
-    "logpath": "log/usr_if.log"
+    "logpath": "log/usr_if.log",
+    "verbose": "DEBUG"
   },
   "mci": {
     "logpath": "log/mci_top.log"
