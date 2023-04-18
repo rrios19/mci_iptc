@@ -7,15 +7,16 @@
 # -------> | MCI | -------> | MCP | ...
 #  .json   -------          -------
 
+import os
 import sys
 import json
 import logging
 #from interfaces.spi_if import *
 
-# Load local configuration
+# Load local usr_if configuration. Default path : conf/local_conf.json
 def fetch_conf(mod):
     try:
-        path_file = 'conf/local_confi.json'
+        path_file = 'conf/local_conf.json'
         confhandle = open(path_file,'r')
         conf = json.load(confhandle)
         confhandle.close()
@@ -24,28 +25,39 @@ def fetch_conf(mod):
         print(f"Can not open local configuration file.\n{err}")
         sys.exit()
 
+# Init basic log configurations
 def configure_log():
     path = conf['logpath']
+    levels = {'DEBUG':10,'INFO':20,'WARNING':30,'ERROR':40,'CRITICAL':50}
     if not os.path.exists(path):
         print(f"Creating new log file '{path}'")
     form = '%(levelname)s %(asctime)s %(message)s'
     date = '%H:%M:%S %d/%m/%y'
-    verbose = logging.DEBUG
+    try:
+        verbose = levels[conf['verbose']]
+    except:
+        print(f"Can not set {conf['verbose']} mode. Check local_conf.json file")
+        print(f"Available: {list(levels.keys())}")
+        sys.exit()
     logging.basicConfig(filename=path,format=form,datefmt=date,level=verbose,filemode='a')
-
-
+    logging.info(f"Running {sys.argv[0]}")
+    logging.info(f"Basic log configuration in '{conf['verbose']}' mode")
 
 class command_management:
+    # Create a new macro object for the current test
     def __init__(self):
         self.macro  = {} 
         self.cmd    = {}
         self.params = []
         self.values = []
-	
-    def get_macro(self): # Recibir macros del GUI, watchdog 
+        logging.debug(f"New macro object created: '{self.cmd}'")
+        	
+    # Get the macro, open and load
+    def get_macro(self):
         FH = open('data.json')
         self.macro = json.load(FH)
         FH.close()
+        logging.info(f"Macro fetched: {self.macro}")
         return self.macro
 
     def send_macro(self,argv): # Enviar macros al GUI
@@ -63,19 +75,15 @@ class command_management:
         return f"Hello {self.macro}"
 
     def sequence_cmd(self):
-        header = 0x0001
-        footer = 0x0002
+        header = hex(conf['header'])
+        footer = hex(conf['footer'])
         chain = hex((header<<16) | footer)
         print(f"{chain}")
 
 
-
-
-
-
-
-fetch_conf('mci')
-
+# Fetch usr_if configurations
+conf = fetch_conf('mci')
+# Basic configuration for log
 configure_log()
 
 new = command_management()

@@ -17,6 +17,7 @@ import json
 import socket
 import logging
 import subprocess
+import paramiko
 
 # For development
 host_name = socket.gethostname()
@@ -55,7 +56,7 @@ def configure_log():
         print(f"Available: {list(levels.keys())}")
         sys.exit()
     logging.basicConfig(filename=path,format=form,datefmt=date,level=verbose,filemode='a')
-    logging.info(f"Start session from '{host_name}' at '{host_ip}'")
+    logging.info(f"Started session: '{host_name}' at '{host_ip}'")
     logging.info(f"Basic log configuration in '{conf['verbose']}' mode")
 
 class macro:
@@ -76,7 +77,7 @@ class macro:
     def join_macro(self):
         pair = {par:val for (par,val) in zip(self.params,self.values)} 
         self.macro = {self.cmd:pair}
-        logging.debug(f"Macro joined: {self.macro}")
+        logging.info(f"Macro was formatted: {self.macro}")
         return self.macro
 
     # Create a new JSON file with the macro test
@@ -85,15 +86,31 @@ class macro:
         FH = open(conf['filename'],'w')
         FH.write(self.str_json)
         FH.close()
-        logging.debug(f"JSON file was written: '{conf['filename']}'")
+        logging.info(f"JSON file was written: '{conf['filename']}'")
         return self.str_json   
 
     # Send JSON to MCI
     def send_json(self):
-        target = conf['target']
+        ip = conf['ip']
+        user = conf['user']
         filename = conf['filename']
-        subprocess.run(['scp',filename,f"{target}:mci_iptc/tmp/{filename}"])
-        logging.info(f"Sent {filename} to {host_ip}")
+        subprocess.run(['scp',filename,f"{user}@{ip}:mci_iptc/tmp/{filename}"])
+        logging.info(f"'{filename}' sent to '{host_ip}'")
+
+    def run_mci():
+        host = conf['target']
+        user = conf['user']
+        password = conf['password']
+        rpi = paramiko.SSHClient()
+        rpi.load_system_host_keys()
+        rpi.connect(host,user,password)
+
+        stdin,stdout,stderr = rpi.exec_command('python3 mici_top.py')
+        if stderr.read() == b'':
+            for line in stdout.readlines():
+                print(line.strip())
+        else:
+            print(stderr.read())
 
     # Experimental
     def receive_handler():
@@ -114,5 +131,5 @@ new = macro(cmd,params,values)
 new.join_macro()
 new.set_json()
 # Send macro
-new.send_json()
+#new.send_json()
 

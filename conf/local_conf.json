@@ -1,11 +1,16 @@
 {
   "usr": {
-    "target": "pi@192.168.1.9",
+    "ip": "192.168.1.69",
+    "user": "pi",
+    "password": "1234",
     "filename": "data.json",
     "logpath": "log/usr_if.log",
     "verbose": "DEBUG"
   },
   "mci": {
-    "logpath": "log/mci_top.log"
+    "logpath": "log/mci_top.log",
+    "header": "0x0001",
+    "footer": "0x0002",
+    "verbose": "DEBUG"
   }
 }
