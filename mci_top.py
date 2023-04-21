@@ -40,25 +40,34 @@ def configure_log():
         print(f"Available: {list(levels.keys())}")
         sys.exit()
     logging.basicConfig(filename=path,format=form,datefmt=date,level=verbose,filemode='a')
-    logging.info(f"Running {sys.argv[0]}")
     logging.info(f"Basic log configuration in '{conf['verbose']}' mode")
 
 class command_management:
     # Create a new macro object for the current test
     def __init__(self):
-        self.macro  = {} 
-        self.cmd    = {}
-        self.params = []
-        self.values = []
+        self.macro = {} 
+        self.cmd   = []
+        self.seq   = []
+        #self.params = []
+        #self.values = []
         logging.debug(f"New macro object created: '{self.cmd}'")
         	
     # Get the macro, open and load
     def get_macro(self):
-        FH = open('data.json')
-        self.macro = json.load(FH)
-        FH.close()
+        filehandle = open(conf['testname'])
+        self.macro = json.load(filehandle)
+        filehandle.close()
         logging.info(f"Macro fetched: {self.macro}")
         return self.macro
+
+    def split_macro(self):
+        self.cmd = list(self.macro.keys())
+        #self.params = list(self.macro[self.cmd].keys())
+        #self.values = list(self.macro[self.cmd].values())
+        
+
+
+
 
     def send_macro(self,argv): # Enviar macros al GUI
         #FH = open('output.json','w')
@@ -66,10 +75,6 @@ class command_management:
         #FH.close
         print('Enviar macro')
 
-    def split_macro(self):
-        self.cmd = list(self.macro.keys())[0] # One command
-        self.params = list(self.macro[self.cmd].keys())
-        self.values = list(self.macro[self.cmd].values())
 
     def join_macro(self):
         return f"Hello {self.macro}"
@@ -81,15 +86,26 @@ class command_management:
         print(f"{chain}")
 
 
+# Main
 # Fetch usr_if configurations
 conf = fetch_conf('mci')
 # Basic configuration for log
 configure_log()
 
+
+
+
+
+
 new = command_management()
-new.get_macro()
+macro = new.get_macro()
+
+
+
+
+print(len(macro))
 new.split_macro()
-new.sequence_cmd()
+#new.sequence_cmd()
 
 #print (command.get_macro())
 #str_test = command.get_macro()

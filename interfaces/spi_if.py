@@ -10,21 +10,34 @@
 import spidev
 from time import sleep
 
-spi_bus = 0
-spi_dev = 1
-spi_max = 250000
+#spi_bus = 0
+#spi_dev = 0
+#spi_max = 250000
 
-def init_spi(bus,dev,hz):
+def set_spi(bus,dev,hz):
     spi = spidev.SpiDev()
     spi.open(bus,dev)
     spi.max_speed_hz = hz
+    return spi
 
-def send_cmd():
+def check_spi():
+    spi.writebytes([])
+    sleep(0.1)
+    spi.readbytes([])
+
+
+def send_cmd(cmd):
     try:
         while True:
-            spi.writebytes([0x3A])
+            spi.writebytes([cmd])
             sleep(0.1)
         
     finally:
         spi.close()
+
+
+
+
+spi = set_spi(0,0,7629)
+send_cmd(0x3)
 

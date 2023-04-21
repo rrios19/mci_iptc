@@ -3,11 +3,19 @@
     "ip": "192.168.1.69",
     "user": "pi",
     "password": "1234",
-    "filename": "data.json",
+    "testfile": "test.json",
     "logpath": "log/usr_if.log",
-    "verbose": "DEBUG"
+    "verbose": "DEBUG",
+    "btm": ["CYCLES","VC","CC"],
+    "velm": ["P1","P2","P3"],
+    "sas": ["P1","P2","P3"]
   },
   "mci": {
+    "testfile": "test.json",
+    "btm": ["ciclos","VC","CC"],
+    "velm": "1",
+    "sas": "2",
+    "mcps": ["sam","velm","btm"],
     "logpath": "log/mci_top.log",
     "header": "0x0001",
     "footer": "0x0002",
