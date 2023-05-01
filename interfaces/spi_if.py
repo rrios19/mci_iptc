@@ -38,6 +38,6 @@ def send_cmd(cmd):
 
 
 
-spi = set_spi(0,0,7629)
-send_cmd(0x3)
+spi = set_spi(0,0,1000)
+send_cmd(0xFAFAFA)
 

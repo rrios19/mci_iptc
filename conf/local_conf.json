@@ -19,6 +19,10 @@
     "logpath": "log/mci_top.log",
     "header": "0x0001",
     "footer": "0x0002",
-    "verbose": "DEBUG"
+    "verbose": "DEBUG",
+    "manufacturer": "Laboratorio Delta",
+    "model": "IPTC",
+    "serial": "000",
+    "version": "v1"
   }
 }
