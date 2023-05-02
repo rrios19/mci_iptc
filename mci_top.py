@@ -12,7 +12,6 @@ import sys
 import json
 import logging
 from interfaces.spi_master import *
-import signal
 
 # Load local usr_if configuration. Default path : conf/local_conf.json
 def fetch_conf(mod):
@@ -58,15 +57,23 @@ def get_idn():
     version = conf["version"]
     print(f"{manufacturer}, {model}, {serial}, {version}.")
 
+def check_iface():
+    available = []
+    mcps = conf["mcps"]
+    ackn = int(conf["acknowledge"],16)
+    for mode in mcps:
+        spi.change_device(mcps[mode])
+        spi.send_data(ackn)
+        sleep(0.2)
+        if (spi.get_data() == ackn):
+            available.append(mode)
+    print (available)
 
 
-
-
-
-class command_management:
+class command_handler:
     # Create a new macro object for the current test
     def __init__(self):
-        self.macro = {} 
+        self.macro = [] 
         self.cmd   = []
         self.seq   = []
         #self.params = []
@@ -86,7 +93,7 @@ class command_management:
         #self.params = list(self.macro[self.cmd].keys())
         #self.values = list(self.macro[self.cmd].values())
        
-    def send_macro(self,argv): # Enviar macros al GUI
+    def send_macro(self): # Enviar macros al GUI
         #FH = open('output.json','w')
         #FH.write(str_json)
         #FH.close
@@ -110,42 +117,47 @@ def cmd_2_bin(RW,MODE,CUR,VOL,POW,RESV):
     VOL  <<= 16 #[23-16] Voltage
     POW  <<= 8  #[15-08] Power
     #RESV<<= 0  #[07-00] Reserve
-
     bin_cmd = RW|MODE|CUR|VOL|POW|RESV
     return bin_cmd
 
-
 # Main
+# ------------------------------------------------------
 # Fetch usr_if configurations
 conf = fetch_conf('mci')
 # Basic configuration for log
 configure_log()
 # Fetch SCPI commands
 scpi_set = get_scpi()
-# Start SPI CLK
-start_sclk(100)
-
-
-to_test = cmd_2_bin(1,7,0xF,0xFF,0xFF,0xFF)
-
-
-main_spi(to_test,True)
+# FS, SCLK, CS0, CS1, CS2, MOSI, MISO
+spi = iface_handler(400,11,8,7,6,10,9)
+# Start SPI clock
+spi.start_clk()
+# Command input
+#while True:
+#    scpi_cmd = input("CMD: ")
+#    if (scpi_cmd == "exit"):
+#        break
+#    try:
+#        func_to_run = globals()[scpi_set[scpi_cmd]]
+#        func_to_run()
+#    except:
+#        print(f"{scpi_cmd} not available")
+macro = command_handler()
+macro.get_macro()
 sleep(1)
-main_spi(to_test,False)
-
-try:
-    cmd_prompt = sys.argv
-    func_to_run = globals()[scpi_set[cmd_prompt[1]]]
-    func_to_run()
-except:
-    pass
+# Kill SPI clock
+spi.kill_spi()
+# ------------------------------------------------------
 
 
+#to_test = cmd_2_bin(1,7,0xF,0xFF,0xFF,0xFF)
 
-
-
-#main_spi(1,0xFA43F54A)
-
+#try:
+#    cmd_prompt = sys.argv
+#    func_to_run = globals()[scpi_set[cmd_prompt[1]]]
+#    func_to_run()
+#except:
+#    pass
 
 
 #Local module
@@ -154,11 +166,6 @@ except:
 #Different module
 #func_to_run = getattr(other_module,function)
 #func_to_run()
-
-
-#dicctionary = {"hola":get_idn}
-#print(dicctionary["hola"]())
-
 
 #new = command_management()
 #macro = new.get_macro()

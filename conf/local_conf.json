@@ -20,6 +20,8 @@
     "header": "0x0001",
     "footer": "0x0002",
     "verbose": "DEBUG",
+    "mcps": {"BTM":8,"VELM":7,"SAM":6},
+    "acknowledge": "0x70f0f0f0",
     "manufacturer": "Laboratorio Delta",
     "model": "IPTC",
     "serial": "000",

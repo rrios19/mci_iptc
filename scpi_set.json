@@ -1,0 +1,4 @@
+{
+  "*IDN?": "get_idn",
+  "INST:CAT?": "check_iface"
+}
