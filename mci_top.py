@@ -8,6 +8,7 @@
 #  .json   -------          -------
 
 import os
+import re
 import sys
 import json
 import logging
@@ -70,26 +71,33 @@ def check_iface():
     print (available)
 
 
+
+
+
+
 class command_handler:
     # Create a new macro object for the current test
     def __init__(self):
         self.macro = [] 
         self.cmd   = []
         self.seq   = []
-        #self.params = []
-        #self.values = []
-        logging.debug(f"New macro object created: '{self.cmd}'")
+        logging.debug(f"New macro object created")
         	
-    # Get the macro, open and load
+    # Get the macro, open and read
     def get_macro(self):
-        filehandle = open(conf['testname'])
-        self.macro = json.load(filehandle)
+        filehandle = open(conf['testfile'])
+        for line in filehandle.readlines():
+            self.macro.append(line.strip())
         filehandle.close()
         logging.info(f"Macro fetched: {self.macro}")
         return self.macro
 
     def split_macro(self):
-        self.cmd = list(self.macro.keys())
+        patron = re.compile("(^\S+)\s(\S+$)")
+        for command in self.macro:
+            if patron.match(command):
+                print(command)
+        #self.cmd = list(self.macro.keys())
         #self.params = list(self.macro[self.cmd].keys())
         #self.values = list(self.macro[self.cmd].values())
        
@@ -144,6 +152,7 @@ spi.start_clk()
 #        print(f"{scpi_cmd} not available")
 macro = command_handler()
 macro.get_macro()
+macro.split_macro()
 sleep(1)
 # Kill SPI clock
 spi.kill_spi()

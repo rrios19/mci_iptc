@@ -11,7 +11,7 @@
     "sas": ["P1","P2","P3"]
   },
   "mci": {
-    "testfile": "test.json",
+    "testfile": "test.txt",
     "btm": ["ciclos","VC","CC"],
     "velm": "1",
     "sas": "2",
