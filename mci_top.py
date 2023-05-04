@@ -8,10 +8,10 @@
 #  .json   -------          -------
 
 import os
-import re
 import sys
 import json
 import logging
+import subprocess
 from interfaces.spi_master import *
 
 # Load local usr_if configuration. Default path : conf/local_conf.json
@@ -70,7 +70,13 @@ def check_iface():
             available.append(mode)
     print (available)
 
-
+def format_testfile(target):
+    try:
+        command = ["perl","scpi_2_json.pl",conf['testfile'],target]
+        subprocess.call(command)
+    except:
+        print("No test found")
+        sys.exit()
 
 
 
@@ -82,24 +88,31 @@ class command_handler:
         self.cmd   = []
         self.seq   = []
         logging.debug(f"New macro object created")
-        	
+        
+    #def format_testfile(self):
+
+
     # Get the macro, open and read
     def get_macro(self):
-        filehandle = open(conf['testfile'])
-        for line in filehandle.readlines():
-            self.macro.append(line.strip())
-        filehandle.close()
-        logging.info(f"Macro fetched: {self.macro}")
-        return self.macro
+        try:
+            filehandle = open('testfile.json')
+            self.macro = json.load(filehandle)
+            filehandle.close()
+            logging.info(f"Macro fetched: {self.macro}")
+            return self.macro
+        except:
+            print("No file test")
+            sys.exit()
 
     def split_macro(self):
-        patron = re.compile("(^\S+)\s(\S+$)")
-        for command in self.macro:
-            if patron.match(command):
-                print(command)
+        #patron = re.compile("(^\S+)\s(\S+$)")
+        #for command in self.macro:
+        #    if patron.match(command):
+        #        print(command)
         #self.cmd = list(self.macro.keys())
         #self.params = list(self.macro[self.cmd].keys())
         #self.values = list(self.macro[self.cmd].values())
+        print("HOLA")
        
     def send_macro(self): # Enviar macros al GUI
         #FH = open('output.json','w')
@@ -150,13 +163,17 @@ spi.start_clk()
 #        func_to_run()
 #    except:
 #        print(f"{scpi_cmd} not available")
+format_testfile('testfile.json')
 macro = command_handler()
-macro.get_macro()
-macro.split_macro()
+print(macro.get_macro())
+#macro.split_macro()
 sleep(1)
 # Kill SPI clock
 spi.kill_spi()
 # ------------------------------------------------------
+
+
+
 
 
 #to_test = cmd_2_bin(1,7,0xF,0xFF,0xFF,0xFF)
