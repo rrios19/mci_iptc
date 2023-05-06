@@ -10,19 +10,21 @@ use feature 'say';
 use warnings;
 use strict;
 
-my ($file,$json) = @ARGV;
+my ($file,$time) = @ARGV;
 my @lines;
-die "No file name," unless defined $file;
-die "No json name," unless defined $json;
+die "Missing file argument," unless defined $file;
+die "Missing time argument," unless defined $time;
 
-open FILE, '<', $file or die "Couldn't open file: $!";
+open FILE, '<', $file or die "Couldn't open testfile: $!";
 @lines = <FILE>;
 close FILE;
-open OUT,  '>', $json or die "Couldn't open file: $!";
+$file =~ s/\A(\w+)(\.\w+)?\z/${time}_$1\.json/;
+open OUT,  '>', $file or die "Couldn't create file: $!";
 
 foreach (@lines){
-    s/\A(\S+)\n\z/\"$1\",/;
-    s/\A(\S+)\s+(\S+)\n\z/{\"$1\": \"$2\"},/
+    next if s/\A(\*\w+\?)\n\z/\"$1\",/;
+    next if s/\A(\w+):(\w+\?)\n\z/{\"$1\": [\"$2\"]},/;
+    s/\A(\w+):(\w+)\s+(\w+)\n\z/{\"$1\": [\"$2\", \"$3\"]},/
 }
 $lines[-1] =~ s/,\z//;
 
@@ -32,5 +34,7 @@ foreach (@lines){
 }
 say OUT ']';
 
-close OUT
+close OUT;
+
+print $file
 

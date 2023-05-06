@@ -11,16 +11,14 @@
     "sas": ["P1","P2","P3"]
   },
   "mci": {
-    "testfile": "test.txt",
+    "testfile": "testfile",
     "btm": ["ciclos","VC","CC"],
     "velm": "1",
     "sas": "2",
     "mcps": ["sam","velm","btm"],
     "logpath": "log/mci_top.log",
-    "header": "0x0001",
-    "footer": "0x0002",
     "verbose": "DEBUG",
-    "mcps": {"BTM":8,"VELM":7,"SAM":6},
+    "mcps_pins": {"BTM":8,"VELM":7,"SAM":6},
     "acknowledge": "0x70f0f0f0",
     "manufacturer": "Laboratorio Delta",
     "model": "IPTC",

@@ -8,9 +8,12 @@
 #  .json   -------          -------
 
 import os
+import re
 import sys
 import json
+import time
 import logging
+import datetime
 import subprocess
 from interfaces.spi_master import *
 
@@ -50,7 +53,6 @@ def get_scpi():
     #logging.info(f"Macro fetched: {self.macro}")
     return scpi_set
 
-
 def get_idn():
     manufacturer = conf["manufacturer"]
     model = conf["model"]
@@ -70,32 +72,39 @@ def check_iface():
             available.append(mode)
     print (available)
 
-def format_testfile(target):
-    try:
-        command = ["perl","scpi_2_json.pl",conf['testfile'],target]
-        subprocess.call(command)
-    except:
-        print("No test found")
-        sys.exit()
+def format_testfile():
+    time_now = time.localtime()
+    time_str = time.strftime("%d-%m-%Y_%H-%M-%S",time_now)
+    cmd = ["perl","scpi_2_json.pl",conf['testfile'],time_str]
+    pro = subprocess.Popen(cmd,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
+    pro.wait()
+    if (pro.returncode == 0):
+        return pro.communicate()[0].decode("utf-8").strip()
+    else:
+        return pro.communicate()[1].decode("utf-8").strip()
 
-
-
+def format_testfile2():
+    filehandle = open(conf['testfile'])
+    cmds = []
+    for line in filehandle.readlines():
+        cmds.append(re.sub('\s+',':',line.strip()).split(':'))
+    filehandle.close()
+    print (cmds)
 
 class command_handler:
     # Create a new macro object for the current test
-    def __init__(self):
+    def __init__(self,testjson):
         self.macro = [] 
+        self.testjson = testjson
+        self.mode = 0
         self.cmd   = []
         self.seq   = []
         logging.debug(f"New macro object created")
-        
-    #def format_testfile(self):
-
 
     # Get the macro, open and read
     def get_macro(self):
         try:
-            filehandle = open('testfile.json')
+            filehandle = open(self.testjson)
             self.macro = json.load(filehandle)
             filehandle.close()
             logging.info(f"Macro fetched: {self.macro}")
@@ -153,28 +162,24 @@ scpi_set = get_scpi()
 spi = iface_handler(400,11,8,7,6,10,9)
 # Start SPI clock
 spi.start_clk()
-# Command input
-#while True:
-#    scpi_cmd = input("CMD: ")
-#    if (scpi_cmd == "exit"):
-#        break
-#    try:
-#        func_to_run = globals()[scpi_set[scpi_cmd]]
-#        func_to_run()
-#    except:
-#        print(f"{scpi_cmd} not available")
-format_testfile('testfile.json')
-macro = command_handler()
-print(macro.get_macro())
+# Format the test file into a json file
+testjson = format_testfile()
+format_testfile2()
+# New macro handler
+macro = command_handler(testjson)
+macro_c = macro.get_macro()
+
+#for cmd in macro_c:
+#    print (type(cmd))
+
+
+
+
 #macro.split_macro()
 sleep(1)
 # Kill SPI clock
 spi.kill_spi()
 # ------------------------------------------------------
-
-
-
-
 
 #to_test = cmd_2_bin(1,7,0xF,0xFF,0xFF,0xFF)
 
@@ -195,9 +200,6 @@ spi.kill_spi()
 
 #new = command_management()
 #macro = new.get_macro()
-
-
-
 
 #print(len(macro))
 #new.split_macro()
