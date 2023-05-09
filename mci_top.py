@@ -53,65 +53,115 @@ def get_scpi():
     #logging.info(f"Macro fetched: {self.macro}")
     return scpi_set
 
-def get_idn():
+# Common commands ----------------------------------------------
+def get_idn(cmd):
     manufacturer = conf["manufacturer"]
     model = conf["model"]
     serial = conf["serial"]
     version = conf["version"]
     print(f"{manufacturer}, {model}, {serial}, {version}.")
+# --------------------------------------------------------------
 
-def check_iface():
+def select_device(inst):
+    try:
+        inst = int(inst[0])
+    except:
+        inst = conf["INST"][inst[0].upper()]
+    macro.conf_inst(inst)
+    #macro.show_macro() # Delete this
+
+def conf_mode(cmd):
+    macro.conf_mode(cmd[0])
+    macro.show_macro()
+
+def inst_handler(cmd):
+    mcps = {}
+    if bool(cmd):
+        for mode in cmd:
+            mcps[mode] = conf["INST"][mode]
+    else:
+        mcps = conf["INST"]
     available = []
-    mcps = conf["mcps"]
-    ackn = int(conf["acknowledge"],16)
+    ack = int(conf["ack"],16)
     for mode in mcps:
         spi.change_device(mcps[mode])
-        spi.send_data(ackn)
+        spi.send_data(ack)
         sleep(0.2)
-        if (spi.get_data() == ackn):
+        if (spi.get_data() == ack):
             available.append(mode)
-    print (available)
+    print(available)
 
 def format_testfile():
+    macro = []
     time_now = time.localtime()
     time_str = time.strftime("%d-%m-%Y_%H-%M-%S",time_now)
-    cmd = ["perl","scpi_2_json.pl",conf['testfile'],time_str]
-    pro = subprocess.Popen(cmd,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
-    pro.wait()
-    if (pro.returncode == 0):
-        return pro.communicate()[0].decode("utf-8").strip()
-    else:
-        return pro.communicate()[1].decode("utf-8").strip()
-
-def format_testfile2():
     filehandle = open(conf['testfile'])
-    cmds = []
     for line in filehandle.readlines():
-        cmds.append(re.sub('\s+',':',line.strip()).split(':'))
+        #macro.append(re.sub('\s+',':',line.strip()).split(':'))
+        macro.append(re.sub('\s+',' ',line.strip()).split(' '))
     filehandle.close()
-    print (cmds)
+    test_json = re.sub('(\.\w+)?$','.json',conf['testfile'],count=1)
+    test_json = f"{time_str}_{test_json}"
+    str_json = json.dumps(macro,indent=2)
+    filehandle = open(test_json,'w')
+    filehandle.write(str_json)
+    filehandle.close()
+    return test_json
 
 class command_handler:
     # Create a new macro object for the current test
-    def __init__(self,testjson):
-        self.macro = [] 
-        self.testjson = testjson
-        self.mode = 0
-        self.cmd   = []
+    def __init__(self,testfile):
+        self.testfile = testfile
+        self.macro = []
+        self.inst = 0
+        self.hexcmd = 0x88000000
+        self.cmd = {}
+        self.rw   = 0
+        self.mode = 0x0
+        self.curr = 0
+        self.volt = 0
+        self.pow = 0
+        self.res = 0
         self.seq   = []
         logging.debug(f"New macro object created")
 
     # Get the macro, open and read
     def get_macro(self):
         try:
-            filehandle = open(self.testjson)
+            filehandle = open(self.testfile)
             self.macro = json.load(filehandle)
             filehandle.close()
             logging.info(f"Macro fetched: {self.macro}")
-            return self.macro
+            return len(self.macro)
         except:
             print("No file test")
             sys.exit()
+
+    def pop_cmd(self):
+        cmd = self.macro.pop(0)
+        func_to_call = globals()[scpi_set[cmd.pop(0)]]
+        func_to_call(cmd)
+
+    def conf_inst(self,inst):
+        self.inst = inst
+
+    def conf_mode(self,mode):
+        reset_cmd = 0x8fffffff # LOW [30-28]
+        try:
+            self.mode = int(mode) << 28
+        except:
+            pass
+        self.hexcmd &= reset_cmd 
+        self.hexcmd |= self.mode
+
+    def cmd_2_hex(self):
+        self.rw   <<= 31
+        self.mode <<= 28
+        self.curr <<= 24
+        self.volt <<= 16
+        self.pow  <<= 8
+
+
 
     def split_macro(self):
         #patron = re.compile("(^\S+)\s(\S+$)")
@@ -139,6 +189,9 @@ class command_handler:
         chain = hex((header<<16) | footer)
         print(f"{chain}")
 
+    def show_macro(self):
+        #print(f"{self.hexcmd:b}")
+        print(hex(self.hexcmd))
 
 def cmd_2_bin(RW,MODE,CUR,VOL,POW,RESV):
     RW   <<= 31 #[31]    Read/Write
@@ -163,15 +216,16 @@ spi = iface_handler(400,11,8,7,6,10,9)
 # Start SPI clock
 spi.start_clk()
 # Format the test file into a json file
-testjson = format_testfile()
-format_testfile2()
+#testjson = format_testfile()
+test_name = format_testfile()
 # New macro handler
-macro = command_handler(testjson)
-macro_c = macro.get_macro()
+macro = command_handler(test_name)
+macro_len = macro.get_macro()
+while macro_len > 0:
+    macro.pop_cmd()
+    macro_len -= 1
 
-#for cmd in macro_c:
-#    print (type(cmd))
-
+#macro_c = macro.get_macro()
 
 
 
@@ -190,7 +244,6 @@ spi.kill_spi()
 #except:
 #    pass
 
-
 #Local module
 #func_to_run = globals()[dic["*IDN?"]]
 #func_to_run()
@@ -198,21 +251,8 @@ spi.kill_spi()
 #func_to_run = getattr(other_module,function)
 #func_to_run()
 
-#new = command_management()
-#macro = new.get_macro()
-
-#print(len(macro))
-#new.split_macro()
-#new.sequence_cmd()
-
 #print (command.get_macro())
 #str_test = command.get_macro()
 #str_test['c'] = 'hola'
 #print (str_test)
-
-#print (str_test['a'])
-#for i in str_test:
-#    print (i)
-#command.send_macro('hola')    
-
 

@@ -1,4 +1,7 @@
 {
   "*IDN?": "get_idn",
-  "INST:CAT?": "check_iface"
+  "INST:CAT?": "inst_handler",
+  "INST:SEL": "select_device",
+  "INST:NSEL": "select_device",
+  "CONF:MODE": "conf_mode"
 }
