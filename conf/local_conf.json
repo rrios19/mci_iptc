@@ -18,7 +18,7 @@
     "mcps": ["btm","velm","sam"],
     "logpath": "log/mci_top.log",
     "verbose": "DEBUG",
-    "INST": {"BTM":8,"VELM":7,"SAM":6},
+    "CAT": {"BTM":8,"VELM":7,"SAM":6},
     "ack": "0x70f0f0f0",
     "manufacturer": "Laboratorio Delta",
     "model": "IPTC",

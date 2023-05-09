@@ -54,13 +54,42 @@ def get_scpi():
     return scpi_set
 
 # Common commands ----------------------------------------------
-def get_idn(cmd):
+def get_idn():
     manufacturer = conf["manufacturer"]
     model = conf["model"]
     serial = conf["serial"]
     version = conf["version"]
     print(f"{manufacturer}, {model}, {serial}, {version}.")
 # --------------------------------------------------------------
+class INST:
+    def __init__(self,cmd):
+        self.parameters = cmd
+        self.mcps = {}
+
+    def CAT(self):
+        self.mcps = conf["CAT"]
+        self.check_inst()
+
+    def SEL(self):
+        device = conf["CAT"][self.parameters.pop(0).upper()]
+        macro.conf_inst(device)
+        macro.show_macro()
+
+    def NSEL(self):
+        device = int(self.parameters.pop(0))
+        macro.conf_inst(device)
+        macro.show_macro()
+
+    def check_inst(self):
+       available = []
+       ack = int(conf["ack"],16)
+       for mode in self.mcps:
+           spi.change_device(self.mcps[mode])
+           spi.send_data(ack)
+           sleep(0.2) # Esto debe cambiar
+           if (spi.get_data() == ack):
+               available.append(mode)
+       print(available)
 
 def select_device(inst):
     try:
@@ -97,8 +126,8 @@ def format_testfile():
     time_str = time.strftime("%d-%m-%Y_%H-%M-%S",time_now)
     filehandle = open(conf['testfile'])
     for line in filehandle.readlines():
-        #macro.append(re.sub('\s+',':',line.strip()).split(':'))
-        macro.append(re.sub('\s+',' ',line.strip()).split(' '))
+        macro.append(re.sub('\s+',':',line.strip()).split(':'))
+        #macro.append(re.sub('\s+',' ',line.strip()).split(' '))
     filehandle.close()
     test_json = re.sub('(\.\w+)?$','.json',conf['testfile'],count=1)
     test_json = f"{time_str}_{test_json}"
@@ -139,8 +168,17 @@ class command_handler:
 
     def pop_cmd(self):
         cmd = self.macro.pop(0)
-        func_to_call = globals()[scpi_set[cmd.pop(0)]]
-        func_to_call(cmd)
+        obj_name = cmd.pop(0)
+        try:
+            atr_name = cmd.pop(0)
+            obj_to_call = globals()[scpi_set[obj_name]]
+            obj = obj_to_call(cmd)
+            atr_to_call = getattr(obj,scpi_set[atr_name])
+            atr_to_call()
+        except:
+            fun_to_call = globals()[scpi_set[obj_name]]
+            fun_to_call()
+
 
     def conf_inst(self,inst):
         self.inst = inst
@@ -191,7 +229,8 @@ class command_handler:
 
     def show_macro(self):
         #print(f"{self.hexcmd:b}")
-        print(hex(self.hexcmd))
+        #print(hex(self.hexcmd))
+        print(self.inst)
 
 def cmd_2_bin(RW,MODE,CUR,VOL,POW,RESV):
     RW   <<= 31 #[31]    Read/Write
@@ -225,16 +264,24 @@ while macro_len > 0:
     macro.pop_cmd()
     macro_len -= 1
 
-#macro_c = macro.get_macro()
+
+class HOLA:
+    def __init__(self):
+        self.message = "hola"
+
+    def show_msg(self):
+        print(self.message)
+
+#other_class = HOLA()
+#other_function = "show_msg"
+#func_to_run2 = getattr(other_class,other_function)
+#func_to_run2()
 
 
-
-#macro.split_macro()
 sleep(1)
 # Kill SPI clock
 spi.kill_spi()
 # ------------------------------------------------------
-
 #to_test = cmd_2_bin(1,7,0xF,0xFF,0xFF,0xFF)
 
 #try:
@@ -250,9 +297,3 @@ spi.kill_spi()
 #Different module
 #func_to_run = getattr(other_module,function)
 #func_to_run()
-
-#print (command.get_macro())
-#str_test = command.get_macro()
-#str_test['c'] = 'hola'
-#print (str_test)
-

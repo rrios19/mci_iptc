@@ -1,6 +1,10 @@
 {
   "*IDN?": "get_idn",
   "INST:CAT?": "inst_handler",
+  "INST": "INST",
+  "CAT?": "CAT",
+  "SEL": "SEL",
+  "NSEL": "NSEL",
   "INST:SEL": "select_device",
   "INST:NSEL": "select_device",
   "CONF:MODE": "conf_mode"
