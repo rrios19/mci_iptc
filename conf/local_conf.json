@@ -20,6 +20,8 @@
     "verbose": "DEBUG",
     "CAT": {"BTM":8,"VELM":7,"SAM":6},
     "ack": "0x70f0f0f0",
+    "RESET": {"MODE": "0x8fffffff","CURR": "0xf0ffffff","VOLT": "0xff00ffff","POW": "0xffff00ff"},
+    "SHIFT": {"MODE": 28,"CURR": 24,"VOLT": 16,"POW": 8},
     "manufacturer": "Laboratorio Delta",
     "model": "IPTC",
     "serial": "000",

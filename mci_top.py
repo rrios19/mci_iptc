@@ -53,73 +53,6 @@ def get_scpi():
     #logging.info(f"Macro fetched: {self.macro}")
     return scpi_set
 
-# Common commands ----------------------------------------------
-def get_idn():
-    manufacturer = conf["manufacturer"]
-    model = conf["model"]
-    serial = conf["serial"]
-    version = conf["version"]
-    print(f"{manufacturer}, {model}, {serial}, {version}.")
-# --------------------------------------------------------------
-class INST:
-    def __init__(self,cmd):
-        self.parameters = cmd
-        self.mcps = {}
-
-    def CAT(self):
-        self.mcps = conf["CAT"]
-        self.check_inst()
-
-    def SEL(self):
-        device = conf["CAT"][self.parameters.pop(0).upper()]
-        macro.conf_inst(device)
-        macro.show_macro()
-
-    def NSEL(self):
-        device = int(self.parameters.pop(0))
-        macro.conf_inst(device)
-        macro.show_macro()
-
-    def check_inst(self):
-       available = []
-       ack = int(conf["ack"],16)
-       for mode in self.mcps:
-           spi.change_device(self.mcps[mode])
-           spi.send_data(ack)
-           sleep(0.2) # Esto debe cambiar
-           if (spi.get_data() == ack):
-               available.append(mode)
-       print(available)
-
-def select_device(inst):
-    try:
-        inst = int(inst[0])
-    except:
-        inst = conf["INST"][inst[0].upper()]
-    macro.conf_inst(inst)
-    #macro.show_macro() # Delete this
-
-def conf_mode(cmd):
-    macro.conf_mode(cmd[0])
-    macro.show_macro()
-
-def inst_handler(cmd):
-    mcps = {}
-    if bool(cmd):
-        for mode in cmd:
-            mcps[mode] = conf["INST"][mode]
-    else:
-        mcps = conf["INST"]
-    available = []
-    ack = int(conf["ack"],16)
-    for mode in mcps:
-        spi.change_device(mcps[mode])
-        spi.send_data(ack)
-        sleep(0.2)
-        if (spi.get_data() == ack):
-            available.append(mode)
-    print(available)
-
 def format_testfile():
     macro = []
     time_now = time.localtime()
@@ -137,21 +70,84 @@ def format_testfile():
     filehandle.close()
     return test_json
 
+# Common commands ----------------------------------------------
+def get_idn():
+    manufacturer = conf["manufacturer"]
+    model = conf["model"]
+    serial = conf["serial"]
+    version = conf["version"]
+    print(f"{manufacturer}, {model}, {serial}, {version}.")
+
+# INSTrument commands ------------------------------------------
+class INST:
+    def __init__(self,cmd):
+        self.parameters = cmd
+        self.mcps = {}
+
+    def CAT(self):
+        self.mcps = conf["CAT"]
+        self.check_inst()
+
+    def SEL(self):
+        device = conf["CAT"][self.parameters.pop(0).upper()]
+        macro.conf_inst(device)
+
+    def NSEL(self):
+        device = int(self.parameters.pop(0))
+        macro.conf_inst(device)
+
+    def check_inst(self):
+       available = []
+       ack = int(conf["ack"],16)
+       for mode in self.mcps:
+           spi.change_device(self.mcps[mode])
+           spi.send_data(ack)
+           sleep(0.2) # Esto debe cambiar
+           if (spi.get_data() == ack):
+               available.append(mode)
+       print(available)
+
+# CONFigure commands -------------------------------------------
+class CONF:
+    def __init__(self,cmd):
+        self.parameters = cmd
+
+    def MODE(self):
+        reset = conf["RESET"]["MODE"]
+        shift = conf["SHIFT"]["MODE"]
+        macro.conf_value(self.parameters.pop(0),reset,shift)
+
+    def CURR(self):
+        reset = conf["RESET"]["CURR"]
+        shift = conf["SHIFT"]["CURR"]
+        macro.conf_value(self.parameters.pop(0),reset,shift)
+
+    def VOLT(self):
+        reset = conf["RESET"]["VOLT"]
+        shift = conf["SHIFT"]["VOLT"]
+        macro.conf_value(self.parameters.pop(0),reset,shift)
+
+    def POW(self):
+        reset = conf["RESET"]["POW"]
+        shift = conf["SHIFT"]["POW"]
+        macro.conf_value(self.parameters.pop(0),reset,shift)
+
+# --------------------------------------------------------------
+
 class command_handler:
     # Create a new macro object for the current test
     def __init__(self,testfile):
         self.testfile = testfile
         self.macro = []
         self.inst = 0
-        self.hexcmd = 0x88000000
-        self.cmd = {}
+        self.cmd = 0x0
+        self.seq = {}
         self.rw   = 0
-        self.mode = 0x0
-        self.curr = 0
-        self.volt = 0
-        self.pow = 0
-        self.res = 0
-        self.seq   = []
+        #self.mode = 0x0
+        #self.curr = 0
+        #self.volt = 0
+        #self.pow = 0
+        #self.res = 0
         logging.debug(f"New macro object created")
 
     # Get the macro, open and read
@@ -163,8 +159,8 @@ class command_handler:
             logging.info(f"Macro fetched: {self.macro}")
             return len(self.macro)
         except:
-            print("No file test")
-            sys.exit()
+            print("No file test") # Revisar esto
+            sys.exit() # Revisar esto
 
     def pop_cmd(self):
         cmd = self.macro.pop(0)
@@ -176,30 +172,19 @@ class command_handler:
             atr_to_call = getattr(obj,scpi_set[atr_name])
             atr_to_call()
         except:
-            fun_to_call = globals()[scpi_set[obj_name]]
-            fun_to_call()
-
+            obj_to_call = globals()[scpi_set[obj_name]]
+            obj_to_call()
 
     def conf_inst(self,inst):
         self.inst = inst
 
-    def conf_mode(self,mode):
-        reset_cmd = 0x8fffffff # LOW [30-28]
+    def conf_value(self,value,reset,shift):
         try:
-            self.mode = int(mode) << 28
+            value = int(value) << int(shift)
         except:
-            pass
-        self.hexcmd &= reset_cmd 
-        self.hexcmd |= self.mode
-
-    def cmd_2_hex(self):
-        self.rw   <<= 31
-        self.mode <<= 28
-        self.curr <<= 24
-        self.volt <<= 16
-        self.pow  <<= 8
-
-
+            pass # Revisar esto
+        self.cmd &= int(reset,16) 
+        self.cmd |= value
 
     def split_macro(self):
         #patron = re.compile("(^\S+)\s(\S+$)")
@@ -217,7 +202,6 @@ class command_handler:
         #FH.close
         print('Enviar macro')
 
-
     def join_macro(self):
         return f"Hello {self.macro}"
 
@@ -230,7 +214,7 @@ class command_handler:
     def show_macro(self):
         #print(f"{self.hexcmd:b}")
         #print(hex(self.hexcmd))
-        print(self.inst)
+        print(f"INST: {self.inst}, CMD: {hex(self.cmd)}")
 
 def cmd_2_bin(RW,MODE,CUR,VOL,POW,RESV):
     RW   <<= 31 #[31]    Read/Write
@@ -263,20 +247,8 @@ macro_len = macro.get_macro()
 while macro_len > 0:
     macro.pop_cmd()
     macro_len -= 1
-
-
-class HOLA:
-    def __init__(self):
-        self.message = "hola"
-
-    def show_msg(self):
-        print(self.message)
-
-#other_class = HOLA()
-#other_function = "show_msg"
-#func_to_run2 = getattr(other_class,other_function)
-#func_to_run2()
-
+    macro.show_macro()
+    print("-----------------------------------------------------------------")
 
 sleep(1)
 # Kill SPI clock
