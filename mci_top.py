@@ -139,15 +139,10 @@ class command_handler:
     def __init__(self,testfile):
         self.testfile = testfile
         self.macro = []
-        self.inst = 0
+        self.inst = 8
         self.cmd = 0x0
-        self.seq = {}
+        self.seq = []
         self.rw   = 0
-        #self.mode = 0x0
-        #self.curr = 0
-        #self.volt = 0
-        #self.pow = 0
-        #self.res = 0
         logging.debug(f"New macro object created")
 
     # Get the macro, open and read
@@ -176,6 +171,9 @@ class command_handler:
             obj_to_call()
 
     def conf_inst(self,inst):
+        if (self.cmd != 0x0):
+            self.sequence_cmd()
+        self.cmd = 0x0
         self.inst = inst
 
     def conf_value(self,value,reset,shift):
@@ -185,6 +183,13 @@ class command_handler:
             pass # Revisar esto
         self.cmd &= int(reset,16) 
         self.cmd |= value
+
+    def sequence_cmd(self):
+        aux_dic = {}
+        aux_dic[self.inst] = hex(self.cmd)
+        self.seq.append(aux_dic)
+        print(self.seq)
+
 
     def split_macro(self):
         #patron = re.compile("(^\S+)\s(\S+$)")
@@ -204,12 +209,6 @@ class command_handler:
 
     def join_macro(self):
         return f"Hello {self.macro}"
-
-    def sequence_cmd(self):
-        header = hex(conf['header'])
-        footer = hex(conf['footer'])
-        chain = hex((header<<16) | footer)
-        print(f"{chain}")
 
     def show_macro(self):
         #print(f"{self.hexcmd:b}")
@@ -248,24 +247,22 @@ while macro_len > 0:
     macro.pop_cmd()
     macro_len -= 1
     macro.show_macro()
-    print("-----------------------------------------------------------------")
-
+    print("------------------------")
+macro.sequence_cmd()
 sleep(1)
 # Kill SPI clock
 spi.kill_spi()
 # ------------------------------------------------------
 #to_test = cmd_2_bin(1,7,0xF,0xFF,0xFF,0xFF)
 
-#try:
-#    cmd_prompt = sys.argv
-#    func_to_run = globals()[scpi_set[cmd_prompt[1]]]
-#    func_to_run()
-#except:
-#    pass
-
-#Local module
-#func_to_run = globals()[dic["*IDN?"]]
-#func_to_run()
-#Different module
-#func_to_run = getattr(other_module,function)
-#func_to_run()
+# Pruebas ----------------------------------------------
+#class prueba:
+#    def __init__(self):
+#        self.word = "hola"
+#
+#    def greetings(self,name):
+#        print(f"{self.word} {name}")
+#        #print(f"{self.word}")
+#obj = prueba()
+#func_2_run = getattr(obj,'greetings')
+#func_2_run('ronald')
