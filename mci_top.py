@@ -58,9 +58,9 @@ def format_testfile():
     time_now = time.localtime()
     time_str = time.strftime("%d-%m-%Y_%H-%M-%S",time_now)
     filehandle = open(conf['testfile'])
-    for line in filehandle.readlines():
+    lines = re.sub(';','\n',filehandle.read().strip()).split('\n')
+    for line in lines:
         macro.append(re.sub('\s+',':',line.strip()).split(':'))
-        #macro.append(re.sub('\s+',' ',line.strip()).split(' '))
     filehandle.close()
     test_json = re.sub('(\.\w+)?$','.json',conf['testfile'],count=1)
     test_json = f"{time_str}_{test_json}"
@@ -69,16 +69,6 @@ def format_testfile():
     filehandle.write(str_json)
     filehandle.close()
     return test_json
-
-class TIME:
-    def __init__(self):
-        self.test_time = 0
-
-    def conf_time(self,time):
-        self.test_time = time
-
-    def time_clk(self,time):
-
 
 # Common commands ----------------------------------------------
 def get_idn():
@@ -94,6 +84,7 @@ class INST:
         self.parameters = cmd
         self.mcps = {}
 
+    # CATalog, funciona con o sin parametro
     def CAT(self):
         try:
             mcp = self.parameters.pop(0)
@@ -101,9 +92,6 @@ class INST:
         except:
             self.mcps = conf["ALL"]
         print(self.check_inst())
-
-    def RES(self):
-        
 
     def SEL(self):
         device = conf["ALL"][self.parameters.pop(0).upper()]
@@ -114,9 +102,9 @@ class INST:
         macro.conf_inst(device)
 
     def INIT(self):
-        print(self.parameters)
-        macro.save_seq() # Guarda la configuracion en la secuencia
-        macro.pop_seq()  # Envia la secuencia
+        DEV[conf["BTM"]].start_test()
+        DEV[conf["VELM"]].start_test()
+        DEV[conf["SAM"]].start_test()
 
     def check_inst(self):
        available = []
@@ -135,76 +123,112 @@ class CONF:
         self.parameters = cmd
 
     def TIME(self):
-        macro.conf_time(self.parameters.pop(0))
+        DEV[macro.get_inst()].conf_time(self.parameters.pop(0))
+
+    def TINT(self):
+        cmd = self.parameters.pop(0)
+        try:
+            DEV[macro.get_inst()].append_hold(int(cmd))
+        except:
+            if (cmd.upper() == "STOP"):
+                DEV[macro.get_inst()].append_cmd(macro.get_cmd())
 
     def MODE(self):
         reset = conf["RESET"]["MODE"]
         shift = conf["SHIFT"]["MODE"]
-        macro.conf_value(self.parameters.pop(0),reset,shift)
+        macro.set_value(self.parameters.pop(0),reset,shift)
 
     def CURR(self):
         reset = conf["RESET"]["CURR"]
         shift = conf["SHIFT"]["CURR"]
-        macro.conf_value(self.parameters.pop(0),reset,shift)
+        macro.set_value(self.parameters.pop(0),reset,shift)
 
     def VOLT(self):
         reset = conf["RESET"]["VOLT"]
         shift = conf["SHIFT"]["VOLT"]
-        #macro.conf_value(self.parameters.pop(0),reset,shift)
+        macro.set_value(self.parameters.pop(0),reset,shift)
 
     def POW(self):
         reset = conf["RESET"]["POW"]
         shift = conf["SHIFT"]["POW"]
-        macro.conf_value(self.parameters.pop(0),reset,shift)
+        macro.set_value(self.parameters.pop(0),reset,shift)
 
+    def FREQ(self):
+        cmd = self.parameters.pop(0)
+        if (cmd.upper() == "OUTP"):
+            macro.set_freq(self.parameters.pop(0))
 # --------------------------------------------------------------
 class CMD:
     def __init__(self,inst):
-        self.inst = inst
-        self.hold = []
-        self.test_time = 10
-        self.cmd = []
-        self.clk = None
+        self.inst = inst    # Instrument identifier
+        self.test_time = 0  # Test time 
+        self.hold_time = [] # Hold time list
+        self.cmd = []       # Command list
+        self.hclk = None
+        self.out = []
 
+    # Configure test time
     def conf_time(self,time):
-        self.test_time = time
+        self.test_time = int(time)
+        print(self.test_time)
+
+    # Append a hold time/time interval
+    def append_hold(self,hold):
+        self.hold_time.append(hold)
+        print(self.hold_time)
+
+    # Append a command
+    def append_cmd(self,cmd):
+        self.cmd.append(cmd)
+        print(self.cmd)
 
     def get_inst(self):
         return self.inst
 
-    def append_cmd(self,cmd,hold):
-        self.cmd.append(cmd)
-        self.hold.append(hold)
-
-    def pop_cmd(self):
-        self.cmd.pop(0)
-
-    def say_hola(self):
-        print("hola")
-
     def hold_clk(self):
-        clk = threading.Timer(self.hold_time,self.say_hola)
-        clk.start()
+        try:
+            aux_dict = dict()
+            time = self.hold_time.pop(0)
+            cmd = self.cmd.pop(0)
+            aux_dict[self.inst] = cmd
+            self.out.append(aux_dict)
+        except:
+            time = 0
+        self.hclk = threading.Timer(time,self.hold_clk)
+        self.hclk.start()
 
     def test_clk(self):
-        self.clk = threading.Timer(self.test_time,self.say_hola)
-        self.clk.start()
+        clk = threading.Timer(self.test_time,self.kill_hold)
+        clk.start()
+
+    def start_test(self):
+        self.hold_clk()
+        self.test_clk()
+
+    def kill_hold(self):
+        self.hclk.cancel()
+        print(f"KILL {self.inst}")
+
+    def pop_out(self):
+        try:
+            return self.out.pop(0)
+        except:
+            return None
 # --------------------------------------------------------------
 
-class command_handler:
+class macro_handler:
     # Create a new macro object for the current test
     def __init__(self,testfile):
         self.testfile = testfile
+        self.freq = 2
         self.macro = []
-        self.inst = 8
+        self.inst = 0
         self.cmd = 0x0
-        self.seq = []
-        self.rw   = 0
-        self.time = 0
+        self.rw   = 0 # Aun no se que hacer con esto
         logging.debug(f"New macro object created")
 
-    # Get the macro, open and read
-    def get_macro(self):
+    # Fetch the macro, open and read
+    def fetch_macro(self):
         try:
             filehandle = open(self.testfile)
             self.macro = json.load(filehandle)
@@ -215,10 +239,29 @@ class command_handler:
             print("No file test") # Revisar esto
             sys.exit() # Revisar esto
 
-    def save_seq(self):
-        if (self.cmd != 0x0):
-            self.sequence_cmd()
+    # Return the cmd to the current instrument
+    def get_cmd(self):
+        cmd = self.cmd
         self.cmd = 0x0
+        return cmd
+    
+    def conf_inst(self,inst):
+        self.inst = inst
+
+    def get_inst(self):
+        return self.inst
+    
+    # Set the data in the command
+    def set_value(self,value,reset,shift):
+        try:
+            value = int(value) << int(shift)
+        except:
+            pass # Revisar esto
+        self.cmd &= int(reset,16) 
+        self.cmd |= value
+
+    def set_freq(self,freq):
+        self,freq = freq
 
     def pop_seq(self):
         for cmd in self.seq:
@@ -242,29 +285,10 @@ class command_handler:
             obj_to_call = globals()[scpi_set[obj_name]]
             obj_to_call()
 
-    def conf_inst(self,inst):
-        self.save_seq()
-        self.inst = inst
+    def show_cmd(self):
+        print(f"CMD: {hex(self.cmd)}")
 
-    def conf_time(self,time):
-        self.time = time
-
-    def conf_value(self,value,reset,shift):
-        try:
-            value = int(value) << int(shift)
-        except:
-            pass # Revisar esto
-        self.cmd &= int(reset,16) 
-        self.cmd |= value
-
-    def sequence_cmd(self):
-        aux_dic = {}
-        aux_dic[self.inst] = hex(self.cmd)
-        self.seq.append(aux_dic)
-
-    def show_macro(self):
-        print(f"INST: {self.inst}, CMD: {hex(self.cmd)}, TIME: {self.time}")
-
+    
 
 # Main
 # ------------------------------------------------------
@@ -281,27 +305,30 @@ spi.start_clk()
 # Format the test file into a json file
 #testjson = format_testfile()
 test_name = format_testfile()
+# INST threads
+DEV = dict()
+DEV[conf["BTM"]]  = CMD(conf["BTM"])
+DEV[conf["VELM"]] = CMD(conf["VELM"])
+DEV[conf["SAM"]]  = CMD(conf["SAM"])
 # New macro handler
-BTM  = CMD(8)
-
-
-
-
-
-macro = command_handler(test_name)
-macro_len = macro.get_macro()
+macro = macro_handler(test_name)
+macro_len = macro.fetch_macro()
 while macro_len > 0:
     macro.pop_cmd()
     macro_len -= 1
-    macro.show_macro()
+    macro.show_cmd()
     print("------------------------")
-sleep(1)
+
+while True:
+    aux_cm = DEV[conf["BTM"]].pop_out()
+    if (aux_cm != None):
+        print(aux_cm)
+
+print("FINISH")
+
+
+
 # Kill SPI clock
 spi.kill_spi()
 # ------------------------------------------------------
 #to_test = cmd_2_bin(1,7,0xF,0xFF,0xFF,0xFF)
-
-# Pruebas ----------------------------------------------
-pru = CMD(8)
-pru.test_clk()
-pru.hold_clk()

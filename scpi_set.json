@@ -11,5 +11,7 @@
   "VOLT": "VOLT",
   "POW": "POW",
   "INIT": "INIT",
-  "TIME": "TIME"
+  "TIME": "TIME",
+  "TINT": "TINT",
+  "FREQ": "TINT"
 }
