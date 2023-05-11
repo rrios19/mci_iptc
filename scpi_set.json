@@ -9,5 +9,7 @@
   "MODE": "MODE",
   "CURR": "CURR",
   "VOLT": "VOLT",
-  "POW": "POW"
+  "POW": "POW",
+  "INIT": "INIT",
+  "TIME": "TIME"
 }

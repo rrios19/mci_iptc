@@ -70,6 +70,16 @@ def format_testfile():
     filehandle.close()
     return test_json
 
+class TIME:
+    def __init__(self):
+        self.test_time = 0
+
+    def conf_time(self,time):
+        self.test_time = time
+
+    def time_clk(self,time):
+
+
 # Common commands ----------------------------------------------
 def get_idn():
     manufacturer = conf["manufacturer"]
@@ -85,16 +95,28 @@ class INST:
         self.mcps = {}
 
     def CAT(self):
-        self.mcps = conf["CAT"]
-        self.check_inst()
+        try:
+            mcp = self.parameters.pop(0)
+            self.mcps[mcp] = conf["ALL"][mcp]
+        except:
+            self.mcps = conf["ALL"]
+        print(self.check_inst())
+
+    def RES(self):
+        
 
     def SEL(self):
-        device = conf["CAT"][self.parameters.pop(0).upper()]
+        device = conf["ALL"][self.parameters.pop(0).upper()]
         macro.conf_inst(device)
 
     def NSEL(self):
         device = int(self.parameters.pop(0))
         macro.conf_inst(device)
+
+    def INIT(self):
+        print(self.parameters)
+        macro.save_seq() # Guarda la configuracion en la secuencia
+        macro.pop_seq()  # Envia la secuencia
 
     def check_inst(self):
        available = []
@@ -105,12 +127,15 @@ class INST:
            sleep(0.2) # Esto debe cambiar
            if (spi.get_data() == ack):
                available.append(mode)
-       print(available)
+       return available
 
 # CONFigure commands -------------------------------------------
 class CONF:
     def __init__(self,cmd):
         self.parameters = cmd
+
+    def TIME(self):
+        macro.conf_time(self.parameters.pop(0))
 
     def MODE(self):
         reset = conf["RESET"]["MODE"]
@@ -125,13 +150,45 @@ class CONF:
     def VOLT(self):
         reset = conf["RESET"]["VOLT"]
         shift = conf["SHIFT"]["VOLT"]
-        macro.conf_value(self.parameters.pop(0),reset,shift)
+        #macro.conf_value(self.parameters.pop(0),reset,shift)
 
     def POW(self):
         reset = conf["RESET"]["POW"]
         shift = conf["SHIFT"]["POW"]
         macro.conf_value(self.parameters.pop(0),reset,shift)
 
+# --------------------------------------------------------------
+class CMD:
+    def __init__(self,inst):
+        self.inst = inst
+        self.hold = []
+        self.test_time = 10
+        self.cmd = []
+        self.clk = None
+
+    def conf_time(self,time):
+        self.test_time = time
+
+    def get_inst(self):
+        return self.inst
+
+    def append_cmd(self,cmd,hold):
+        self.cmd.append(cmd)
+        self.hold.append(hold)
+
+    def pop_cmd(self):
+        self.cmd.pop(0)
+
+    def say_hola(self):
+        print("hola")
+
+    def hold_clk(self):
+        clk = threading.Timer(self.hold_time,self.say_hola)
+        clk.start()
+
+    def test_clk(self):
+        self.clk = threading.Timer(self.test_time,self.say_hola)
+        self.clk.start()
 # --------------------------------------------------------------
 
 class command_handler:
@@ -143,6 +200,7 @@ class command_handler:
         self.cmd = 0x0
         self.seq = []
         self.rw   = 0
+        self.time = 0
         logging.debug(f"New macro object created")
 
     # Get the macro, open and read
@@ -156,6 +214,20 @@ class command_handler:
         except:
             print("No file test") # Revisar esto
             sys.exit() # Revisar esto
+
+    def save_seq(self):
+        if (self.cmd != 0x0):
+            self.sequence_cmd()
+        self.cmd = 0x0
+
+    def pop_seq(self):
+        for cmd in self.seq:
+            print(self.seq)
+            device = list(cmd.keys())[0]
+            data = int(cmd[device],16)
+            spi.change_device(device)
+            spi.send_data(data)
+            sleep(0.2) # Esto debe cambiar
 
     def pop_cmd(self):
         cmd = self.macro.pop(0)
@@ -171,10 +243,11 @@ class command_handler:
             obj_to_call()
 
     def conf_inst(self,inst):
-        if (self.cmd != 0x0):
-            self.sequence_cmd()
-        self.cmd = 0x0
+        self.save_seq()
         self.inst = inst
+
+    def conf_time(self,time):
+        self.time = time
 
     def conf_value(self,value,reset,shift):
         try:
@@ -188,42 +261,10 @@ class command_handler:
         aux_dic = {}
         aux_dic[self.inst] = hex(self.cmd)
         self.seq.append(aux_dic)
-        print(self.seq)
-
-
-    def split_macro(self):
-        #patron = re.compile("(^\S+)\s(\S+$)")
-        #for command in self.macro:
-        #    if patron.match(command):
-        #        print(command)
-        #self.cmd = list(self.macro.keys())
-        #self.params = list(self.macro[self.cmd].keys())
-        #self.values = list(self.macro[self.cmd].values())
-        print("HOLA")
-       
-    def send_macro(self): # Enviar macros al GUI
-        #FH = open('output.json','w')
-        #FH.write(str_json)
-        #FH.close
-        print('Enviar macro')
-
-    def join_macro(self):
-        return f"Hello {self.macro}"
 
     def show_macro(self):
-        #print(f"{self.hexcmd:b}")
-        #print(hex(self.hexcmd))
-        print(f"INST: {self.inst}, CMD: {hex(self.cmd)}")
+        print(f"INST: {self.inst}, CMD: {hex(self.cmd)}, TIME: {self.time}")
 
-def cmd_2_bin(RW,MODE,CUR,VOL,POW,RESV):
-    RW   <<= 31 #[31]    Read/Write
-    MODE <<= 28 #[30-28] Mode
-    CUR  <<= 24 #[27-24] Current
-    VOL  <<= 16 #[23-16] Voltage
-    POW  <<= 8  #[15-08] Power
-    #RESV<<= 0  #[07-00] Reserve
-    bin_cmd = RW|MODE|CUR|VOL|POW|RESV
-    return bin_cmd
 
 # Main
 # ------------------------------------------------------
@@ -241,6 +282,12 @@ spi.start_clk()
 #testjson = format_testfile()
 test_name = format_testfile()
 # New macro handler
+BTM  = CMD(8)
+
+
+
+
+
 macro = command_handler(test_name)
 macro_len = macro.get_macro()
 while macro_len > 0:
@@ -248,7 +295,6 @@ while macro_len > 0:
     macro_len -= 1
     macro.show_macro()
     print("------------------------")
-macro.sequence_cmd()
 sleep(1)
 # Kill SPI clock
 spi.kill_spi()
@@ -256,13 +302,6 @@ spi.kill_spi()
 #to_test = cmd_2_bin(1,7,0xF,0xFF,0xFF,0xFF)
 
 # Pruebas ----------------------------------------------
-#class prueba:
-#    def __init__(self):
-#        self.word = "hola"
-#
-#    def greetings(self,name):
-#        print(f"{self.word} {name}")
-#        #print(f"{self.word}")
-#obj = prueba()
-#func_2_run = getattr(obj,'greetings')
-#func_2_run('ronald')
+pru = CMD(8)
+pru.test_clk()
+pru.hold_clk()
