@@ -157,64 +157,70 @@ class CONF:
         cmd = self.parameters.pop(0)
         if (cmd.upper() == "OUTP"):
             macro.set_freq(self.parameters.pop(0))
-# --------------------------------------------------------------
-class CMD:
-    def __init__(self,inst):
-        self.inst = inst    # Instrument identifier
-        self.test_time = 0  # Test time 
-        self.hold_time = [] # Hold time list
-        self.cmd = []       # Command list
-        self.hclk = None
-        self.out = []
 
-    # Configure test time
+# --------------------------------------------------------------------------------
+# INSTrument handler thread ------------------------------------------------------
+class INST_thread:
+    def __init__(self,inst):
+        self.inst = inst    # Instrument identifier/ It can't be changed
+        self.test_time = 0  # Default 0, means start and stop immediately
+        self.hold_time = [] # Hold time for each setting
+        self.ready_cmd = [] # Command list
+        self.hclk = None    # Hold clock
+        self.tclk = None    # Test clock
+
+    # Configure test time/ If the time isn't set, the test will stop immediately
     def conf_time(self,time):
         self.test_time = int(time)
-        print(self.test_time)
+        #print(self.test_time)
 
     # Append a hold time/time interval
     def append_hold(self,hold):
         self.hold_time.append(hold)
-        print(self.hold_time)
+        #print(self.hold_time)
 
     # Append a command
     def append_cmd(self,cmd):
-        self.cmd.append(cmd)
-        print(self.cmd)
+        self.ready_cmd.append(cmd)
+        #print(self.ready_cmd)
 
+    # Return the instrument pin/identifier
     def get_inst(self):
         return self.inst
 
+    # Waits for some time and then puts the command in a queue with its identifier
     def hold_clk(self):
         try:
             aux_dict = dict()
             time = self.hold_time.pop(0)
-            cmd = self.cmd.pop(0)
-            aux_dict[self.inst] = cmd
-            self.out.append(aux_dict)
+            cmmd = self.ready_cmd.pop(0)
+            aux_dict[self.inst] = cmmd
+            spi_list.append(aux_dict)
         except:
             time = 0
         self.hclk = threading.Timer(time,self.hold_clk)
         self.hclk.start()
 
+    # Waits fot the test to finish and then kills the thread
     def test_clk(self):
-        clk = threading.Timer(self.test_time,self.kill_hold)
-        clk.start()
+        self.tclk = threading.Timer(self.test_time,self.kill_hold)
+        self.tclk.start()
 
+    # Starts both threads
     def start_test(self):
         self.hold_clk()
         self.test_clk()
 
+    # Checks if the thread is alive
+    def check_th(self):
+        return self.tclk.is_alive()
+
+    # Stop the thread
     def kill_hold(self):
         self.hclk.cancel()
         print(f"KILL {self.inst}")
 
-    def pop_out(self):
-        try:
-            return self.out.pop(0)
-        except:
-            return None
-# --------------------------------------------------------------
+# --------------------------------------------------------------------------------
 
 class macro_handler:
     # Create a new macro object for the current test
@@ -307,9 +313,10 @@ spi.start_clk()
 test_name = format_testfile()
 # INST threads
 DEV = dict()
-DEV[conf["BTM"]]  = CMD(conf["BTM"])
-DEV[conf["VELM"]] = CMD(conf["VELM"])
-DEV[conf["SAM"]]  = CMD(conf["SAM"])
+DEV[8] = INST_thread(8)
+DEV[7] = INST_thread(7)
+DEV[6] = INST_thread(6)
+spi_list = []
 # New macro handler
 macro = macro_handler(test_name)
 macro_len = macro.fetch_macro()
@@ -319,10 +326,15 @@ while macro_len > 0:
     macro.show_cmd()
     print("------------------------")
 
-while True:
-    aux_cm = DEV[conf["BTM"]].pop_out()
-    if (aux_cm != None):
-        print(aux_cm)
+while (DEV[8].check_th()) or (DEV[7].check_th()) or (DEV[6].check_th()):
+    try:
+        to_send = spi_list.pop(0)
+        device = list(to_send.keys())[0]
+        spi.change_device(device)
+        spi.send_data(to_send[device])
+        sleep(0.2)
+    except:
+        pass
 
 print("FINISH")
 
