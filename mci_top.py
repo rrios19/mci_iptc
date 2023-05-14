@@ -15,6 +15,7 @@ import time
 import logging
 import datetime
 import subprocess
+from module_handler import *
 from interfaces.spi_master import *
 
 # Load local usr_if configuration. Default path : conf/local_conf.json
@@ -128,7 +129,7 @@ class CONF:
     def TINT(self):
         cmd = self.parameters.pop(0)
         try:
-            DEV[macro.get_inst()].append_hold(int(cmd))
+            DEV[macro.get_inst()].append_wait(cmd)
         except:
             if (cmd.upper() == "STOP"):
                 DEV[macro.get_inst()].append_cmd(macro.get_cmd())
@@ -157,68 +158,6 @@ class CONF:
         cmd = self.parameters.pop(0)
         if (cmd.upper() == "OUTP"):
             macro.set_freq(self.parameters.pop(0))
-
-# --------------------------------------------------------------------------------
-# INSTrument handler thread ------------------------------------------------------
-class MODULE:
-    def __init__(self,inst):
-        self.inst = inst    # Instrument identifier/ It can't be changed
-        self.test_time = 0  # Default 0, means start and stop immediately
-        self.cmd_time  = [] # Hold time for each setting
-        self.cmd_list  = [] # Command list
-        self.ready_cmd = []
-        self.hclk = None    # Hold clock
-        self.tclk = None    # Test clock
-
-    # Configure test time/ If the time isn't set, the test will stop immediately
-    def conf_time(self,time):
-        self.test_time = int(time)
-
-    # Append a hold time/time interval
-    def append_hold(self,hold):
-        self.cmd_time.append(hold)
-
-    # Append a command
-    def append_cmd(self,cmd):
-        self.cmd_list.append(cmd)
-
-    def pop_ready(self):
-        return self.ready_cmd.pop(0)
-
-    # Return the instrument pin/identifier
-    def get_inst(self):
-        return self.inst
-
-    # Waits for some time and then puts the command in a queue with its identifier
-    def hold_clk(self):
-        try:
-            time = self.cmd_time.pop(0)
-            cmmd = self.cmd_list.pop(0)
-            self.ready_cmd.append(cmmd)
-        except:
-            time = 0
-        self.hclk = threading.Timer(time,self.hold_clk)
-        self.hclk.start()
-
-    # Waits fot the test to finish and then kills the thread
-    def test_clk(self):
-        self.tclk = threading.Timer(self.test_time,self.kill_hold)
-        self.tclk.start()
-
-    # Starts both threads
-    def start_test(self):
-        self.hold_clk()
-        self.test_clk()
-
-    # Checks if the thread is alive
-    def check_th(self):
-        return self.tclk.is_alive()
-
-    # Stop the thread
-    def kill_hold(self):
-        self.hclk.cancel()
-        print(f"FINISH: {self.inst}")
-
 # --------------------------------------------------------------------------------
 
 class macro_handler:
@@ -321,9 +260,9 @@ spi.start_clk()
 test_name = format_testfile()
 # INST threads
 DEV = dict()
-DEV[8] = MODULE(8)
-DEV[7] = MODULE(7)
-DEV[6] = MODULE(6)
+DEV[8] = module_handler(8)
+DEV[7] = module_handler(7)
+DEV[6] = module_handler(6)
 # New macro handler
 macro = macro_handler(test_name)
 macro_len = macro.fetch_macro()
