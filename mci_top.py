@@ -112,7 +112,7 @@ class INST:
        for mode in self.mcps:
            spi.change_device(self.mcps[mode])
            spi.send_data(ack)
-           sleep(0.2) # Esto debe cambiar
+           sleep(0.20) # Esto debe cambiar
            if (spi.get_data() == ack):
                available.append(mode)
        return available
@@ -160,29 +160,30 @@ class CONF:
 
 # --------------------------------------------------------------------------------
 # INSTrument handler thread ------------------------------------------------------
-class INST_thread:
+class MODULE:
     def __init__(self,inst):
         self.inst = inst    # Instrument identifier/ It can't be changed
         self.test_time = 0  # Default 0, means start and stop immediately
-        self.hold_time = [] # Hold time for each setting
-        self.ready_cmd = [] # Command list
+        self.cmd_time  = [] # Hold time for each setting
+        self.cmd_list  = [] # Command list
+        self.ready_cmd = []
         self.hclk = None    # Hold clock
         self.tclk = None    # Test clock
 
     # Configure test time/ If the time isn't set, the test will stop immediately
     def conf_time(self,time):
         self.test_time = int(time)
-        #print(self.test_time)
 
     # Append a hold time/time interval
     def append_hold(self,hold):
-        self.hold_time.append(hold)
-        #print(self.hold_time)
+        self.cmd_time.append(hold)
 
     # Append a command
     def append_cmd(self,cmd):
-        self.ready_cmd.append(cmd)
-        #print(self.ready_cmd)
+        self.cmd_list.append(cmd)
+
+    def pop_ready(self):
+        return self.ready_cmd.pop(0)
 
     # Return the instrument pin/identifier
     def get_inst(self):
@@ -191,11 +192,9 @@ class INST_thread:
     # Waits for some time and then puts the command in a queue with its identifier
     def hold_clk(self):
         try:
-            aux_dict = dict()
-            time = self.hold_time.pop(0)
-            cmmd = self.ready_cmd.pop(0)
-            aux_dict[self.inst] = cmmd
-            spi_list.append(aux_dict)
+            time = self.cmd_time.pop(0)
+            cmmd = self.cmd_list.pop(0)
+            self.ready_cmd.append(cmmd)
         except:
             time = 0
         self.hclk = threading.Timer(time,self.hold_clk)
@@ -218,7 +217,7 @@ class INST_thread:
     # Stop the thread
     def kill_hold(self):
         self.hclk.cancel()
-        print(f"KILL {self.inst}")
+        print(f"FINISH: {self.inst}")
 
 # --------------------------------------------------------------------------------
 
@@ -294,7 +293,16 @@ class macro_handler:
     def show_cmd(self):
         print(f"CMD: {hex(self.cmd)}")
 
-    
+def transfer_spi(device):
+    try:
+        data = DEV[device].pop_ready()
+    except:
+        data = int(conf["ack"],16)
+    spi.change_device(device)
+    spi.send_data(data)
+    sleep(0.2) # MODIFICAR ESTO
+    response = spi.get_data()
+    print(f"{device} : {data} : {response}")
 
 # Main
 # ------------------------------------------------------
@@ -313,30 +321,23 @@ spi.start_clk()
 test_name = format_testfile()
 # INST threads
 DEV = dict()
-DEV[8] = INST_thread(8)
-DEV[7] = INST_thread(7)
-DEV[6] = INST_thread(6)
-spi_list = []
+DEV[8] = MODULE(8)
+DEV[7] = MODULE(7)
+DEV[6] = MODULE(6)
 # New macro handler
 macro = macro_handler(test_name)
 macro_len = macro.fetch_macro()
 while macro_len > 0:
     macro.pop_cmd()
     macro_len -= 1
-    macro.show_cmd()
-    print("------------------------")
+    #macro.show_cmd()
+    #print("------------------------")
 
 while (DEV[8].check_th()) or (DEV[7].check_th()) or (DEV[6].check_th()):
-    try:
-        to_send = spi_list.pop(0)
-        device = list(to_send.keys())[0]
-        spi.change_device(device)
-        spi.send_data(to_send[device])
-        sleep(0.2)
-    except:
-        pass
-
-print("FINISH")
+    if (DEV[8].check_th()): transfer_spi(8)
+    if (DEV[7].check_th()): transfer_spi(7) 
+    if (DEV[6].check_th()): transfer_spi(6) 
+print("FINISH: ALL")
 
 
 

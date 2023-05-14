@@ -60,7 +60,7 @@ class iface_handler:
                 self.read_enable = False
                 self.fetch_data()
             sleep(self.ts)
-        gpio.cleanup()
+        #gpio.cleanup()
 
     # Read in Master In, Slave Out
     def master_in(self):
