@@ -31,7 +31,7 @@ class module_handler:
 
     # Pop the first ready command
     def pop_ready(self):
-        return self.ready_cmd.pop(0)
+        return self.ready_cmd.pop(0) if self.ready_cmd else False
 
     # Return the instrument pin/identifier
     def get_inst(self):
@@ -39,11 +39,11 @@ class module_handler:
 
     # Waits for some time and then puts the command in a queue with its identifier
     def wait_clk(self):
-        try:
+        if self.wait_time and self.cmmd_list:
             time = self.wait_time.pop(0)
             cmmd = self.cmmd_list.pop(0)
             self.ready_cmd.append(cmmd)
-        except:
+        else:
             time = 0
         self.WCLK = threading.Timer(time,self.wait_clk)
         self.WCLK.start()

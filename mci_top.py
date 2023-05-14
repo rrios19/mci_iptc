@@ -233,10 +233,8 @@ class macro_handler:
         print(f"CMD: {hex(self.cmd)}")
 
 def transfer_spi(device):
-    try:
-        data = DEV[device].pop_ready()
-    except:
-        data = int(conf["ack"],16)
+    condition = DEV[device].pop_ready()
+    data = condition if condition else int(conf["ack"],16) 
     spi.change_device(device)
     spi.send_data(data)
     sleep(0.2) # MODIFICAR ESTO
