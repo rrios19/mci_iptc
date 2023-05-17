@@ -10,6 +10,7 @@
 import os
 import re
 import sys
+import csv
 import json
 import time
 import logging
@@ -129,7 +130,7 @@ class CONF:
     def TINT(self):
         cmd = self.parameters.pop(0)
         try:
-            DEV[macro.get_inst()].append_wait(cmd)
+            DEV[macro.get_inst()].append_time(cmd)
         except:
             if (cmd.upper() == "STOP"):
                 DEV[macro.get_inst()].append_cmd(macro.get_cmd())
@@ -163,7 +164,7 @@ class CONF:
 class macro_handler:
     # Create a new macro object for the current test
     def __init__(self,testfile):
-        self.testfile = testfile
+        self.testfile = testfile 
         self.freq = 2
         self.macro = []
         self.inst = 0
@@ -205,16 +206,7 @@ class macro_handler:
         self.cmd |= value
 
     def set_freq(self,freq):
-        self,freq = freq
-
-    def pop_seq(self):
-        for cmd in self.seq:
-            print(self.seq)
-            device = list(cmd.keys())[0]
-            data = int(cmd[device],16)
-            spi.change_device(device)
-            spi.send_data(data)
-            sleep(0.2) # Esto debe cambiar
+        self.freq = freq
 
     def pop_cmd(self):
         cmd = self.macro.pop(0)
@@ -233,13 +225,19 @@ class macro_handler:
         print(f"CMD: {hex(self.cmd)}")
 
 def transfer_spi(device):
-    condition = DEV[device].pop_ready()
+    condition = DEV[conf[device]].pop_ready()
     data = condition if condition else int(conf["ack"],16) 
-    spi.change_device(device)
+    spi.change_device(conf[device])
     spi.send_data(data)
     sleep(0.2) # MODIFICAR ESTO
     response = spi.get_data()
-    print(f"{device} : {data} : {response}")
+    print(f"{conf[device]} : {data} : {response}")
+    write_csv(device,[conf[device],response])
+
+def write_csv(module,row):
+    with open(f"{module}.csv",'a') as filehandle:
+        writer = csv.writer(filehandle)
+        writer.writerow(row)
 
 # Main
 # ------------------------------------------------------
@@ -270,10 +268,10 @@ while macro_len > 0:
     #macro.show_cmd()
     #print("------------------------")
 
-while (DEV[8].check_th()) or (DEV[7].check_th()) or (DEV[6].check_th()):
-    if (DEV[8].check_th()): transfer_spi(8)
-    if (DEV[7].check_th()): transfer_spi(7) 
-    if (DEV[6].check_th()): transfer_spi(6) 
+while (DEV[8].check_thread()) or (DEV[7].check_thread()) or (DEV[6].check_thread()):
+    if (DEV[8].check_thread()): transfer_spi('BTM')
+    if (DEV[7].check_thread()): transfer_spi('VELM') 
+    if (DEV[6].check_thread()): transfer_spi('SAM') 
 print("FINISH: ALL")
 
 
