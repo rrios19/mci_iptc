@@ -16,7 +16,9 @@ import time
 import logging
 import datetime
 import subprocess
+from segment_macro import *
 from module_handler import *
+from macro_handler import *
 from interfaces.spi_master import *
 
 # Load local usr_if configuration. Default path : conf/local_conf.json
@@ -54,23 +56,6 @@ def get_scpi():
     filehandle.close()
     #logging.info(f"Macro fetched: {self.macro}")
     return scpi_set
-
-def format_testfile():
-    macro = []
-    time_now = time.localtime()
-    time_str = time.strftime("%d-%m-%Y_%H-%M-%S",time_now)
-    filehandle = open(conf['testfile'])
-    lines = re.sub(';','\n',filehandle.read().strip()).split('\n')
-    for line in lines:
-        macro.append(re.sub('\s+',':',line.strip()).split(':'))
-    filehandle.close()
-    test_json = re.sub('(\.\w+)?$','.json',conf['testfile'],count=1)
-    test_json = f"{time_str}_{test_json}"
-    str_json = json.dumps(macro,indent=2)
-    filehandle = open(test_json,'w')
-    filehandle.write(str_json)
-    filehandle.close()
-    return test_json
 
 # Common commands ----------------------------------------------
 def get_idn():
@@ -161,68 +146,18 @@ class CONF:
             macro.set_freq(self.parameters.pop(0))
 # --------------------------------------------------------------------------------
 
-class macro_handler:
-    # Create a new macro object for the current test
-    def __init__(self,testfile):
-        self.testfile = testfile 
-        self.freq = 2
-        self.macro = []
-        self.inst = 0
-        self.cmd = 0x0
-        self.rw   = 0 # Aun no se que hacer con esto
-        logging.debug(f"New macro object created")
+def run_cmd(cmd):
+    obj_name = cmd.pop(0)
+    try:
+        atr_name = cmd.pop(0)
+        obj_to_call = globals()[scpi_set[obj_name]]
+        obj = obj_to_call(cmd)
+        atr_to_call = getattr(obj,scpi_set[atr_name])
+        atr_to_call()
+    except:
+        obj_to_call = globals()[scpi_set[obj_name]]
+        obj_to_call()
 
-    # Fetch the macro, open and read
-    def fetch_macro(self):
-        try:
-            filehandle = open(self.testfile)
-            self.macro = json.load(filehandle)
-            filehandle.close()
-            logging.info(f"Macro fetched: {self.macro}")
-            return len(self.macro)
-        except:
-            print("No file test") # Revisar esto
-            sys.exit() # Revisar esto
-
-    # Return the cmd to the current instrument
-    def get_cmd(self):
-        cmd = self.cmd
-        self.cmd = 0x0
-        return cmd
-    
-    def conf_inst(self,inst):
-        self.inst = inst
-
-    def get_inst(self):
-        return self.inst
-    
-    # Set the data in the command
-    def set_value(self,value,reset,shift):
-        try:
-            value = int(value) << int(shift)
-        except:
-            pass # Revisar esto
-        self.cmd &= int(reset,16) 
-        self.cmd |= value
-
-    def set_freq(self,freq):
-        self.freq = freq
-
-    def pop_cmd(self):
-        cmd = self.macro.pop(0)
-        obj_name = cmd.pop(0)
-        try:
-            atr_name = cmd.pop(0)
-            obj_to_call = globals()[scpi_set[obj_name]]
-            obj = obj_to_call(cmd)
-            atr_to_call = getattr(obj,scpi_set[atr_name])
-            atr_to_call()
-        except:
-            obj_to_call = globals()[scpi_set[obj_name]]
-            obj_to_call()
-
-    def show_cmd(self):
-        print(f"CMD: {hex(self.cmd)}")
 
 def transfer_spi(device):
     condition = DEV[conf[device]].pop_ready()
@@ -236,6 +171,7 @@ def transfer_spi(device):
 
 def write_csv(module,row):
     with open(f"{module}.csv",'a') as filehandle:
+
         writer = csv.writer(filehandle)
         writer.writerow(row)
 
@@ -253,7 +189,7 @@ spi = iface_handler(400,11,8,7,6,10,9)
 spi.start_clk()
 # Format the test file into a json file
 #testjson = format_testfile()
-test_name = format_testfile()
+test_name = segment_macro(conf['testfile'])
 # INST threads
 DEV = dict()
 DEV[8] = module_handler(8)
@@ -263,7 +199,7 @@ DEV[6] = module_handler(6)
 macro = macro_handler(test_name)
 macro_len = macro.fetch_macro()
 while macro_len > 0:
-    macro.pop_cmd()
+    run_cmd(macro.pop_cmd())
     macro_len -= 1
     #macro.show_cmd()
     #print("------------------------")
