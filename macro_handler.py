@@ -8,8 +8,7 @@
 import json
 
 class macro_handler:
-    def __init__(self,testfile):
-        self.testfile = testfile # Current test
+    def __init__(self):
         self.freq = 2
         self.macro = [] # List of lists, each element is a command
         self.inst = 0   # Same as module identifier
@@ -17,10 +16,10 @@ class macro_handler:
         self.rw   = 0
         #logging.debug(f"New macro object created")
 
-    # Fetch the macro, open, and load
-    def fetch_macro(self):
+    # Open and load the macro
+    def load_macro(self,test_name):
         try:
-            filehandle = open(self.testfile)
+            filehandle = open(test_name)
             self.macro = json.load(filehandle)
             filehandle.close()
             #logging.info(f"Macro fetched: {self.macro}")
@@ -28,6 +27,9 @@ class macro_handler:
         except:
             print("No file test") # Revisar esto
             #sys.exit() # Revisar esto
+
+    def pop_cmd(self):
+        return self.macro.pop(0) if self.macro else False
 
     # Return the command to the current instrument
     def get_cmd(self):
@@ -50,8 +52,6 @@ class macro_handler:
     def set_freq(self,freq):
         self.freq = freq
 
-    def pop_cmd(self):
-        return self.macro.pop(0) if self.macro else False
 
     def show_cmd(self):
         print(f"CMD: {hex(self.cmd)}")

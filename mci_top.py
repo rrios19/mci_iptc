@@ -196,8 +196,8 @@ DEV[8] = module_handler(8)
 DEV[7] = module_handler(7)
 DEV[6] = module_handler(6)
 # New macro handler
-macro = macro_handler(test_name)
-macro_len = macro.fetch_macro()
+macro = macro_handler()
+macro_len = macro.load_macro(test_name)
 while macro_len > 0:
     run_cmd(macro.pop_cmd())
     macro_len -= 1
