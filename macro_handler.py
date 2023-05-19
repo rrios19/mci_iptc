@@ -32,39 +32,35 @@ class macro_handler:
     def pop_cmd(self):
         return self.macro.pop(0) if self.macro else False
 
-    # Select the current instrument/module
-    def select_inst(self,inst):
+    # Select the current instrument/module identifier
+    def set_inst(self,inst):
         self.inst = inst
 
-
-
-
-
-
-
-
-
-
-    # Return the command to the current instrument
-    def get_cmd(self):
-        cmd = self.cmd
-        self.cmd = 0x0
-        return cmd
-    
-
+    # Return the current instrument identifier
     def get_inst(self):
         return self.inst
-    
+
     # Set the data in the command
-    def set_value(self,value,reset,shift):
+    def set_param(self,value,reset,shift):
         value = int(value) << int(shift)
         self.cmd &= int(reset,16) 
         self.cmd |= value
 
-    def set_freq(self,freq):
-        self.freq = freq
+    # Return the command to the current instrument and reset the value
+    def get_cmd(self):
+        cmd = self.cmd
+        self.cmd = 0x0
+        return cmd
+
+    
 
 
-    def show_cmd(self):
-        print(f"CMD: {hex(self.cmd)}")
+
+
+#    def set_freq(self,freq):
+#        self.freq = freq
+
+
+#    def show_cmd(self):
+#        print(f"CMD: {hex(self.cmd)}")
 

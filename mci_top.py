@@ -82,11 +82,11 @@ class INST:
 
     def SEL(self):
         device = conf["ALL"][self.parameters.pop(0).upper()]
-        macro.select_inst(device)
+        macro.set_inst(device)
 
     def NSEL(self):
         device = int(self.parameters.pop(0))
-        macro.select_inst(device)
+        macro.set_inst(device)
 
     def INIT(self):
         DEV[conf["BTM"]].start_test()
@@ -123,22 +123,22 @@ class CONF:
     def MODE(self):
         reset = conf["RESET"]["MODE"]
         shift = conf["SHIFT"]["MODE"]
-        macro.set_value(self.parameters.pop(0),reset,shift)
+        macro.set_param(self.parameters.pop(0),reset,shift)
 
     def CURR(self):
         reset = conf["RESET"]["CURR"]
         shift = conf["SHIFT"]["CURR"]
-        macro.set_value(self.parameters.pop(0),reset,shift)
+        macro.set_param(self.parameters.pop(0),reset,shift)
 
     def VOLT(self):
         reset = conf["RESET"]["VOLT"]
         shift = conf["SHIFT"]["VOLT"]
-        macro.set_value(self.parameters.pop(0),reset,shift)
+        macro.set_param(self.parameters.pop(0),reset,shift)
 
     def POW(self):
         reset = conf["RESET"]["POW"]
         shift = conf["SHIFT"]["POW"]
-        macro.set_value(self.parameters.pop(0),reset,shift)
+        macro.set_param(self.parameters.pop(0),reset,shift)
 
     def FREQ(self):
         cmd = self.parameters.pop(0)
