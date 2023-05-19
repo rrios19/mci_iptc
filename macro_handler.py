@@ -28,8 +28,22 @@ class macro_handler:
             print("No file test") # Revisar esto
             #sys.exit() # Revisar esto
 
+    # Pull out a command from the macro list
     def pop_cmd(self):
         return self.macro.pop(0) if self.macro else False
+
+    # Select the current instrument/module
+    def select_inst(self,inst):
+        self.inst = inst
+
+
+
+
+
+
+
+
+
 
     # Return the command to the current instrument
     def get_cmd(self):
@@ -37,8 +51,6 @@ class macro_handler:
         self.cmd = 0x0
         return cmd
     
-    def conf_inst(self,inst):
-        self.inst = inst
 
     def get_inst(self):
         return self.inst

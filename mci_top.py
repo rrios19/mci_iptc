@@ -82,11 +82,11 @@ class INST:
 
     def SEL(self):
         device = conf["ALL"][self.parameters.pop(0).upper()]
-        macro.conf_inst(device)
+        macro.select_inst(device)
 
     def NSEL(self):
         device = int(self.parameters.pop(0))
-        macro.conf_inst(device)
+        macro.select_inst(device)
 
     def INIT(self):
         DEV[conf["BTM"]].start_test()
