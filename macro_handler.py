@@ -9,11 +9,11 @@ import json
 
 class macro_handler:
     def __init__(self):
-        self.freq = 2
         self.macro = [] # List of lists, each element is a command
         self.inst = 0   # Same as module identifier
         self.cmd = 0x0  # Current command
-        self.rw   = 0
+        #self.rw   = 0
+        #self.freq = 2
         #logging.debug(f"New macro object created")
 
     # Open and load the macro

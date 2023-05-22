@@ -58,21 +58,21 @@ def get_scpi():
     return scpi_set
 
 # Common commands ----------------------------------------------
-def get_idn(): # Device identifier
+def run_IDN(): # Device identifier
     manufacturer = conf["manufacturer"]
     model = conf["model"]
     serial = conf["serial"]
     version = conf["version"]
     print(f"{manufacturer}, {model}, {serial}, {version}.")
 
-def set_cls(): # Clear log
+def run_CLS(): # Clear log
     linux_cmd = ["find", "log/", "-name", "*.log", "-delete"]
     subprocess.run(linux_cmd)
 
-def set_rst(): # Restore default local_conf and clear log
+def run_RST(): # Restore default local_conf and clear log
     linux_cmd = ["cp", "conf/.local_conf.bak", "conf/local_conf.json"]
     subprocess.run(linux_cmd)
-    set_cls()
+    run_CLS()
 
 # INSTrument commands ------------------------------------------
 class INST:
@@ -81,7 +81,7 @@ class INST:
         self.mcps = {}
 
     # CATalog, funciona con o sin parametro
-    def CAT(self):
+    def CAT_cmd(self):
         try:
             mcp = self.parameters.pop(0)
             self.mcps[mcp] = conf["ALL"][mcp]
@@ -89,18 +89,20 @@ class INST:
             self.mcps = conf["ALL"]
         print(self.check_inst())
 
-    def SEL(self):
+    def SEL_cmd(self):
         device = conf["ALL"][self.parameters.pop(0).upper()]
         macro.set_inst(device)
 
-    def NSEL(self):
+    def NSEL_cmd(self):
         device = int(self.parameters.pop(0))
         macro.set_inst(device)
 
-    def INIT(self):
-        DEV[conf["BTM"]].start_test()
-        DEV[conf["VELM"]].start_test()
-        DEV[conf["SAM"]].start_test()
+    def INIT_cmd(self):
+        modules = self.parameters if self.parameters else conf["ALL"]
+        if "ALL" in modules:
+            modules = conf["ALL"]
+        for mod in modules:
+            DEV[conf[mod]].start_test()
 
     def check_inst(self):
        available = []
@@ -118,41 +120,58 @@ class CONF:
     def __init__(self,cmd):
         self.parameters = cmd
 
-    def TIME(self):
+    def TIME_cmd(self):
         DEV[macro.get_inst()].conf_time(self.parameters.pop(0))
 
-    def TINT(self):
+    def TINT_cmd(self):
         cmd = self.parameters.pop(0)
-        try:
+        if cmd.isdigit():
             DEV[macro.get_inst()].append_time(cmd)
-        except:
-            if (cmd.upper() == "STOP"):
-                DEV[macro.get_inst()].append_cmd(macro.get_cmd())
+        elif cmd.upper() == "STOP":
+            DEV[macro.get_inst()].append_cmd(macro.get_cmd())
 
-    def MODE(self):
+    def MODE_cmd(self):
         reset = conf["RESET"]["MODE"]
         shift = conf["SHIFT"]["MODE"]
         macro.set_param(self.parameters.pop(0),reset,shift)
 
-    def CURR(self):
+    def CURR_cmd(self):
         reset = conf["RESET"]["CURR"]
         shift = conf["SHIFT"]["CURR"]
         macro.set_param(self.parameters.pop(0),reset,shift)
 
-    def VOLT(self):
+    def VOLT_cmd(self):
         reset = conf["RESET"]["VOLT"]
         shift = conf["SHIFT"]["VOLT"]
         macro.set_param(self.parameters.pop(0),reset,shift)
 
-    def POW(self):
+    def POW_cmd(self):
         reset = conf["RESET"]["POW"]
         shift = conf["SHIFT"]["POW"]
+        macro.set_param(self.parameters.pop(0),reset,shift)
+
+    def ANGL_COUN_cmd(self):
+        reset = conf["RESET"]["DUAL"]
+        shift = 0
         macro.set_param(self.parameters.pop(0),reset,shift)
 
     def FREQ(self):
         cmd = self.parameters.pop(0)
         if (cmd.upper() == "OUTP"):
             macro.set_freq(self.parameters.pop(0))
+
+# --------------------------------------------------------------------------------
+# MEASure commands ---------------------------------------------------------------
+class MEAS:
+    def __init__(self):
+        self.curr = False
+        self.volt = False
+        self.pow  = False
+
+    def CURR_cmd(self):
+        print("Hola")
+
+
 # --------------------------------------------------------------------------------
 
 def run_cmd(cmd):
@@ -176,11 +195,11 @@ def transfer_spi(device):
     sleep(0.2) # MODIFICAR ESTO
     response = spi.get_data()
     print(f"{conf[device]} : {data} : {response}")
-    write_csv(device,[conf[device],response])
+    write_csv(test_time,device,[conf[device],response])
 
-def write_csv(module,row):
-    with open(f"{module}.csv",'a') as filehandle:
-
+def write_csv(test_time,module,row):
+    path = f"measurement/{test_time}_{module}.csv"
+    with open(path,'a') as filehandle:
         writer = csv.writer(filehandle)
         writer.writerow(row)
 
@@ -198,7 +217,7 @@ spi = iface_handler(400,11,8,7,6,10,9)
 spi.start_clk()
 # Format the test file into a json file
 #testjson = format_testfile()
-test_name = segment_macro(conf['testfile'])
+test_time,test_name = segment_macro(conf['testfile'])
 # INST threads
 DEV = dict()
 DEV[8] = module_handler()
