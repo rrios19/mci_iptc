@@ -14,7 +14,7 @@ def segment_macro(test_name):
     time_now = time.localtime()
     time_str = time.strftime("%d-%m-%Y_%H-%M-%S",time_now)
     filehandle = open(test_name)
-    lines = re.sub(';','\n',filehandle.read().strip()).split('\n')
+    lines = re.sub('\s*;\s*','\n',filehandle.read().strip()).split('\n')
     filehandle.close()
     for line in lines:
         macro.append(re.sub('[, ]+',':',line.strip()).split(':'))
@@ -24,5 +24,5 @@ def segment_macro(test_name):
     filehandle = open(test_json,'w')
     filehandle.write(str_json)
     filehandle.close()
-    return test_json
+    return time_str,test_json
 
