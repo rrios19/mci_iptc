@@ -3,19 +3,18 @@
 # Control and Interface Module
 # Author: Ronald Rios
 # Description: Module thread handler
-# Usage: >>> instance_name = module_handler(pin)
+# Usage: >>> instance_name = module_handler()
 
 import threading
 
 class module_handler:
-    def __init__(self,module):
-        self.module = module # Module identifier
+    def __init__(self):
         self.test_time = 0   # Default 0, means start and stop immediately
         self.interval_time = [] # Wait time for each command
         self.interval_cmd  = [] # Command list
         self.ready_cmd = [] # Command ready for send
-        self.ICLK = None    # Interval clock
-        self.TCLK = None    # Test clock
+        self.ICLK = threading.Timer(0,0) # Interval clock
+        self.TCLK = threading.Timer(0,0) # Test clock
 
     # Configure test time/ If the time isn't set, the test will stop immediately
     def conf_time(self,time):
@@ -32,10 +31,6 @@ class module_handler:
     # Pop the first ready command
     def pop_ready(self):
         return self.ready_cmd.pop(0) if self.ready_cmd else False
-
-    # Return the instrument pin/identifier
-    def get_module(self):
-        return self.module
 
     # Waits for some time and then puts the command in a queue with its identifier
     def interval_clk(self):
