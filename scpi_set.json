@@ -1,5 +1,7 @@
 {
   "*IDN?": "get_idn",
+  "*CLS": "set_cls",
+  "*RST": "set_rst",
   "INST:CAT?": "inst_handler",
   "INST": "INST",
   "CAT?": "CAT",

@@ -58,12 +58,21 @@ def get_scpi():
     return scpi_set
 
 # Common commands ----------------------------------------------
-def get_idn():
+def get_idn(): # Device identifier
     manufacturer = conf["manufacturer"]
     model = conf["model"]
     serial = conf["serial"]
     version = conf["version"]
     print(f"{manufacturer}, {model}, {serial}, {version}.")
+
+def set_cls(): # Clear log
+    linux_cmd = ["find", "log/", "-name", "*.log", "-delete"]
+    subprocess.run(linux_cmd)
+
+def set_rst(): # Restore default local_conf and clear log
+    linux_cmd = ["cp", "conf/.local_conf.bak", "conf/local_conf.json"]
+    subprocess.run(linux_cmd)
+    set_cls()
 
 # INSTrument commands ------------------------------------------
 class INST:
@@ -192,9 +201,9 @@ spi.start_clk()
 test_name = segment_macro(conf['testfile'])
 # INST threads
 DEV = dict()
-DEV[8] = module_handler(8)
-DEV[7] = module_handler(7)
-DEV[6] = module_handler(6)
+DEV[8] = module_handler()
+DEV[7] = module_handler()
+DEV[6] = module_handler()
 # New macro handler
 macro = macro_handler()
 macro_len = macro.load_macro(test_name)
