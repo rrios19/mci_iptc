@@ -17,7 +17,7 @@ def segment_macro(test_name):
     lines = re.sub(';','\n',filehandle.read().strip()).split('\n')
     filehandle.close()
     for line in lines:
-        macro.append(re.sub('\s+',':',line.strip()).split(':'))
+        macro.append(re.sub('[, ]+',':',line.strip()).split(':'))
     test_json = re.sub('(\.\w+)?$','.json',test_name,count=1)
     test_json = f"{time_str}_{test_json}"
     str_json = json.dumps(macro,indent=2)
