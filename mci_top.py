@@ -3,16 +3,13 @@
 # Control and interface module
 # Author: Ronald Rios
 # Description: Command management
-#  macro   -------   cmd    -------
-# -------> | MCI | -------> | MCP | ...
-#  .json   -------          -------
 
 import os
-import re
 import sys
 import csv
 import json
 import time
+import datetime
 import logging
 import datetime
 import subprocess
@@ -164,27 +161,40 @@ class CONF:
 # MEASure commands ---------------------------------------------------------------
 class MEAS:
     def __init__(self):
-        self.curr = False
+        self.time_init = 0
         self.volt = False
         self.pow  = False
+        self.first = True
+        self.measurements = ['time']
 
     def CURR_cmd(self):
-        print("Hola")
+        self.measurements.append("CURR")
+
+    def get_param(self,measure):
+        value = measure & ~int(conf["RESET"]["CURR"],16) 
+        value = value >> conf["SHIFT"]["CURR"]
+        if not self.time_init:
+            write_csv('time','BTM',self.measurements)
+            self.time_init = datetime.datetime.now()
+        time_now = datetime.datetime.now()
+        dt = (time_now - self.time_init).total_seconds()
+        write_csv('time','BTM',[round(dt,3),value])
+
+    #def set_header():
+
+
 
 
 # --------------------------------------------------------------------------------
 
 def run_cmd(cmd):
-    obj_name = cmd.pop(0)
-    try:
+    class_name = cmd.pop(0)
+    func_to_call = globals()[scpi_set[class_name]]
+    if cmd:
         atr_name = cmd.pop(0)
-        obj_to_call = globals()[scpi_set[obj_name]]
-        obj = obj_to_call(cmd)
-        atr_to_call = getattr(obj,scpi_set[atr_name])
-        atr_to_call()
-    except:
-        obj_to_call = globals()[scpi_set[obj_name]]
-        obj_to_call()
+        obj = func_to_call(cmd)
+        func_to_call = getattr(obj,scpi_set[atr_name])
+    func_to_call()
 
 
 def transfer_spi(device):
@@ -195,7 +205,8 @@ def transfer_spi(device):
     sleep(0.2) # MODIFICAR ESTO
     response = spi.get_data()
     print(f"{conf[device]} : {data} : {response}")
-    write_csv(test_time,device,[conf[device],response])
+    MEA[8].get_param(response)
+    #write_csv(test_time,device,[conf[device],response])
 
 def write_csv(test_time,module,row):
     path = f"measurement/{test_time}_{module}.csv"
@@ -223,6 +234,8 @@ DEV = dict()
 DEV[8] = module_handler()
 DEV[7] = module_handler()
 DEV[6] = module_handler()
+MEA = dict()
+MEA[8] = MEAS()
 # New macro handler
 macro = macro_handler()
 macro_len = macro.load_macro(test_name)
