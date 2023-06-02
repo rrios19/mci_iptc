@@ -59,5 +59,6 @@ class module_handler:
 
     # Stop the thread
     def kill_interval(self):
+        print("KILL MOD")
         self.ICLK.cancel()
 

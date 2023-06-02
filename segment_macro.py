@@ -21,7 +21,7 @@ def segment_macro(test_name):
     test_json = re.sub('(\.\w+)?$','.json',test_name,count=1)
     test_json = f"{time_str}_{test_json}"
     str_json = json.dumps(macro,indent=2)
-    filehandle = open(test_json,'w')
+    filehandle = open(f"macros/{test_json}",'w')
     filehandle.write(str_json)
     filehandle.close()
     return time_str,test_json

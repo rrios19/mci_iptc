@@ -34,19 +34,20 @@
     "BTM": 8,
     "VELM": 7,
     "SAM": 6,
-    "ack": "0x70f0f000",
+    "ack": "0x7f0f0f0f",
     "RESET": {
-      "MODE": "0x9fffffff",
-      "CURR": "0xe0ffffff",
+      "MODE": "0x8fffffff",
+      "ERR" : "0xf0ffffff",
       "VOLT": "0xff00ffff",
-      "POW": "0xffff00ff",
-      "DUAL": "0xffffff00"
+      "CURR": "0xffff00ff",
+      "POW":  "0xffffff00"
     },
     "SHIFT": {
-      "MODE": 29,
-      "CURR": 24,
+      "MODE": 28,
+      "ERR" : 24,
       "VOLT": 16,
-      "POW": 8
+      "CURR": 8,
+      "POW" : 0
     },
     "manufacturer": "Laboratorio Delta",
     "model": "IPTC",

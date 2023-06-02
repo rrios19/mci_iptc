@@ -10,11 +10,15 @@
   "CONF": "CONF",
   "TIME": "TIME_cmd",
   "TINT": "TINT_cmd",
-  "FREQ": "TINT",
+  "SAMP": "SAMP_cmd",
   "MODE": "MODE_cmd",
   "CURR": "CURR_cmd",
   "VOLT": "VOLT_cmd",
   "POW": "POW_cmd",
   "ANGL": "ANGL_COUN_cmd",
-  "COUN": "ANGL_COUN_cmd"
+  "COUN": "ANGL_COUN_cmd",
+  "MEAS": "MEAS",
+  "VOLT?": "VOLT_cmd",
+  "CURR?": "CURR_cmd",
+  "POW?": "POW_cmd"
 }

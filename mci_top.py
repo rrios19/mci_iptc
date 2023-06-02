@@ -107,7 +107,7 @@ class INST:
        for mode in self.mcps:
            spi.change_device(self.mcps[mode])
            spi.send_data(ack)
-           sleep(0.20) # Esto debe cambiar
+           sleep(0.200) 
            if (spi.get_data() == ack):
                available.append(mode)
        return available
@@ -124,7 +124,7 @@ class CONF:
         cmd = self.parameters.pop(0)
         if cmd.isdigit():
             DEV[macro.get_inst()].append_time(cmd)
-        elif cmd.upper() == "STOP":
+        elif cmd.upper() == "END":
             DEV[macro.get_inst()].append_cmd(macro.get_cmd())
 
     def MODE_cmd(self):
@@ -152,33 +152,57 @@ class CONF:
         shift = 0
         macro.set_param(self.parameters.pop(0),reset,shift)
 
-    def FREQ(self):
-        cmd = self.parameters.pop(0)
-        if (cmd.upper() == "OUTP"):
-            macro.set_freq(self.parameters.pop(0))
+    def SAMP_cmd(self):
+        macro.set_ts(self.parameters.pop(0))
 
 # --------------------------------------------------------------------------------
 # MEASure commands ---------------------------------------------------------------
 class MEAS:
-    def __init__(self):
-        self.time_init = 0
-        self.volt = False
-        self.pow  = False
-        self.first = True
-        self.measurements = ['time']
+    def __init__(self,cmd):
+        self.parameters = cmd
+
+    def VOLT_cmd(self):
+        scale = self.parameters.pop(0) if self.parameters else 1
+        MEA[macro.get_inst()].set_scale("VOLT",scale)
+        MEA[macro.get_inst()].set_measure("VOLT")
 
     def CURR_cmd(self):
-        self.measurements.append("CURR")
+        scale = self.parameters.pop(0) if self.parameters else 1
+        MEA[macro.get_inst()].set_scale("CURR",scale)
+        MEA[macro.get_inst()].set_measure("CURR")
+
+    def POW_cmd(self):
+        scale  = self.parameters.pop(0) if self.parameters else 1
+        MEA[macro.get_inst()].set_scale("POW",scale)
+        MEA[macro.get_inst()].set_measure("POW")
+
+class measure_handler:
+    def __init__(self,inst,test_time):
+        self.inst = inst
+        self.test_time = test_time
+        self.init_time = 0
+        self.measurements = []
+        self.scale = {}
+
+    def set_measure(self,measure):
+        self.measurements.append(measure)
+
+    def set_scale(self,param,scale):
+        self.scale[param] = scale
 
     def get_param(self,measure):
-        value = measure & ~int(conf["RESET"]["CURR"],16) 
-        value = value >> conf["SHIFT"]["CURR"]
-        if not self.time_init:
-            write_csv('time','BTM',self.measurements)
-            self.time_init = datetime.datetime.now()
-        time_now = datetime.datetime.now()
-        dt = (time_now - self.time_init).total_seconds()
-        write_csv('time','BTM',[round(dt,3),value])
+        if not self.init_time and self.measurements:
+            write_csv(self.test_time,self.inst,['time',*self.measurements])
+            self.init_time = datetime.datetime.now()
+        params = []
+        for param in self.measurements:
+            value = measure & ~int(conf["RESET"][param],16) 
+            value = value >> conf["SHIFT"][param]
+            params.append(value * float(self.scale[param]))
+        if self.measurements:
+            time_now = datetime.datetime.now()
+            dt = (time_now - self.init_time).total_seconds()
+            write_csv(self.test_time,self.inst,[round(dt,3),*params])
 
     #def set_header():
 
@@ -204,15 +228,18 @@ def transfer_spi(device):
     spi.send_data(data)
     sleep(0.2) # MODIFICAR ESTO
     response = spi.get_data()
+    if (response !=  int(conf["ack"],16)):
+        MEA[conf[device]].get_param(response)
     print(f"{conf[device]} : {data} : {response}")
-    MEA[8].get_param(response)
     #write_csv(test_time,device,[conf[device],response])
+    sleep(macro.ts)
 
 def write_csv(test_time,module,row):
     path = f"measurement/{test_time}_{module}.csv"
     with open(path,'a') as filehandle:
         writer = csv.writer(filehandle)
         writer.writerow(row)
+        filehandle.close()
 
 # Main
 # ------------------------------------------------------
@@ -235,7 +262,9 @@ DEV[8] = module_handler()
 DEV[7] = module_handler()
 DEV[6] = module_handler()
 MEA = dict()
-MEA[8] = MEAS()
+MEA[conf["BTM"]]  = measure_handler("BTM",test_time)
+MEA[conf["VELM"]] = measure_handler("VELM",test_time)
+MEA[conf["SAM"]]  = measure_handler("SAM",test_time)
 # New macro handler
 macro = macro_handler()
 macro_len = macro.load_macro(test_name)
@@ -249,11 +278,13 @@ while (DEV[8].check_thread()) or (DEV[7].check_thread()) or (DEV[6].check_thread
     if (DEV[8].check_thread()): transfer_spi('BTM')
     if (DEV[7].check_thread()): transfer_spi('VELM') 
     if (DEV[6].check_thread()): transfer_spi('SAM') 
-print("FINISH: ALL")
+#print("FINISH: ALL")
 
 
 
 # Kill SPI clock
 spi.kill_spi()
 # ------------------------------------------------------
+
+
 #to_test = cmd_2_bin(1,7,0xF,0xFF,0xFF,0xFF)
