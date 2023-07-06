@@ -1,19 +1,25 @@
+# Tecnologico de Costa Rica
+# Integrated Power Test system for CubeSats (IPTC)
+# Control and Interface Module
+# Author: Ronald Rios
+# Description: SPI master
+# Usage: >>> SPI = iface_handler()
+
 import sys
 import threading
-import RPi.GPIO as gpio
 from time import sleep
+import RPi.GPIO as gpio
 
-#------RPI 4 Pins------
-#SCLK = 11
-#CS0  = 8
-#CS1  = 7
-#CS2  = 6
-#MOSI = 10
-#MISO = 9
-#----------------------
+#------ RPI 4 Pins ------
+# SCLK = 11
+# CS0  = 8
+# CS1  = 7
+# CS2  = 6
+# MOSI = 10
+# MISO = 9
+#------------------------
 
 class iface_handler:
-
     def __init__(self,fs,SCLK,CS0,CS1,CS2,MOSI,MISO):
         # ------------ Pin ------------
         self.SCLK = SCLK
@@ -40,7 +46,7 @@ class iface_handler:
         self.clk_enable  = True
         self.read_enable = False
         self.response    = None
-        self.ts = 1/fs
+        self.ts = 1/(2*fs)
 
     # Thread for slave clock
     def spi_clk(self):
@@ -73,6 +79,7 @@ class iface_handler:
     def master_out(self):
         gpio.output(self.MOSI,self.data_out.pop(0))
 
+    # Fetch data from MISO, list to int
     def fetch_data(self):
         bit_count = 0
         data = 0
@@ -84,7 +91,7 @@ class iface_handler:
                 bit_count += 1
             self.response = data
 
-    # Set the queue and send the data by MOSI
+    # Set the queue and send the data by MOSI, int to list
     def send_data(self,data_to_send):
         bit_count = 0
         queue_to_send = []
@@ -92,10 +99,9 @@ class iface_handler:
             queue_to_send.insert(0, data_to_send & 1)
             data_to_send >>= 1
             bit_count += 1
-        # Send the data:
-        self.data_out = queue_to_send
+        self.data_out = queue_to_send # Send the data
 
-    # Create  and start the clock thread
+    # Create and start the clock thread
     def start_clk(self):
         sclk_thread = threading.Thread(target=self.spi_clk)
         sclk_thread.start()
@@ -108,10 +114,6 @@ class iface_handler:
     def change_device(self,device):
         self.CS = device
 
-    #def check_device(self):
-        #self.
-
     def kill_spi(self):
         self.clk_enable = False
-
 
