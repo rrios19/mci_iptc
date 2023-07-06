@@ -4,6 +4,7 @@
   "*RST": "run_RST",
   "INST": "INST",
   "CAT?": "CAT_cmd",
+  "CAT": "CAT_cmd",
   "SEL": "SEL_cmd",
   "NSEL": "NSEL_cmd",
   "INIT": "INIT_cmd",
@@ -15,10 +16,15 @@
   "CURR": "CURR_cmd",
   "VOLT": "VOLT_cmd",
   "POW": "POW_cmd",
-  "ANGL": "ANGL_COUN_cmd",
-  "COUN": "ANGL_COUN_cmd",
+  "ANGL": "POW_cmd",
+  "COUN": "POW_cmd",
   "MEAS": "MEAS",
   "VOLT?": "VOLT_cmd",
   "CURR?": "CURR_cmd",
-  "POW?": "POW_cmd"
+  "POW?": "POW_cmd",
+  "RES?": "RES_cmd",
+  "SYST": "SYST",
+  "ERR?": "ERR_cmd",
+  "MEM": "MEM",
+  "DEL": "DEL_cmd"
 }
