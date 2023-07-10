@@ -1,26 +1,11 @@
 {
   "usr": {
-    "ip": "192.168.1.69",
-    "user": "pi",
+    "hostname": "192.168.100.220",
+    "username": "rios",
     "password": "1234",
-    "testfile": "test.json",
-    "logpath": "log/usr_if.log",
-    "verbose": "DEBUG",
-    "btm": [
-      "CYCLES",
-      "VC",
-      "CC"
-    ],
-    "velm": [
-      "P1",
-      "P2",
-      "P3"
-    ],
-    "sas": [
-      "P1",
-      "P2",
-      "P3"
-    ]
+    "remote": "prueba.py",
+    "local": "prueba.py",
+    "workdir": "prueba.py"
   },
   "mci": {
     "testfile": "testfile",
@@ -37,17 +22,41 @@
     "ack": "0x7f0f0f0f",
     "RESET": {
       "MODE": "0x8fffffff",
-      "ERR" : "0xf0ffffff",
+      "ERR": "0xf0ffffff",
       "VOLT": "0xff00ffff",
       "CURR": "0xffff00ff",
-      "POW":  "0xffffff00"
+      "POW": "0xffffff00"
     },
     "SHIFT": {
       "MODE": 28,
-      "ERR" : 24,
+      "ERR": 24,
       "VOLT": 16,
       "CURR": 8,
-      "POW" : 0
+      "POW": 0
+    },
+    "filetype": {
+      "ALL?": [
+        "log",
+        "macro",
+        "measurement"
+      ],
+      "ALL": [
+        "log",
+        "macro",
+        "measurement"
+      ],
+      "MACR?": [
+        "macro"
+      ],
+      "LOG": [
+        "log"
+      ],
+      "JSON": [
+        "macro"
+      ],
+      "CSV": [
+        "measurement"
+      ]
     },
     "manufacturer": "Laboratorio Delta",
     "model": "IPTC",

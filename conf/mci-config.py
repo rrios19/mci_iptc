@@ -9,7 +9,10 @@ import os
 import sys
 import json
 
-filename = 'local_conf.json'
+ARGV = sys.argv
+ARGV.pop(0)
+filename = ARGV.pop(0) if ARGV else 'local_conf.json'
+print(filename)
 filehandle = open(filename,'r')
 local_conf = json.load(filehandle)
 filehandle.close()
