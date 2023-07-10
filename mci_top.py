@@ -1,38 +1,30 @@
 # Tecnologico de Costa Rica
-# Integrated Power Testing system for CubeSats (IPTC)
-# Control and interface module
+# Integrated Power Test system for CubeSats (IPTC)
+# Control and Interface Module
 # Author: Ronald Rios
-# Description: Command management
+# Description: Top MCI file
+# Usage: $ python3 mci_top.py
 
 import os
+import re
 import sys
 import csv
 import json
-import time
 import datetime
 import logging
 import datetime
 import subprocess
-from segment_macro import *
-from module_handler import *
-from macro_handler import *
-from interfaces.spi_master import *
+from time import sleep
+from conf.fetch_conf import fetch_conf
+from segment_macro import segment_macro
+from module_handler import module_handler
+from command_handler import command_handler
+from ifaces.spi_master import iface_handler
 
-# Load local usr_if configuration. Default path : conf/local_conf.json
-def fetch_conf(mod):
-    try:
-        path_file = 'conf/local_conf.json'
-        confhandle = open(path_file,'r')
-        conf = json.load(confhandle)
-        confhandle.close()
-        return conf[mod]
-    except OSError as err:
-        print(f"Can not open local configuration file.\n{err}")
-        sys.exit()
-
-# Init basic log configurations
+# Basic LOG configurations
 def configure_log():
     path = conf['logpath']
+    # Verbosity levels: DEBUG, INFO, WARNING, ERROR, CRITICAL
     levels = {'DEBUG':10,'INFO':20,'WARNING':30,'ERROR':40,'CRITICAL':50}
     if not os.path.exists(path):
         print(f"Creating new log file '{path}'")
@@ -41,43 +33,47 @@ def configure_log():
     try:
         verbose = levels[conf['verbose']]
     except:
-        print(f"Can not set {conf['verbose']} mode. Check local_conf.json file")
+        print(f"Can not set {conf['verbose']} mode. Check local_conf.json")
         print(f"Available: {list(levels.keys())}")
         sys.exit()
     logging.basicConfig(filename=path,format=form,datefmt=date,level=verbose,filemode='a')
     logging.info(f"Basic log configuration in '{conf['verbose']}' mode")
 
+# Load instruction set
 def get_scpi():
     filehandle = open("scpi_set.json")
     scpi_set = json.load(filehandle)
     filehandle.close()
-    #logging.info(f"Macro fetched: {self.macro}")
+    logging.debug(f'SCPI set successfully fetched')
     return scpi_set
 
-# Common commands ----------------------------------------------
+# (1) Common commands 
 def run_IDN(): # Device identifier
     manufacturer = conf["manufacturer"]
     model = conf["model"]
     serial = conf["serial"]
     version = conf["version"]
     print(f"{manufacturer}, {model}, {serial}, {version}.")
+    logging.debug(f'Device identifier command successfully executed')
 
 def run_CLS(): # Clear log
     linux_cmd = ["find", "log/", "-name", "*.log", "-delete"]
     subprocess.run(linux_cmd)
+    logging.debug(f'Cleanup command successfully executed')
 
 def run_RST(): # Restore default local_conf and clear log
     linux_cmd = ["cp", "conf/.local_conf.bak", "conf/local_conf.json"]
     subprocess.run(linux_cmd)
     run_CLS()
+    logging.debug(f'Reset command successfully executed')
 
-# INSTrument commands ------------------------------------------
+# (2) INSTrument commands
 class INST:
     def __init__(self,cmd):
-        self.parameters = cmd
+        self.parameters = cmd # Optional parameters
         self.mcps = {}
 
-    # CATalog, funciona con o sin parametro
+    # Checks the instrument interface
     def CAT_cmd(self):
         try:
             mcp = self.parameters.pop(0)
@@ -85,97 +81,170 @@ class INST:
         except:
             self.mcps = conf["ALL"]
         print(self.check_inst())
+        logging.info(f'Available instruments: {self.check_inst()}')
 
+    # Selects an instrument as the current instrument
     def SEL_cmd(self):
         device = conf["ALL"][self.parameters.pop(0).upper()]
-        macro.set_inst(device)
+        MACRO.set_inst(device)
+        logging.info(f'Instrument selected: {device}')
 
+    # Selects an instrument as the current instrument
     def NSEL_cmd(self):
         device = int(self.parameters.pop(0))
-        macro.set_inst(device)
+        MACRO.set_inst(device)
+        logging.info(f'Instrument selected: {device}')
 
+    # Initiate the instrument
     def INIT_cmd(self):
         modules = self.parameters if self.parameters else conf["ALL"]
         if "ALL" in modules:
             modules = conf["ALL"]
         for mod in modules:
-            DEV[conf[mod]].start_test()
+            MODULE[conf[mod]].start_test()
+        logging.info(f'Instrument started: {modules}')
 
     def check_inst(self):
        available = []
        ack = int(conf["ack"],16)
        for mode in self.mcps:
-           spi.change_device(self.mcps[mode])
-           spi.send_data(ack)
+           SPI.change_device(self.mcps[mode])
+           SPI.send_data(ack)
            sleep(0.200) 
-           if (spi.get_data() == ack):
+           if (SPI.get_data() == ack):
                available.append(mode)
        return available
 
-# CONFigure commands -------------------------------------------
+# (3) CONFigure commands
 class CONF:
     def __init__(self,cmd):
-        self.parameters = cmd
+        self.parameters = cmd # Optional parameters
 
+    # Sets the test time
     def TIME_cmd(self):
-        DEV[macro.get_inst()].conf_time(self.parameters.pop(0))
-
+        MODULE[MACRO.get_inst()].conf_time(self.parameters.pop(0))
+        logging.info(f'Time setting successful')
+    
+    # Sets the time interval
     def TINT_cmd(self):
         cmd = self.parameters.pop(0)
         if cmd.isdigit():
-            DEV[macro.get_inst()].append_time(cmd)
+            MODULE[MACRO.get_inst()].append_time(cmd)
+            logging.info(f'Time interval started')
         elif cmd.upper() == "END":
-            DEV[macro.get_inst()].append_cmd(macro.get_cmd())
+            MODULE[MACRO.get_inst()].append_cmd(MACRO.get_cmd())
+            logging.info(f'Time interval finished')
 
+    # Sets the mode for the instrument
     def MODE_cmd(self):
         reset = conf["RESET"]["MODE"]
         shift = conf["SHIFT"]["MODE"]
-        macro.set_param(self.parameters.pop(0),reset,shift)
+        MACRO.set_param(self.parameters.pop(0),reset,shift)
+        logging.debug(f'Mode set successfully')
 
+    # Sets the current value
     def CURR_cmd(self):
         reset = conf["RESET"]["CURR"]
         shift = conf["SHIFT"]["CURR"]
-        macro.set_param(self.parameters.pop(0),reset,shift)
+        MACRO.set_param(self.parameters.pop(0),reset,shift)
+        logging.debug(f'Current set successfully')
 
+    # Sets the voltage value
     def VOLT_cmd(self):
         reset = conf["RESET"]["VOLT"]
         shift = conf["SHIFT"]["VOLT"]
-        macro.set_param(self.parameters.pop(0),reset,shift)
+        MACRO.set_param(self.parameters.pop(0),reset,shift)
+        logging.debug(f'Voltage set successfully')
 
+    # Sets the power value
     def POW_cmd(self):
         reset = conf["RESET"]["POW"]
         shift = conf["SHIFT"]["POW"]
-        macro.set_param(self.parameters.pop(0),reset,shift)
+        MACRO.set_param(self.parameters.pop(0),reset,shift)
+        logging.debug(f'Power set successfully')
 
-    def ANGL_COUN_cmd(self):
-        reset = conf["RESET"]["DUAL"]
-        shift = 0
-        macro.set_param(self.parameters.pop(0),reset,shift)
-
+    # Sets the sampling time
     def SAMP_cmd(self):
-        macro.set_ts(self.parameters.pop(0))
+        MACRO.set_ts(self.parameters.pop(0))
+        logging.debug(f'Sampling time set successfully')
 
-# --------------------------------------------------------------------------------
-# MEASure commands ---------------------------------------------------------------
+# (4) MEASure commands
 class MEAS:
     def __init__(self,cmd):
-        self.parameters = cmd
+        self.parameters = cmd # Optional parameters
 
+    # Reads the voltage of the instrument using an optional scale
     def VOLT_cmd(self):
         scale = self.parameters.pop(0) if self.parameters else 1
-        MEA[macro.get_inst()].set_scale("VOLT",scale)
-        MEA[macro.get_inst()].set_measure("VOLT")
+        MEASURE[MACRO.get_inst()].set_scale("VOLT",scale)   # Set scale
+        MEASURE[MACRO.get_inst()].set_measure("VOLT")       # Set identifier
+        logging.info(f'Voltage measurement with scale equal to {scale}')
 
+    # Reads the current of the instrument using an optional scale
     def CURR_cmd(self):
         scale = self.parameters.pop(0) if self.parameters else 1
-        MEA[macro.get_inst()].set_scale("CURR",scale)
-        MEA[macro.get_inst()].set_measure("CURR")
+        MEASURE[MACRO.get_inst()].set_scale("CURR",scale)   # Set scale
+        MEASURE[MACRO.get_inst()].set_measure("CURR")       # Set identifier
+        logging.info(f'Current measurement with scale equal to {scale}')
 
+    # Reads the power of the instrument using an optional scale
     def POW_cmd(self):
         scale  = self.parameters.pop(0) if self.parameters else 1
-        MEA[macro.get_inst()].set_scale("POW",scale)
-        MEA[macro.get_inst()].set_measure("POW")
+        MEASURE[MACRO.get_inst()].set_scale("POW",scale)    # Set scale
+        MEASURE[MACRO.get_inst()].set_measure("POW")        # Set identifier
+        logging.info(f'Power measurement with scale equal to {scale}')
 
+    def RES_cmd(self):
+        scale  = self.parameters.pop(0) if self.parameters else 1
+        # Equation here
+        logging.info(f'Resistance measurement with scale equal to {scale}')
+
+# (5) SYSTem commands
+class SYST:
+    def __init__(self,cmd):
+        self.parameters = cmd # Optional parameters
+
+    # Prints the last error message
+    def ERR_cmd(self):
+        path = conf['logpath'] # LOG file
+        filehandle = open(path,'r')
+        queue = filehandle.readlines()
+        filehandle.close()
+        for msg in queue:
+            if re.search('ERROR', msg): # Looking for ERROR
+                queue.remove(msg) # Remove ERROR from the queue
+                print(msg.strip()) # Print ERROR
+        filehandle = open(path,'w') # Overwrite LOG file
+        filehandle.writelines(queue) # Write the new queue
+        filehandle.close()
+
+# (6) MEMory commands
+class MEM:
+    def __init__(self,cmd):
+        self.parameters = cmd # Optional parameters
+
+    # Prints the name of the current files saved in memory
+    def CAT_cmd(self):
+        # Default: ALL?
+        select = self.parameters.pop(0) if self.parameters else 'ALL?' 
+        directories = conf['filetype'][select]
+        for folder in directories:
+            files = os.listdir(folder)
+            for item in files:
+                print(f'{item}, {folder}') # filename, typename
+
+    # Delete the specified file from memory
+    def DEL_cmd(self):
+        target = self.parameters.pop(-1) if self.parameters else '*'
+        print(target)
+        folder = self.parameters.pop(0) if self.parameters else 'ALL'
+        print(folder)
+        folder = conf['filetype'][folder]
+        for fd in folder:
+            linux_cmd = ["find", f"{fd}/", "-name", target, "-delete"]
+            subprocess.run(linux_cmd)
+
+# Measurement handler
 class measure_handler:
     def __init__(self,inst,test_time):
         self.inst = inst
@@ -186,6 +255,7 @@ class measure_handler:
 
     def set_measure(self,measure):
         self.measurements.append(measure)
+        logging.info(f'Measurement: {measure}')
 
     def set_scale(self,param,scale):
         self.scale[param] = scale
@@ -204,13 +274,7 @@ class measure_handler:
             dt = (time_now - self.init_time).total_seconds()
             write_csv(self.test_time,self.inst,[round(dt,3),*params])
 
-    #def set_header():
-
-
-
-
-# --------------------------------------------------------------------------------
-
+# Command interpreter
 def run_cmd(cmd):
     class_name = cmd.pop(0)
     func_to_call = globals()[scpi_set[class_name]]
@@ -220,20 +284,20 @@ def run_cmd(cmd):
         func_to_call = getattr(obj,scpi_set[atr_name])
     func_to_call()
 
-
+# Transfer data by SPI
 def transfer_spi(device):
-    condition = DEV[conf[device]].pop_ready()
+    condition = MODULE[conf[device]].pop_ready()
     data = condition if condition else int(conf["ack"],16) 
-    spi.change_device(conf[device])
-    spi.send_data(data)
+    SPI.change_device(conf[device])
+    SPI.send_data(data)
     sleep(0.2) # MODIFICAR ESTO
-    response = spi.get_data()
+    response = SPI.get_data()
     if (response !=  int(conf["ack"],16)):
-        MEA[conf[device]].get_param(response)
+        MEASURE[conf[device]].get_param(response)
     print(f"{conf[device]} : {data} : {response}")
-    #write_csv(test_time,device,[conf[device],response])
-    sleep(macro.ts)
+    sleep(MACRO.ts)
 
+# Write to a CSV file
 def write_csv(test_time,module,row):
     path = f"measurement/{test_time}_{module}.csv"
     with open(path,'a') as filehandle:
@@ -241,50 +305,45 @@ def write_csv(test_time,module,row):
         writer.writerow(row)
         filehandle.close()
 
-# Main
-# ------------------------------------------------------
-# Fetch usr_if configurations
+# Fetch configurations
 conf = fetch_conf('mci')
-# Basic configuration for log
+# Basic configuration for LOG
 configure_log()
 # Fetch SCPI commands
 scpi_set = get_scpi()
 # FS, SCLK, CS0, CS1, CS2, MOSI, MISO
-spi = iface_handler(400,11,8,7,6,10,9)
+SPI = iface_handler(200,11,8,7,6,10,9) # Fs = 200 Hz
 # Start SPI clock
-spi.start_clk()
+SPI.start_clk()
 # Format the test file into a json file
-#testjson = format_testfile()
 test_time,test_name = segment_macro(conf['testfile'])
-# INST threads
-DEV = dict()
-DEV[8] = module_handler()
-DEV[7] = module_handler()
-DEV[6] = module_handler()
-MEA = dict()
-MEA[conf["BTM"]]  = measure_handler("BTM",test_time)
-MEA[conf["VELM"]] = measure_handler("VELM",test_time)
-MEA[conf["SAM"]]  = measure_handler("SAM",test_time)
-# New macro handler
-macro = macro_handler()
-macro_len = macro.load_macro(test_name)
-while macro_len > 0:
-    run_cmd(macro.pop_cmd())
-    macro_len -= 1
-    #macro.show_cmd()
-    #print("------------------------")
+print(f'{test_name}')
 
-while (DEV[8].check_thread()) or (DEV[7].check_thread()) or (DEV[6].check_thread()):
-    if (DEV[8].check_thread()): transfer_spi('BTM')
-    if (DEV[7].check_thread()): transfer_spi('VELM') 
-    if (DEV[6].check_thread()): transfer_spi('SAM') 
-#print("FINISH: ALL")
+# INST/MODULE threads
+MODULE = dict()
+MODULE[conf['BTM']]  = module_handler()
+MODULE[conf['VELM']] = module_handler()
+MODULE[conf['SAM']]  = module_handler()
 
+# Measurement handler
+MEASURE = dict()
+MEASURE[conf["BTM"]]  = measure_handler("BTM",test_time)
+MEASURE[conf["VELM"]] = measure_handler("VELM",test_time)
+MEASURE[conf["SAM"]]  = measure_handler("SAM",test_time)
 
+# MACRO handler
+MACRO = command_handler()
+msize = MACRO.load_macro(test_name)
+
+while msize > 0:
+    run_cmd(MACRO.pop_cmd())
+    msize -= 1
+
+while MODULE[8].check_thread() or MODULE[7].check_thread() or MODULE[6].check_thread():
+    if (MODULE[8].check_thread()): transfer_spi('BTM')
+    if (MDOULE[7].check_thread()): transfer_spi('VELM') 
+    if (MODULE[6].check_thread()): transfer_spi('SAM') 
 
 # Kill SPI clock
-spi.kill_spi()
-# ------------------------------------------------------
+SPI.kill_spi()
 
-
-#to_test = cmd_2_bin(1,7,0xF,0xFF,0xFF,0xFF)

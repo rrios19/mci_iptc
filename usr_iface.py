@@ -10,8 +10,8 @@ import sys
 import json
 import socket
 import logging
-import subprocess
 import paramiko
+import subprocess
 from conf.fetch_conf import fetch_conf
 
 # Init basic log configurations
@@ -56,12 +56,12 @@ def get_file():
 #ARGV = sys.argv
 #ARGV.pop(0)
 
-hostname = '192.168.1.4'
+hostname = '172.20.1.4'
 username = 'rios'
 password = '1234'
 filename = 'prueba'
-remote   = 'prueba.py'
-local    = 'prueba.py'
+remote   = 'testfile'
+local    = 'testfile'
 workdir  = 'mci_iptc'
 
 client = paramiko.SSHClient()
