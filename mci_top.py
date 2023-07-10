@@ -26,15 +26,11 @@ def configure_log():
     path = conf['logpath']
     # Verbosity levels: DEBUG, INFO, WARNING, ERROR, CRITICAL
     levels = {'DEBUG':10,'INFO':20,'WARNING':30,'ERROR':40,'CRITICAL':50}
-    if not os.path.exists(path):
-        print(f"Creating new log file '{path}'")
     form = '%(levelname)s %(asctime)s %(message)s'
     date = '%H:%M:%S %d/%m/%y'
     try:
         verbose = levels[conf['verbose']]
     except:
-        print(f"Can not set {conf['verbose']} mode. Check local_conf.json")
-        print(f"Available: {list(levels.keys())}")
         sys.exit()
     logging.basicConfig(filename=path,format=form,datefmt=date,level=verbose,filemode='a')
     logging.info(f"Basic log configuration in '{conf['verbose']}' mode")
@@ -293,7 +289,7 @@ def transfer_spi(device):
     response = SPI.get_data()
     if (response !=  int(conf["ack"],16)):
         MEASURE[conf[device]].get_param(response)
-    print(f"{conf[device]} : {data} : {response}")
+    #print(f"{conf[device]} : {data} : {response}")
     sleep(MACRO.ts)
 
 # Write to a CSV file
@@ -316,7 +312,7 @@ SPI = iface_handler(200,11,8,7,6,10,9) # Fs = 200 Hz
 SPI.start_clk()
 # Format the test file into a json file
 test_time,test_name = segment_macro(conf['testfile'])
-print(f'{test_name}')
+print(f'{test_time}')
 
 # INST/MODULE threads
 MODULE = dict()

@@ -6,6 +6,7 @@
 # Usage: $ python3 usr_iface.py
 
 import os
+import re
 import sys
 import json
 import socket
@@ -37,52 +38,57 @@ def put_file():
 
 # Execute the MCI and wait for the STDOUT and STDERR
 def exec_cmd():
-    _,stdout,stderr = client.exec_command(f'cd {workdir} && python3 {remote}')
-    salida_stdout = stdout.read().decode().strip()
-    salida_stderr = stderr.read().decode().strip()
-    print('salida stdout:',salida_stdout)
-    print('salida stderr:',salida_stderr)
+    global target
+    _,stdout,stderr = client.exec_command(f'cd {workdir} && python3 {topfile}')
+    STDOUT = stdout.read().decode().strip().split('\n')
+    STDERR = stderr.read().decode().strip()
+    print('STDOUT:')
+    for line in STDOUT:
+        print(line)
+    print('STDERR:')
+    for line in STDERR:
+        print(line)
+    target = STDOUT.pop(0) if STDOUT else ''
 
 # Get MCI output file
 def get_file():
-    sftp.get(f'{workdir}/{remote}',local)
+    files = sftp.listdir(measpath)
+    for file in files:
+        if re.match(f"{target}.*",file):
+            sftp.get(f'{measpath}/{file}',file)
 
 # Fetch usr_iface configurations
-#conf = fetch_conf('usr')
+conf = fetch_conf('usr')
 # Basic configuration for log
-#configure_log()
+configure_log()
 
 # Save arguments
 #ARGV = sys.argv
 #ARGV.pop(0)
 
-hostname = '172.20.1.4'
-username = 'rios'
-password = '1234'
-filename = 'prueba'
-remote   = 'testfile'
-local    = 'testfile'
-workdir  = 'mci_iptc'
+hostname = conf['hostname']
+username = conf['username']
+password = conf['password']
+remote   = conf['remote']
+local    = conf['local']
+workdir  = conf['workdir']
+topfile  = conf['topfile']
+measpath = conf['measpath']
 
 client = paramiko.SSHClient()
 client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
 
-#try:
-client.connect(hostname,username=username,password=password)
-sftp = client.open_sftp()
+try:
+    client.connect(hostname,username=username,password=password)
+    sftp = client.open_sftp()
 
-put_file()
-exec_cmd()
-get_file()
+    put_file()
+    exec_cmd()
+    get_file()
 
-#except:
-#    pass
-#finally:
-#    client.close()
+except:
+    pass
 
+finally:
+    client.close()
 
-# For development
-#host_name = socket.gethostname()
-#host_ip = subprocess.check_output("hostname -I",shell=True,universal_newlines=True).strip()
-#host_ip = socket.gethostbyname(host_name + ".local")
-#host_ip = socket.gethostbyname(host_name + '.')

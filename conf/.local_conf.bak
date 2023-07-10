@@ -1,11 +1,15 @@
 {
   "usr": {
-    "hostname": "192.168.100.220",
+    "logpath": "log/usr_iface.log",
+    "verbose": "DEBUG",
+    "hostname": "172.20.10.4",
     "username": "rios",
     "password": "1234",
-    "remote": "prueba.py",
-    "local": "prueba.py",
-    "workdir": "prueba.py"
+    "remote": "testfile",
+    "local": "testfile",
+    "workdir": "mci_iptc",
+    "topfile": "mci_top.py",
+    "measpath": "mci_iptc/measurement"
   },
   "mci": {
     "testfile": "testfile",
