@@ -1,6 +1,6 @@
 # Tecnologico de Costa Rica
-# Integrated Power Testing system for CubeSats (IPTC)
-# Control and interface module
+# Integrated Power Test system for CubeSats (IPTC)
+# Control and Interface Module
 # Author: Ronald Rios
 # Description: User interface for IPTC
 # Usage: $ python3 usr_if.py btm velm sas
