@@ -236,12 +236,11 @@ class MEM:
     # Delete the specified file from memory
     def DEL_cmd(self):
         target = self.parameters.pop(-1) if self.parameters else '*'
-        print(target)
+        target = '*' if target == 'ALL' else target
         folder = self.parameters.pop(0) if self.parameters else 'ALL'
-        print(folder)
         folder = conf['filetype'][folder]
         for fd in folder:
-            linux_cmd = ["find", f"{fd}/", "-name", target, "-delete"]
+            linux_cmd = ["find", f"{fd}/", "-name", target, "-type", "f", "-delete"]
             subprocess.run(linux_cmd)
 
 # Measurement handler
