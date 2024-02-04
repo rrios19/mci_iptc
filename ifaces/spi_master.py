@@ -5,6 +5,16 @@
 # Description: SPI master
 # Usage: >>> SPI = iface_handler()
 
+"""
+This script defines a class iface_handler that represents the SPI master interface.
+It initializes GPIO pins, sets up the SPI interface, and configures variables.
+The class includes methods for clock management (spi_clk), data transfer (master_in, master_out, fetch_data, send_data), and thread management (start_clk, kill_spi).
+The SPI clock is generated in a separate thread (spi_clk), ensuring continuous clock pulses.
+Data is sent and received through MOSI and MISO lines.
+The script uses the RPi.GPIO library to interact with Raspberry Pi GPIO pins.
+This script essentially handles SPI communication with other devices, providing methods to send and receive data. The start_clk method initiates the clock thread, and kill_spi stops the clock thread when needed. The class is designed to facilitate SPI communication within the broader control and interface module.
+"""
+
 import sys
 import threading
 from time import sleep
@@ -19,72 +29,73 @@ import RPi.GPIO as gpio
 # MISO = 9
 #------------------------
 
+
 class iface_handler:
-    def __init__(self,fs,SCLK,CS0,CS1,CS2,MOSI,MISO):
+    def __init__(self, fs, SCLK, CS0, CS1, CS2, MOSI, MISO):
         # ------------ Pin ------------
         self.SCLK = SCLK
-        self.CS   = CS0 # Default
+        self.CS   = CS0  # Default CS0
         self.MOSI = MOSI
         self.MISO = MISO
         # ----------- Setup -----------
         gpio.setmode(gpio.BCM)
         gpio.setwarnings(False)
-        gpio.setup(SCLK,gpio.OUT) #SCLK
-        gpio.setup(CS0, gpio.OUT) #CS0
-        gpio.setup(CS1, gpio.OUT) #CS1
-        gpio.setup(CS2, gpio.OUT) #CS2
-        gpio.setup(MOSI,gpio.OUT) #MOSI
-        gpio.setup(MISO,gpio.IN ) #MISO
+        gpio.setup(SCLK, gpio.OUT)  # SCLK
+        gpio.setup(CS0, gpio.OUT)   # CS0
+        gpio.setup(CS1, gpio.OUT)   # CS1
+        gpio.setup(CS2, gpio.OUT)   # CS2
+        gpio.setup(MOSI, gpio.OUT)  # MOSI
+        gpio.setup(MISO, gpio.IN)   # MISO
         # ------ Initialize pins ------
-        gpio.output(CS0,gpio.HIGH)
-        gpio.output(CS1,gpio.HIGH)
-        gpio.output(CS2,gpio.HIGH)
-        gpio.output(MOSI,gpio.LOW)
+        gpio.output(CS0, gpio.HIGH)
+        gpio.output(CS1, gpio.HIGH)
+        gpio.output(CS2, gpio.HIGH)
+        gpio.output(MOSI, gpio.LOW)
         # --------- Variables ---------
         self.data_out = []
-        self.data_in =  []
-        self.clk_enable  = True
+        self.data_in = []
+        self.clk_enable = True
         self.read_enable = False
-        self.response    = None
-        self.ts = 1/(2*fs)
+        self.response = None
+        self.ts = 1 / (2 * fs)
 
     # Thread for slave clock
     def spi_clk(self):
         while self.clk_enable:
-            gpio.output(self.SCLK,gpio.HIGH)
-            if (self.read_enable):
+            gpio.output(self.SCLK, gpio.HIGH)
+            if self.read_enable:
                 self.master_in()
             sleep(self.ts)
-            gpio.output(self.SCLK,gpio.LOW)
+            gpio.output(self.SCLK, gpio.LOW)
             try:
                 self.master_out()
-                gpio.output(self.CS,gpio.LOW)
+                gpio.output(self.CS, gpio.LOW)
                 self.read_enable = True
             except:
-                gpio.output(self.CS,gpio.HIGH)
-                gpio.output(self.MOSI,gpio.LOW)
+                gpio.output(self.CS, gpio.HIGH)
+                gpio.output(self.MOSI, gpio.LOW)
                 self.read_enable = False
                 self.fetch_data()
             sleep(self.ts)
-        #gpio.cleanup()
+        # gpio.cleanup()
 
     # Read in Master In, Slave Out
     def master_in(self):
-        if (gpio.input(self.MISO)):
+        if gpio.input(self.MISO):
             self.data_in.append(1)
         else:
             self.data_in.append(0)
 
     # Write in Master Out, Slave In
     def master_out(self):
-        gpio.output(self.MOSI,self.data_out.pop(0))
+        gpio.output(self.MOSI, self.data_out.pop(0))
 
     # Fetch data from MISO, list to int
     def fetch_data(self):
         bit_count = 0
         data = 0
-        if (len(self.data_in) == 32):
-            while (bit_count < 32):
+        if len(self.data_in) == 32:
+            while bit_count < 32:
                 bit_state = self.data_in.pop(0)
                 data <<= 1
                 data |= bit_state
@@ -92,28 +103,27 @@ class iface_handler:
             self.response = data
 
     # Set the queue and send the data by MOSI, int to list
-    def send_data(self,data_to_send):
+    def send_data(self, data_to_send):
         bit_count = 0
         queue_to_send = []
-        while (bit_count < 32):
+        while bit_count < 32:
             queue_to_send.insert(0, data_to_send & 1)
             data_to_send >>= 1
             bit_count += 1
-        self.data_out = queue_to_send # Send the data
+        self.data_out = queue_to_send  # Send the data
 
     # Create and start the clock thread
     def start_clk(self):
         sclk_thread = threading.Thread(target=self.spi_clk)
         sclk_thread.start()
-    
+
     def get_data(self):
         data = self.response
         self.response = None
         return data
-    
-    def change_device(self,device):
+
+    def change_device(self, device):
         self.CS = device
 
     def kill_spi(self):
         self.clk_enable = False
-
