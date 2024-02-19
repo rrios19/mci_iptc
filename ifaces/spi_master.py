@@ -18,6 +18,7 @@ This script essentially handles SPI communication with other devices, providing 
 import sys
 import threading
 from time import sleep
+import json
 import RPi.GPIO as gpio
 
 #------ RPI 4 Pins ------
@@ -58,6 +59,9 @@ class iface_handler:
         self.read_enable = False
         self.response = None
         self.ts = 1 / (2 * fs)
+        self.BTM_MAPPING = self.load_mapping('btm_mapping.json')
+        self.VELM_MAPPING = self.load_mapping('velm_mapping.json')
+        self.SAM_MAPPING = self.load_mapping('sam_mapping.json') 
 
     # Thread for slave clock
     def spi_clk(self):
@@ -127,3 +131,42 @@ class iface_handler:
 
     def kill_spi(self):
         self.clk_enable = False
+
+    #Load mapping for the MODE of the 32 bit command
+    def load_mapping(self, mapping_file):
+        with open(mapping_file, 'r') as file:
+            return json.load(file)
+        
+
+    def construct_spi_bits(self, mode, module, values):
+        """
+        Constructs a 32-bit SPI command based on the operation mode, module, and values.
+
+        Parameters:
+        - mode: 'read' or 'write'
+        - module: 'SAM', 'VELM', or 'BTM'
+        - values: A dictionary containing specific values for the command fields.
+
+        Returns:
+        - A 32-bit integer representing the SPI command.
+        """
+        spi_bits = 0
+
+        # Set the read/write bit (bit 31)
+        if mode == 'write':
+            spi_bits |= 1 << 31  # Set bit 31 to 1 for write mode
+
+        # Set the module bits (bit 30 to 28)
+        if module == 'SAM':
+            spi_bits |= 0b001 << 28
+        elif module == 'VELM':
+            spi_bits |= 0b010 << 28
+        elif module == 'BTM':
+            spi_bits |= 0b100 << 28
+
+        spi_bits |= (values.get('error', 0) & 0xF) << 24
+        spi_bits |= (values.get('voltage', 0) & 0xFF) << 16
+        spi_bits |= (values.get('current', 0) & 0xFF) << 8
+        spi_bits |= values.get('power', 0) & 0xFF
+
+        return spi_bits

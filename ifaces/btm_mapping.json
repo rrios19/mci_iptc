@@ -1,0 +1,7 @@
+{
+    "ChargeDischargeCycles": 0,
+    "ChargingCycle": 1,
+    "DischargeCycle": 2,
+    "CycleWithTimeout": 3,
+    "NA": 4
+  }
