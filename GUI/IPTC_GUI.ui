@@ -39,7 +39,7 @@
       <property name="frameShadow">
        <enum>QFrame::Raised</enum>
       </property>
-      <layout class="QVBoxLayout" name="verticalLayout_2" stretch="0,0,0,8">
+      <layout class="QVBoxLayout" name="verticalLayout_2" stretch="0,0,8">
        <property name="spacing">
         <number>0</number>
        </property>
@@ -55,9 +55,6 @@
        <property name="bottomMargin">
         <number>0</number>
        </property>
-       <item>
-        <layout class="QHBoxLayout" name="horizontalLayout_3"/>
-       </item>
        <item>
         <widget class="QFrame" name="frame_titulos">
          <property name="minimumSize">
@@ -453,7 +450,7 @@
                       <property name="frameShadow">
                        <enum>QFrame::Raised</enum>
                       </property>
-                      <widget class="QPushButton" name="pushButton_10">
+                      <widget class="QPushButton" name="but_recents">
                        <property name="geometry">
                         <rect>
                          <x>120</x>
@@ -463,7 +460,7 @@
                         </rect>
                        </property>
                        <property name="text">
-                        <string>PushButton</string>
+                        <string>Recents</string>
                        </property>
                       </widget>
                      </widget>
@@ -487,9 +484,9 @@
                          </property>
                          <layout class="QVBoxLayout" name="verticalLayout_13">
                           <item>
-                           <widget class="QPushButton" name="pushButton_11">
+                           <widget class="QPushButton" name="but_new_seq">
                             <property name="text">
-                             <string>PushButton</string>
+                             <string>New Sequence</string>
                             </property>
                            </widget>
                           </item>
@@ -506,16 +503,16 @@
                          </property>
                          <layout class="QVBoxLayout" name="verticalLayout_12">
                           <item>
-                           <widget class="QPushButton" name="pushButton_12">
+                           <widget class="QPushButton" name="but_upload_file">
                             <property name="text">
-                             <string>PushButton</string>
+                             <string>Upload File</string>
                             </property>
                            </widget>
                           </item>
                           <item>
-                           <widget class="QPushButton" name="pushButton_13">
+                           <widget class="QPushButton" name="but_template">
                             <property name="text">
-                             <string>PushButton</string>
+                             <string>Template</string>
                             </property>
                            </widget>
                           </item>
@@ -536,7 +533,60 @@
                    <property name="frameShadow">
                     <enum>QFrame::Raised</enum>
                    </property>
+                   <layout class="QVBoxLayout" name="verticalLayout_3">
+                    <item>
+                     <widget class="QToolBox" name="tb_test">
+                      <property name="currentIndex">
+                       <number>0</number>
+                      </property>
+                      <widget class="QWidget" name="pageChooseModules">
+                       <property name="geometry">
+                        <rect>
+                         <x>0</x>
+                         <y>0</y>
+                         <width>89</width>
+                         <height>333</height>
+                        </rect>
+                       </property>
+                       <attribute name="label">
+                        <string>Choose modules</string>
+                       </attribute>
+                      </widget>
+                      <widget class="QWidget" name="page_edit_seq">
+                       <attribute name="label">
+                        <string>Edit Sequence Structure</string>
+                       </attribute>
+                      </widget>
+                      <widget class="QWidget" name="page_test_steps">
+                       <property name="geometry">
+                        <rect>
+                         <x>0</x>
+                         <y>0</y>
+                         <width>89</width>
+                         <height>333</height>
+                        </rect>
+                       </property>
+                       <attribute name="label">
+                        <string>Test Steps</string>
+                       </attribute>
+                      </widget>
+                      <widget class="QWidget" name="page_run_seq">
+                       <attribute name="label">
+                        <string>Run Sequence Structure</string>
+                       </attribute>
+                      </widget>
+                      <widget class="QWidget" name="page_5">
+                       <attribute name="label">
+                        <string>Real Time Controls</string>
+                       </attribute>
+                      </widget>
+                     </widget>
+                    </item>
+                   </layout>
                   </widget>
+                 </item>
+                 <item>
+                  <widget class="QGraphicsView" name="graphicsView"/>
                  </item>
                 </layout>
                </widget>
