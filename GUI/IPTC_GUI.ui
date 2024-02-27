@@ -6,12 +6,16 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>803</width>
-    <height>682</height>
+    <width>694</width>
+    <height>622</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>IPTC</string>
+  </property>
+  <property name="windowIcon">
+   <iconset>
+    <normaloff>IPTC_logo.png</normaloff>IPTC_logo.png</iconset>
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QVBoxLayout" name="verticalLayout">
@@ -162,7 +166,7 @@
           <item>
            <widget class="QPushButton" name="pushButton">
             <property name="text">
-             <string>Develop &amp; Run Tests</string>
+             <string>Develop and Run Tests</string>
             </property>
            </widget>
           </item>
