@@ -23,7 +23,7 @@ class Ui_IPTC(object):
         icon.addFile(u":/icons/icons/IPTC_logo.svg", QSize(), QIcon.Normal, QIcon.Off)
         IPTC.setWindowIcon(icon)
         IPTC.setStyleSheet(u"*{\n"
-"	border: none;\n"
+"	border:none;\n"
 "}")
         self.centralwidget = QWidget(IPTC)
         self.centralwidget.setObjectName(u"centralwidget")
@@ -268,8 +268,8 @@ class Ui_IPTC(object):
         self.dataResults_menu.setMaximumSize(QSize(16777215, 0))
         self.dataResults_menu.setFrameShape(QFrame.StyledPanel)
         self.dataResults_menu.setFrameShadow(QFrame.Raised)
-        self.formLayout_2 = QFormLayout(self.dataResults_menu)
-        self.formLayout_2.setObjectName(u"formLayout_2")
+        self.gridLayout_9 = QGridLayout(self.dataResults_menu)
+        self.gridLayout_9.setObjectName(u"gridLayout_9")
         self.frame_17 = QFrame(self.dataResults_menu)
         self.frame_17.setObjectName(u"frame_17")
         self.frame_17.setMinimumSize(QSize(0, 0))
@@ -288,18 +288,18 @@ class Ui_IPTC(object):
         self.verticalLayout_15.addWidget(self.sideResultsBtn)
 
 
-        self.formLayout_2.setWidget(0, QFormLayout.LabelRole, self.frame_17)
+        self.gridLayout_9.addWidget(self.frame_17, 0, 0, 1, 1)
 
         self.dataresult_sidemenu = QFrame(self.dataResults_menu)
         self.dataresult_sidemenu.setObjectName(u"dataresult_sidemenu")
-        self.dataresult_sidemenu.setMaximumSize(QSize(600, 300))
+        self.dataresult_sidemenu.setMaximumSize(QSize(400, 300))
         self.dataresult_sidemenu.setFrameShape(QFrame.StyledPanel)
         self.dataresult_sidemenu.setFrameShadow(QFrame.Raised)
         self.formLayout = QFormLayout(self.dataresult_sidemenu)
         self.formLayout.setObjectName(u"formLayout")
         self.formLayout.setHorizontalSpacing(0)
         self.formLayout.setVerticalSpacing(0)
-        self.formLayout.setContentsMargins(0, 0, 350, 0)
+        self.formLayout.setContentsMargins(0, 0, 0, 0)
         self.intAnalysisBtn = QPushButton(self.dataresult_sidemenu)
         self.intAnalysisBtn.setObjectName(u"intAnalysisBtn")
 
@@ -331,7 +331,54 @@ class Ui_IPTC(object):
         self.formLayout.setWidget(5, QFormLayout.LabelRole, self.customReportBtn)
 
 
-        self.formLayout_2.setWidget(0, QFormLayout.FieldRole, self.dataresult_sidemenu)
+        self.gridLayout_9.addWidget(self.dataresult_sidemenu, 0, 1, 1, 1, Qt.AlignHCenter)
+
+        self.stackedDataResults = QStackedWidget(self.dataResults_menu)
+        self.stackedDataResults.setObjectName(u"stackedDataResults")
+        self.homeDataResOpt = QWidget()
+        self.homeDataResOpt.setObjectName(u"homeDataResOpt")
+        self.label = QLabel(self.homeDataResOpt)
+        self.label.setObjectName(u"label")
+        self.label.setGeometry(QRect(140, 160, 67, 17))
+        self.stackedDataResults.addWidget(self.homeDataResOpt)
+        self.intAnalysisOpt = QWidget()
+        self.intAnalysisOpt.setObjectName(u"intAnalysisOpt")
+        self.label_3 = QLabel(self.intAnalysisOpt)
+        self.label_3.setObjectName(u"label_3")
+        self.label_3.setGeometry(QRect(110, 160, 131, 17))
+        self.stackedDataResults.addWidget(self.intAnalysisOpt)
+        self.ftgOpt = QWidget()
+        self.ftgOpt.setObjectName(u"ftgOpt")
+        self.label_4 = QLabel(self.ftgOpt)
+        self.label_4.setObjectName(u"label_4")
+        self.label_4.setGeometry(QRect(100, 160, 161, 17))
+        self.stackedDataResults.addWidget(self.ftgOpt)
+        self.interactiveGrphOpt = QWidget()
+        self.interactiveGrphOpt.setObjectName(u"interactiveGrphOpt")
+        self.label_5 = QLabel(self.interactiveGrphOpt)
+        self.label_5.setObjectName(u"label_5")
+        self.label_5.setGeometry(QRect(110, 160, 141, 17))
+        self.stackedDataResults.addWidget(self.interactiveGrphOpt)
+        self.pandAnomDetOpt = QWidget()
+        self.pandAnomDetOpt.setObjectName(u"pandAnomDetOpt")
+        self.label_7 = QLabel(self.pandAnomDetOpt)
+        self.label_7.setObjectName(u"label_7")
+        self.label_7.setGeometry(QRect(70, 160, 211, 17))
+        self.stackedDataResults.addWidget(self.pandAnomDetOpt)
+        self.resCompOpt = QWidget()
+        self.resCompOpt.setObjectName(u"resCompOpt")
+        self.label_8 = QLabel(self.resCompOpt)
+        self.label_8.setObjectName(u"label_8")
+        self.label_8.setGeometry(QRect(110, 160, 131, 17))
+        self.stackedDataResults.addWidget(self.resCompOpt)
+        self.customRepOpt = QWidget()
+        self.customRepOpt.setObjectName(u"customRepOpt")
+        self.label_9 = QLabel(self.customRepOpt)
+        self.label_9.setObjectName(u"label_9")
+        self.label_9.setGeometry(QRect(110, 160, 131, 17))
+        self.stackedDataResults.addWidget(self.customRepOpt)
+
+        self.gridLayout_9.addWidget(self.stackedDataResults, 0, 2, 1, 1)
 
 
         self.verticalLayout.addWidget(self.dataResults_menu)
@@ -345,120 +392,125 @@ class Ui_IPTC(object):
         self.verticalLayout_3.setSpacing(0)
         self.verticalLayout_3.setObjectName(u"verticalLayout_3")
         self.verticalLayout_3.setContentsMargins(0, 0, 0, 0)
-        self.workspaceActions = QFrame(self.confWokspace_menu)
-        self.workspaceActions.setObjectName(u"workspaceActions")
-        self.workspaceActions.setFrameShape(QFrame.StyledPanel)
-        self.workspaceActions.setFrameShadow(QFrame.Raised)
-        self.horizontalLayout_2 = QHBoxLayout(self.workspaceActions)
-        self.horizontalLayout_2.setObjectName(u"horizontalLayout_2")
-        self.frame_10 = QFrame(self.workspaceActions)
-        self.frame_10.setObjectName(u"frame_10")
-        self.frame_10.setFrameShape(QFrame.StyledPanel)
-        self.frame_10.setFrameShadow(QFrame.Raised)
-        self.verticalLayout_8 = QVBoxLayout(self.frame_10)
-        self.verticalLayout_8.setObjectName(u"verticalLayout_8")
-        self.selectWorkspaceBtn = QPushButton(self.frame_10)
-        self.selectWorkspaceBtn.setObjectName(u"selectWorkspaceBtn")
-
-        self.verticalLayout_8.addWidget(self.selectWorkspaceBtn)
-
-        self.newWorkspaceBtn = QPushButton(self.frame_10)
-        self.newWorkspaceBtn.setObjectName(u"newWorkspaceBtn")
-
-        self.verticalLayout_8.addWidget(self.newWorkspaceBtn)
-
-
-        self.horizontalLayout_2.addWidget(self.frame_10)
-
-        self.frame_11 = QFrame(self.workspaceActions)
-        self.frame_11.setObjectName(u"frame_11")
-        self.frame_11.setFrameShape(QFrame.StyledPanel)
-        self.frame_11.setFrameShadow(QFrame.Raised)
-        self.verticalLayout_10 = QVBoxLayout(self.frame_11)
-        self.verticalLayout_10.setObjectName(u"verticalLayout_10")
-        self.manageNotifBtn = QPushButton(self.frame_11)
+        self.workConfMenu = QFrame(self.confWokspace_menu)
+        self.workConfMenu.setObjectName(u"workConfMenu")
+        self.workConfMenu.setFrameShape(QFrame.StyledPanel)
+        self.workConfMenu.setFrameShadow(QFrame.Raised)
+        self.gridLayout_2 = QGridLayout(self.workConfMenu)
+        self.gridLayout_2.setSpacing(6)
+        self.gridLayout_2.setObjectName(u"gridLayout_2")
+        self.gridLayout_2.setContentsMargins(9, 9, 9, 9)
+        self.stackedWidgetWorkspace = QStackedWidget(self.workConfMenu)
+        self.stackedWidgetWorkspace.setObjectName(u"stackedWidgetWorkspace")
+        self.home = QWidget()
+        self.home.setObjectName(u"home")
+        self.stackedWidgetWorkspace.addWidget(self.home)
+        self.saveWorksMenu = QWidget()
+        self.saveWorksMenu.setObjectName(u"saveWorksMenu")
+        self.verticalLayout_6 = QVBoxLayout(self.saveWorksMenu)
+        self.verticalLayout_6.setObjectName(u"verticalLayout_6")
+        self.manageNotifBtn = QPushButton(self.saveWorksMenu)
         self.manageNotifBtn.setObjectName(u"manageNotifBtn")
 
-        self.verticalLayout_10.addWidget(self.manageNotifBtn)
+        self.verticalLayout_6.addWidget(self.manageNotifBtn)
 
-        self.logEventsBtn = QPushButton(self.frame_11)
+        self.logEventsBtn = QPushButton(self.saveWorksMenu)
         self.logEventsBtn.setObjectName(u"logEventsBtn")
 
-        self.verticalLayout_10.addWidget(self.logEventsBtn)
+        self.verticalLayout_6.addWidget(self.logEventsBtn)
 
-        self.preloadTestsBtn = QPushButton(self.frame_11)
+        self.preloadTestsBtn = QPushButton(self.saveWorksMenu)
         self.preloadTestsBtn.setObjectName(u"preloadTestsBtn")
 
-        self.verticalLayout_10.addWidget(self.preloadTestsBtn)
+        self.verticalLayout_6.addWidget(self.preloadTestsBtn)
 
-        self.exportSettingsBtn = QPushButton(self.frame_11)
+        self.exportSettingsBtn = QPushButton(self.saveWorksMenu)
         self.exportSettingsBtn.setObjectName(u"exportSettingsBtn")
 
-        self.verticalLayout_10.addWidget(self.exportSettingsBtn)
+        self.verticalLayout_6.addWidget(self.exportSettingsBtn)
 
-        self.viewSavedBtn = QPushButton(self.frame_11)
+        self.viewSavedBtn = QPushButton(self.saveWorksMenu)
         self.viewSavedBtn.setObjectName(u"viewSavedBtn")
 
-        self.verticalLayout_10.addWidget(self.viewSavedBtn)
+        self.verticalLayout_6.addWidget(self.viewSavedBtn)
 
-
-        self.horizontalLayout_2.addWidget(self.frame_11)
-
-
-        self.verticalLayout_3.addWidget(self.workspaceActions)
-
-        self.frame_9 = QFrame(self.confWokspace_menu)
-        self.frame_9.setObjectName(u"frame_9")
-        self.frame_9.setFrameShape(QFrame.StyledPanel)
-        self.frame_9.setFrameShadow(QFrame.Raised)
-        self.gridLayout_2 = QGridLayout(self.frame_9)
-        self.gridLayout_2.setObjectName(u"gridLayout_2")
-        self.frame_14 = QFrame(self.frame_9)
-        self.frame_14.setObjectName(u"frame_14")
-        self.frame_14.setFrameShape(QFrame.StyledPanel)
-        self.frame_14.setFrameShadow(QFrame.Raised)
-        self.gridLayout_3 = QGridLayout(self.frame_14)
+        self.stackedWidgetWorkspace.addWidget(self.saveWorksMenu)
+        self.newWorkMenu = QWidget()
+        self.newWorkMenu.setObjectName(u"newWorkMenu")
+        self.verticalLayout_5 = QVBoxLayout(self.newWorkMenu)
+        self.verticalLayout_5.setSpacing(0)
+        self.verticalLayout_5.setObjectName(u"verticalLayout_5")
+        self.verticalLayout_5.setContentsMargins(0, 0, 0, 0)
+        self.frameNew = QFrame(self.newWorkMenu)
+        self.frameNew.setObjectName(u"frameNew")
+        self.frameNew.setMaximumSize(QSize(16777215, 500))
+        self.frameNew.setFrameShape(QFrame.StyledPanel)
+        self.frameNew.setFrameShadow(QFrame.Raised)
+        self.gridLayout_3 = QGridLayout(self.frameNew)
         self.gridLayout_3.setObjectName(u"gridLayout_3")
-        self.LabelName = QLabel(self.frame_14)
-        self.LabelName.setObjectName(u"LabelName")
-
-        self.gridLayout_3.addWidget(self.LabelName, 0, 0, 1, 1)
-
-        self.line_name = QLineEdit(self.frame_14)
-        self.line_name.setObjectName(u"line_name")
-
-        self.gridLayout_3.addWidget(self.line_name, 0, 1, 1, 1)
-
-        self.LabelOrg = QLabel(self.frame_14)
-        self.LabelOrg.setObjectName(u"LabelOrg")
-
-        self.gridLayout_3.addWidget(self.LabelOrg, 1, 0, 1, 1)
-
-        self.line_org = QLineEdit(self.frame_14)
-        self.line_org.setObjectName(u"line_org")
-
-        self.gridLayout_3.addWidget(self.line_org, 1, 1, 1, 1)
-
-        self.label_6 = QLabel(self.frame_14)
-        self.label_6.setObjectName(u"label_6")
-
-        self.gridLayout_3.addWidget(self.label_6, 2, 0, 1, 1)
-
-        self.line_team = QLineEdit(self.frame_14)
+        self.line_team = QLineEdit(self.frameNew)
         self.line_team.setObjectName(u"line_team")
 
         self.gridLayout_3.addWidget(self.line_team, 2, 1, 1, 1)
 
-        self.moduleConfBtn = QPushButton(self.frame_14)
+        self.label_6 = QLabel(self.frameNew)
+        self.label_6.setObjectName(u"label_6")
+
+        self.gridLayout_3.addWidget(self.label_6, 2, 0, 1, 1)
+
+        self.line_name = QLineEdit(self.frameNew)
+        self.line_name.setObjectName(u"line_name")
+
+        self.gridLayout_3.addWidget(self.line_name, 0, 1, 1, 1)
+
+        self.moduleConfBtn = QPushButton(self.frameNew)
         self.moduleConfBtn.setObjectName(u"moduleConfBtn")
 
         self.gridLayout_3.addWidget(self.moduleConfBtn, 3, 1, 1, 1)
 
+        self.LabelOrg = QLabel(self.frameNew)
+        self.LabelOrg.setObjectName(u"LabelOrg")
 
-        self.gridLayout_2.addWidget(self.frame_14, 0, 0, 1, 1)
+        self.gridLayout_3.addWidget(self.LabelOrg, 1, 0, 1, 1)
+
+        self.line_org = QLineEdit(self.frameNew)
+        self.line_org.setObjectName(u"line_org")
+
+        self.gridLayout_3.addWidget(self.line_org, 1, 1, 1, 1)
+
+        self.LabelName = QLabel(self.frameNew)
+        self.LabelName.setObjectName(u"LabelName")
+
+        self.gridLayout_3.addWidget(self.LabelName, 0, 0, 1, 1)
 
 
-        self.verticalLayout_3.addWidget(self.frame_9)
+        self.verticalLayout_5.addWidget(self.frameNew)
+
+        self.stackedWidgetWorkspace.addWidget(self.newWorkMenu)
+
+        self.gridLayout_2.addWidget(self.stackedWidgetWorkspace, 1, 1, 1, 1)
+
+        self.workOptions = QFrame(self.workConfMenu)
+        self.workOptions.setObjectName(u"workOptions")
+        self.workOptions.setFrameShape(QFrame.StyledPanel)
+        self.workOptions.setFrameShadow(QFrame.Raised)
+        self.gridLayout_8 = QGridLayout(self.workOptions)
+        self.gridLayout_8.setObjectName(u"gridLayout_8")
+        self.selectWorkspaceBtn = QPushButton(self.workOptions)
+        self.selectWorkspaceBtn.setObjectName(u"selectWorkspaceBtn")
+
+        self.gridLayout_8.addWidget(self.selectWorkspaceBtn, 0, 0, 1, 1)
+
+        self.newWorkspaceBtn = QPushButton(self.workOptions)
+        self.newWorkspaceBtn.setObjectName(u"newWorkspaceBtn")
+
+        self.gridLayout_8.addWidget(self.newWorkspaceBtn, 0, 1, 1, 1)
+
+
+        self.gridLayout_2.addWidget(self.workOptions, 0, 1, 1, 2)
+
+
+        self.verticalLayout_3.addWidget(self.workConfMenu)
 
 
         self.verticalLayout.addWidget(self.confWokspace_menu)
@@ -480,6 +532,10 @@ class Ui_IPTC(object):
         IPTC.setCentralWidget(self.centralwidget)
 
         self.retranslateUi(IPTC)
+
+        self.stackedDataResults.setCurrentIndex(6)
+        self.stackedWidgetWorkspace.setCurrentIndex(1)
+
 
         QMetaObject.connectSlotsByName(IPTC)
     # setupUi
@@ -507,16 +563,23 @@ class Ui_IPTC(object):
         self.patAnoDetBtn.setText(QCoreApplication.translate("IPTC", u"Pattern and Anomaly detection", None))
         self.resultCompBtn.setText(QCoreApplication.translate("IPTC", u"Results Comparison ", None))
         self.customReportBtn.setText(QCoreApplication.translate("IPTC", u"Customize reports", None))
-        self.selectWorkspaceBtn.setText(QCoreApplication.translate("IPTC", u"Choose a saved Workspace", None))
-        self.newWorkspaceBtn.setText(QCoreApplication.translate("IPTC", u"Create a new workspace", None))
+        self.label.setText(QCoreApplication.translate("IPTC", u"Home", None))
+        self.label_3.setText(QCoreApplication.translate("IPTC", u"Integrated Analysis", None))
+        self.label_4.setText(QCoreApplication.translate("IPTC", u"Filters, Tags and Groups", None))
+        self.label_5.setText(QCoreApplication.translate("IPTC", u"Interactive graphics", None))
+        self.label_7.setText(QCoreApplication.translate("IPTC", u"Pattern and Anomaly detection", None))
+        self.label_8.setText(QCoreApplication.translate("IPTC", u"Results comparison", None))
+        self.label_9.setText(QCoreApplication.translate("IPTC", u"Customize reports", None))
         self.manageNotifBtn.setText(QCoreApplication.translate("IPTC", u"Manage Notifications", None))
         self.logEventsBtn.setText(QCoreApplication.translate("IPTC", u"Log events", None))
         self.preloadTestsBtn.setText(QCoreApplication.translate("IPTC", u"Pre-load tests", None))
         self.exportSettingsBtn.setText(QCoreApplication.translate("IPTC", u"Export settings", None))
         self.viewSavedBtn.setText(QCoreApplication.translate("IPTC", u"View saved tests", None))
-        self.LabelName.setText(QCoreApplication.translate("IPTC", u"Name", None))
-        self.LabelOrg.setText(QCoreApplication.translate("IPTC", u"Org", None))
         self.label_6.setText(QCoreApplication.translate("IPTC", u"Team", None))
         self.moduleConfBtn.setText(QCoreApplication.translate("IPTC", u"Modules settings", None))
+        self.LabelOrg.setText(QCoreApplication.translate("IPTC", u"Org", None))
+        self.LabelName.setText(QCoreApplication.translate("IPTC", u"Name", None))
+        self.selectWorkspaceBtn.setText(QCoreApplication.translate("IPTC", u"Choose a saved Workspace", None))
+        self.newWorkspaceBtn.setText(QCoreApplication.translate("IPTC", u"Create a new workspace", None))
     # retranslateUi
 

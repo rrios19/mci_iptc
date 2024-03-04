@@ -19,7 +19,7 @@
   </property>
   <property name="styleSheet">
    <string notr="true">*{
-	border: none;
+	border:none;
 }</string>
   </property>
   <widget class="QWidget" name="centralwidget">
@@ -551,7 +551,7 @@
             <property name="frameShadow">
              <enum>QFrame::Raised</enum>
             </property>
-            <layout class="QFormLayout" name="formLayout_2">
+            <layout class="QGridLayout" name="gridLayout_9">
              <item row="0" column="0">
               <widget class="QFrame" name="frame_17">
                <property name="minimumSize">
@@ -608,11 +608,11 @@
                </layout>
               </widget>
              </item>
-             <item row="0" column="1">
+             <item row="0" column="1" alignment="Qt::AlignHCenter">
               <widget class="QFrame" name="dataresult_sidemenu">
                <property name="maximumSize">
                 <size>
-                 <width>600</width>
+                 <width>400</width>
                  <height>300</height>
                 </size>
                </property>
@@ -636,7 +636,7 @@
                  <number>0</number>
                 </property>
                 <property name="rightMargin">
-                 <number>350</number>
+                 <number>0</number>
                 </property>
                 <property name="bottomMargin">
                  <number>0</number>
@@ -686,6 +686,118 @@
                </layout>
               </widget>
              </item>
+             <item row="0" column="2">
+              <widget class="QStackedWidget" name="stackedDataResults">
+               <property name="currentIndex">
+                <number>6</number>
+               </property>
+               <widget class="QWidget" name="homeDataResOpt">
+                <widget class="QLabel" name="label">
+                 <property name="geometry">
+                  <rect>
+                   <x>140</x>
+                   <y>160</y>
+                   <width>67</width>
+                   <height>17</height>
+                  </rect>
+                 </property>
+                 <property name="text">
+                  <string>Home</string>
+                 </property>
+                </widget>
+               </widget>
+               <widget class="QWidget" name="intAnalysisOpt">
+                <widget class="QLabel" name="label_3">
+                 <property name="geometry">
+                  <rect>
+                   <x>110</x>
+                   <y>160</y>
+                   <width>131</width>
+                   <height>17</height>
+                  </rect>
+                 </property>
+                 <property name="text">
+                  <string>Integrated Analysis</string>
+                 </property>
+                </widget>
+               </widget>
+               <widget class="QWidget" name="ftgOpt">
+                <widget class="QLabel" name="label_4">
+                 <property name="geometry">
+                  <rect>
+                   <x>100</x>
+                   <y>160</y>
+                   <width>161</width>
+                   <height>17</height>
+                  </rect>
+                 </property>
+                 <property name="text">
+                  <string>Filters, Tags and Groups</string>
+                 </property>
+                </widget>
+               </widget>
+               <widget class="QWidget" name="interactiveGrphOpt">
+                <widget class="QLabel" name="label_5">
+                 <property name="geometry">
+                  <rect>
+                   <x>110</x>
+                   <y>160</y>
+                   <width>141</width>
+                   <height>17</height>
+                  </rect>
+                 </property>
+                 <property name="text">
+                  <string>Interactive graphics</string>
+                 </property>
+                </widget>
+               </widget>
+               <widget class="QWidget" name="pandAnomDetOpt">
+                <widget class="QLabel" name="label_7">
+                 <property name="geometry">
+                  <rect>
+                   <x>70</x>
+                   <y>160</y>
+                   <width>211</width>
+                   <height>17</height>
+                  </rect>
+                 </property>
+                 <property name="text">
+                  <string>Pattern and Anomaly detection</string>
+                 </property>
+                </widget>
+               </widget>
+               <widget class="QWidget" name="resCompOpt">
+                <widget class="QLabel" name="label_8">
+                 <property name="geometry">
+                  <rect>
+                   <x>110</x>
+                   <y>160</y>
+                   <width>131</width>
+                   <height>17</height>
+                  </rect>
+                 </property>
+                 <property name="text">
+                  <string>Results comparison</string>
+                 </property>
+                </widget>
+               </widget>
+               <widget class="QWidget" name="customRepOpt">
+                <widget class="QLabel" name="label_9">
+                 <property name="geometry">
+                  <rect>
+                   <x>110</x>
+                   <y>160</y>
+                   <width>131</width>
+                   <height>17</height>
+                  </rect>
+                 </property>
+                 <property name="text">
+                  <string>Customize reports</string>
+                 </property>
+                </widget>
+               </widget>
+              </widget>
+             </item>
             </layout>
            </widget>
           </item>
@@ -720,92 +832,7 @@
               <number>0</number>
              </property>
              <item>
-              <widget class="QFrame" name="workspaceActions">
-               <property name="frameShape">
-                <enum>QFrame::StyledPanel</enum>
-               </property>
-               <property name="frameShadow">
-                <enum>QFrame::Raised</enum>
-               </property>
-               <layout class="QHBoxLayout" name="horizontalLayout_2">
-                <item>
-                 <widget class="QFrame" name="frame_10">
-                  <property name="frameShape">
-                   <enum>QFrame::StyledPanel</enum>
-                  </property>
-                  <property name="frameShadow">
-                   <enum>QFrame::Raised</enum>
-                  </property>
-                  <layout class="QVBoxLayout" name="verticalLayout_8">
-                   <item>
-                    <widget class="QPushButton" name="selectWorkspaceBtn">
-                     <property name="text">
-                      <string>Choose a saved Workspace</string>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <widget class="QPushButton" name="newWorkspaceBtn">
-                     <property name="text">
-                      <string>Create a new workspace</string>
-                     </property>
-                    </widget>
-                   </item>
-                  </layout>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QFrame" name="frame_11">
-                  <property name="frameShape">
-                   <enum>QFrame::StyledPanel</enum>
-                  </property>
-                  <property name="frameShadow">
-                   <enum>QFrame::Raised</enum>
-                  </property>
-                  <layout class="QVBoxLayout" name="verticalLayout_10">
-                   <item>
-                    <widget class="QPushButton" name="manageNotifBtn">
-                     <property name="text">
-                      <string>Manage Notifications</string>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <widget class="QPushButton" name="logEventsBtn">
-                     <property name="text">
-                      <string>Log events</string>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <widget class="QPushButton" name="preloadTestsBtn">
-                     <property name="text">
-                      <string>Pre-load tests</string>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <widget class="QPushButton" name="exportSettingsBtn">
-                     <property name="text">
-                      <string>Export settings</string>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <widget class="QPushButton" name="viewSavedBtn">
-                     <property name="text">
-                      <string>View saved tests</string>
-                     </property>
-                    </widget>
-                   </item>
-                  </layout>
-                 </widget>
-                </item>
-               </layout>
-              </widget>
-             </item>
-             <item>
-              <widget class="QFrame" name="frame_9">
+              <widget class="QFrame" name="workConfMenu">
                <property name="frameShape">
                 <enum>QFrame::StyledPanel</enum>
                </property>
@@ -813,49 +840,162 @@
                 <enum>QFrame::Raised</enum>
                </property>
                <layout class="QGridLayout" name="gridLayout_2">
-                <item row="0" column="0">
-                 <widget class="QFrame" name="frame_14">
+                <property name="leftMargin">
+                 <number>9</number>
+                </property>
+                <property name="topMargin">
+                 <number>9</number>
+                </property>
+                <property name="rightMargin">
+                 <number>9</number>
+                </property>
+                <property name="bottomMargin">
+                 <number>9</number>
+                </property>
+                <property name="spacing">
+                 <number>6</number>
+                </property>
+                <item row="1" column="1">
+                 <widget class="QStackedWidget" name="stackedWidgetWorkspace">
+                  <property name="currentIndex">
+                   <number>1</number>
+                  </property>
+                  <widget class="QWidget" name="home"/>
+                  <widget class="QWidget" name="saveWorksMenu">
+                   <layout class="QVBoxLayout" name="verticalLayout_6">
+                    <item>
+                     <widget class="QPushButton" name="manageNotifBtn">
+                      <property name="text">
+                       <string>Manage Notifications</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QPushButton" name="logEventsBtn">
+                      <property name="text">
+                       <string>Log events</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QPushButton" name="preloadTestsBtn">
+                      <property name="text">
+                       <string>Pre-load tests</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QPushButton" name="exportSettingsBtn">
+                      <property name="text">
+                       <string>Export settings</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QPushButton" name="viewSavedBtn">
+                      <property name="text">
+                       <string>View saved tests</string>
+                      </property>
+                     </widget>
+                    </item>
+                   </layout>
+                  </widget>
+                  <widget class="QWidget" name="newWorkMenu">
+                   <layout class="QVBoxLayout" name="verticalLayout_5">
+                    <property name="spacing">
+                     <number>0</number>
+                    </property>
+                    <property name="leftMargin">
+                     <number>0</number>
+                    </property>
+                    <property name="topMargin">
+                     <number>0</number>
+                    </property>
+                    <property name="rightMargin">
+                     <number>0</number>
+                    </property>
+                    <property name="bottomMargin">
+                     <number>0</number>
+                    </property>
+                    <item>
+                     <widget class="QFrame" name="frameNew">
+                      <property name="maximumSize">
+                       <size>
+                        <width>16777215</width>
+                        <height>500</height>
+                       </size>
+                      </property>
+                      <property name="frameShape">
+                       <enum>QFrame::StyledPanel</enum>
+                      </property>
+                      <property name="frameShadow">
+                       <enum>QFrame::Raised</enum>
+                      </property>
+                      <layout class="QGridLayout" name="gridLayout_3">
+                       <item row="2" column="1">
+                        <widget class="QLineEdit" name="line_team"/>
+                       </item>
+                       <item row="2" column="0">
+                        <widget class="QLabel" name="label_6">
+                         <property name="text">
+                          <string>Team</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="0" column="1">
+                        <widget class="QLineEdit" name="line_name"/>
+                       </item>
+                       <item row="3" column="1">
+                        <widget class="QPushButton" name="moduleConfBtn">
+                         <property name="text">
+                          <string>Modules settings</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="1" column="0">
+                        <widget class="QLabel" name="LabelOrg">
+                         <property name="text">
+                          <string>Org</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="1" column="1">
+                        <widget class="QLineEdit" name="line_org"/>
+                       </item>
+                       <item row="0" column="0">
+                        <widget class="QLabel" name="LabelName">
+                         <property name="text">
+                          <string>Name</string>
+                         </property>
+                        </widget>
+                       </item>
+                      </layout>
+                     </widget>
+                    </item>
+                   </layout>
+                  </widget>
+                 </widget>
+                </item>
+                <item row="0" column="1" colspan="2">
+                 <widget class="QFrame" name="workOptions">
                   <property name="frameShape">
                    <enum>QFrame::StyledPanel</enum>
                   </property>
                   <property name="frameShadow">
                    <enum>QFrame::Raised</enum>
                   </property>
-                  <layout class="QGridLayout" name="gridLayout_3">
+                  <layout class="QGridLayout" name="gridLayout_8">
                    <item row="0" column="0">
-                    <widget class="QLabel" name="LabelName">
+                    <widget class="QPushButton" name="selectWorkspaceBtn">
                      <property name="text">
-                      <string>Name</string>
+                      <string>Choose a saved Workspace</string>
                      </property>
                     </widget>
                    </item>
                    <item row="0" column="1">
-                    <widget class="QLineEdit" name="line_name"/>
-                   </item>
-                   <item row="1" column="0">
-                    <widget class="QLabel" name="LabelOrg">
+                    <widget class="QPushButton" name="newWorkspaceBtn">
                      <property name="text">
-                      <string>Org</string>
-                     </property>
-                    </widget>
-                   </item>
-                   <item row="1" column="1">
-                    <widget class="QLineEdit" name="line_org"/>
-                   </item>
-                   <item row="2" column="0">
-                    <widget class="QLabel" name="label_6">
-                     <property name="text">
-                      <string>Team</string>
-                     </property>
-                    </widget>
-                   </item>
-                   <item row="2" column="1">
-                    <widget class="QLineEdit" name="line_team"/>
-                   </item>
-                   <item row="3" column="1">
-                    <widget class="QPushButton" name="moduleConfBtn">
-                     <property name="text">
-                      <string>Modules settings</string>
+                      <string>Create a new workspace</string>
                      </property>
                     </widget>
                    </item>

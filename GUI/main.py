@@ -57,6 +57,40 @@ class VentanaPrincipal(QMainWindow):
 
         ##Minimizar Ventana
         self.ui.minimize_btn.clicked.connect(lambda: self.showMinimized())
+
+        #######################################################################################
+        ## Stacked Widget for New/Saved organization
+        ## Establecer página de inicio por defecto
+        self.ui.stackedWidgetWorkspace.setCurrentWidget(self.ui.home)
+
+        #Cambiar a la página designada para espacio de trabajo guardado
+        self.ui.selectWorkspaceBtn.clicked.connect(lambda: self.ui.stackedWidgetWorkspace.setCurrentWidget(self.ui.saveWorksMenu))
+
+        #Cambiar a la página designada para espacio de nueva estación de trabajo
+        self.ui.newWorkspaceBtn.clicked.connect(lambda: self.ui.stackedWidgetWorkspace.setCurrentWidget(self.ui.newWorkMenu))
+
+        #########################################################################################
+        #Stacked Widget para las opciones de resultados
+        self.ui.stackedDataResults.setCurrentWidget(self.ui.homeDataResOpt)
+
+        #Selecciona frame de integrated analysis
+        self.ui.intAnalysisBtn.clicked.connect(lambda: self.ui.stackedDataResults.setCurrentWidget(self.ui.intAnalysisOpt))
+
+        #Selecciona frame de Filters, Tags and Groups
+        self.ui.filTagsGrBtn.clicked.connect(lambda: self.ui.stackedDataResults.setCurrentWidget(self.ui.ftgOpt))
+
+        #Selecciona frame de Interactive graphics
+        self.ui.interacGraphBtn.clicked.connect(lambda: self.ui.stackedDataResults.setCurrentWidget(self.ui.interactiveGrphOpt))
+
+        #Selecciona frame de pattern and anomaly detection
+        self.ui.patAnoDetBtn.clicked.connect(lambda: self.ui.stackedDataResults.setCurrentWidget(self.ui.pandAnomDetOpt))
+
+        #Selecciona frame de results comparison
+        self.ui.resultCompBtn.clicked.connect(lambda: self.ui.stackedDataResults.setCurrentWidget(self.ui.resCompOpt))
+
+        self.ui.customReportBtn.clicked.connect(lambda: self.ui.stackedDataResults.setCurrentWidget(self.ui.customRepOpt))
+
+
         
         # ###############################################
         # Función para mover la ventana cuando con el mouse en la barra de título
@@ -111,6 +145,11 @@ class VentanaPrincipal(QMainWindow):
         #Develop and run tests side menu toggle button
         self.ui.newSeqBtn.clicked.connect(lambda: self.slideLeftMenu(self.ui.newSeq_slidemenu,self.ui.newSeqBtn))
 
+
+
+
+
+
         self.show()
 
 
@@ -149,50 +188,56 @@ class VentanaPrincipal(QMainWindow):
         height = slidedown_menu.height()
         # Si está minimizado
         menus = ["Develop and run tests","Configure Workspace","Data results","Help"]
-        menus.remove(btn.text())
+        if btn.text() in menus:
+            menus.remove(btn.text())
+            if height == 0:
+                for menu in menus:     
+                    if menu == "Develop and run tests":
+                        frame = self.ui.slide_devtstmenu
+                        actBtn = self.ui.devBtnTest
+                        actBtnIconPath = u":/icons/icons/battery-charging.svg"
+                    elif menu == "Configure Workspace":
+                        frame = self.ui.confWokspace_menu
+                        actBtn = self.ui.confWorkspaceBtn
+                        actBtnIconPath = u":/icons/icons/settings.svg"
+                    elif menu == "Data results":
+                        frame = self.ui.dataResults_menu
+                        actBtn = self.ui.dataResultBtn
+                        actBtnIconPath = u":/icons/icons/bar-chart-2.svg"
+                    else:
+                        frame = self.ui.help_menu
+                        actBtn = self.ui.helpBtn
+                        actBtnIconPath = u":/icons/icons/help-circle.svg"
 
-        if height == 0:
-            for menu in menus:     
-                if menu == "Develop and run tests":
-                    frame = self.ui.slide_devtstmenu
-                    actBtn = self.ui.devBtnTest
-                    actBtnIconPath = u":/icons/icons/battery-charging.svg"
-                elif menu == "Configure Workspace":
-                    frame = self.ui.confWokspace_menu
-                    actBtn = self.ui.confWorkspaceBtn
-                    actBtnIconPath = u":/icons/icons/settings.svg"
-                elif menu == "Data results":
-                    frame = self.ui.dataResults_menu
-                    actBtn = self.ui.dataResultBtn
-                    actBtnIconPath = u":/icons/icons/bar-chart-2.svg"
-                else:
-                    frame = self.ui.help_menu
-                    actBtn = self.ui.helpBtn
-                    actBtnIconPath = u":/icons/icons/help-circle.svg"
+                    if frame.height() > 0:
+                        frame.setMaximumHeight(0)
+                        actBtn.setIcon(QtGui.QIcon(actBtnIconPath))
 
-                if frame.height() > 0:
-                    frame.setMaximumHeight(0)
-                    actBtn.setIcon(QtGui.QIcon(actBtnIconPath))
-
-            # Expandir Menú
-            newHeight = 800
-        
-            btn.setIcon(QtGui.QIcon(u":/icons/icons/chevron-up.svg"))
-        # Si está maximizado
-        else:
-            # Restablecer menu
-            if btn.text() == "Develop and run tests":
-                btnIconPath = u":/icons/icons/battery-charging.svg"
-            elif btn.text() == "Configure Workspace":
-                btnIconPath = u":/icons/icons/settings.svg"
-            elif btn.text() == "Data results":
-                btnIconPath = u":/icons/icons/bar-chart-2.svg"
-            elif btn.text() == "Help":
-                btnIconPath = u":/icons/icons/help-circle.svg"
+                # Expandir Menú
+                newHeight = 800
+            
+                btn.setIcon(QtGui.QIcon(u":/icons/icons/chevron-up.svg"))
+            # Si está maximizado
             else:
-                btnIconPath = u":/icons/icons/align-center.svg"
-            newHeight = 0
-            btn.setIcon(QtGui.QIcon(btnIconPath))
+                # Restablecer menu
+                if btn.text() == "Develop and run tests":
+                    btnIconPath = u":/icons/icons/battery-charging.svg"
+                elif btn.text() == "Configure Workspace":
+                    btnIconPath = u":/icons/icons/settings.svg"
+                elif btn.text() == "Data results":
+                    btnIconPath = u":/icons/icons/bar-chart-2.svg"
+                elif btn.text() == "Help":
+                    btnIconPath = u":/icons/icons/help-circle.svg"
+                else:
+                    btnIconPath = u":/icons/icons/align-center.svg"
+                newHeight = 0
+                btn.setIcon(QtGui.QIcon(btnIconPath))
+        else:
+            if height == 0:
+                newHeight = 800
+
+            else:
+                newHeight = 0
 
         # Transición animada
         self.animation = QPropertyAnimation(slidedown_menu, b"maximumHeight")#Animate minimumWidht
@@ -202,6 +247,8 @@ class VentanaPrincipal(QMainWindow):
         self.animation.setEasingCurve(QtCore.QEasingCurve.InOutQuart)
         self.animation.start()
     #######################################################################
+
+
 
     #######################################################################
     # Añadir eventos del mouse a la ventana
