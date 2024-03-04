@@ -1,6 +1,6 @@
 # Integrated Power Testing System for CubeSats (IPTC)
 
-![IPTC Logo](url_to_logo.png)
+![IPTC Logo](GUI/IPTC_logo.png)
 
 ## Overview
 
