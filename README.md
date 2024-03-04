@@ -4,7 +4,7 @@
 
 ## Overview
 
-The Integrated Power Testing System for CubeSats (IPTC) is a comprehensive control and interface module designed for CubeSat power testing. This repository contains the source code and configuration files for the IPTC system. The system is developed by Ronald Rios at the Tecnologico de Costa Rica.
+The Integrated Power Testing System for CubeSats (IPTC) is a comprehensive control and interface module designed for CubeSat power testing. This repository contains the source code and configuration files for the IPTC system. The system is developed by the SetecLab at the Tecnologico de Costa Rica.
 
 ## Features
 
