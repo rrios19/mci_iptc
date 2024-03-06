@@ -88,6 +88,7 @@ class VentanaPrincipal(QMainWindow):
         #Selecciona frame de results comparison
         self.ui.resultCompBtn.clicked.connect(lambda: self.ui.stackedDataResults.setCurrentWidget(self.ui.resCompOpt))
 
+        #Selecciona frame de customize report
         self.ui.customReportBtn.clicked.connect(lambda: self.ui.stackedDataResults.setCurrentWidget(self.ui.customRepOpt))
 
 
@@ -125,16 +126,19 @@ class VentanaPrincipal(QMainWindow):
         #
         #Develop and run tests toggle button
         self.ui.devBtnTest.clicked.connect(lambda: self.slideDownMenu(self.ui.slide_devtstmenu,self.ui.devBtnTest))
+        self.ui.devBtnTest.clicked.connect(lambda: self.ui.stackedDataResults.setCurrentWidget(self.ui.homeDataResOpt))
 
         #Configure workspace toggle button
         self.ui.confWorkspaceBtn.clicked.connect(lambda: self.slideDownMenu(self.ui.confWokspace_menu,self.ui.confWorkspaceBtn))
+        self.ui.confWorkspaceBtn.clicked.connect(lambda: self.ui.stackedDataResults.setCurrentWidget(self.ui.homeDataResOpt))
 
         #Data results toggle button
         self.ui.dataResultBtn.clicked.connect(lambda: self.slideDownMenu(self.ui.dataResults_menu,self.ui.dataResultBtn))
+        self.ui.dataResultBtn.clicked.connect(lambda: self.ui.stackedDataResults.setCurrentWidget(self.ui.homeDataResOpt))        
 
         #Help toggle button
         self.ui.helpBtn.clicked.connect(lambda: self.slideDownMenu(self.ui.help_menu,self.ui.helpBtn))
-
+        self.ui.helpBtn.clicked.connect(lambda: self.ui.stackedDataResults.setCurrentWidget(self.ui.homeDataResOpt))   
         #Data results side menu toggle button
         self.ui.sideResultsBtn.clicked.connect(lambda: self.slideLeftMenu(self.ui.dataresult_sidemenu,self.ui.sideResultsBtn))
 
@@ -145,7 +149,9 @@ class VentanaPrincipal(QMainWindow):
         #Develop and run tests side menu toggle button
         self.ui.newSeqBtn.clicked.connect(lambda: self.slideLeftMenu(self.ui.newSeq_slidemenu,self.ui.newSeqBtn))
 
+        #Creating new Organization
 
+        self.ui.saveWorkspaceBtn.clicked.connect(lambda: self.save_new_workspace())
 
 
 
@@ -276,6 +282,40 @@ class VentanaPrincipal(QMainWindow):
             self.showMaximized()
             # Cambiar ícono
             self.ui.maximize_btn.setIcon(QtGui.QIcon(u":/icons/icons/minimize-2.svg"))
+
+
+    #########################################################################
+    #Guardar un  nuevo Workspace
+    #########################################################################
+    def save_new_workspace(self):
+        name = self.ui.line_name.text()
+        org = self.ui.line_org.text()
+        team = self.ui.line_team.text()
+
+        parentDir = os.getcwd()
+        pathToWorkspace = os.path.join(parentDir,name)
+        os.mkdir(pathToWorkspace)
+        pathWorkspaceResults = os.path.join(pathToWorkspace,"results")
+        os.mkdir(pathWorkspaceResults)
+        pathDevnRunTest = os.path.join(pathToWorkspace, "develop and run test")
+        os.mkdir(pathDevnRunTest)
+        pathConfigure = os.path.join(pathToWorkspace, "configuration")
+        os.mkdir(pathConfigure)
+        
+        with open(f"{pathToWorkspace}/Workspace_Info.txt", "w") as file:
+            file.write(f"Name: {name}\n")
+            file.write(f"Organization: {org}\n")
+            file.write(f"Team: {team}\n")
+            file.close()
+
+    #########################################################################
+    #Guardar añadir nuevos miembros
+    #########################################################################
+    def add_members(self):
+        newMember = self.ui.line_newMember.text()
+        with open('f{pathToWorkspace}/Team_Members.txt', 'a') as file:
+            file.write(f"{newMember}")
+            file.close()
 
 if __name__ == "__main__":
     iptc = QApplication(sys.argv)

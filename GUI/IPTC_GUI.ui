@@ -23,8 +23,8 @@
 }</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <layout class="QGridLayout" name="gridLayout">
-    <item row="0" column="0">
+   <layout class="QHBoxLayout" name="horizontalLayout_3">
+    <item>
      <widget class="QFrame" name="mainwindow">
       <property name="maximumSize">
        <size>
@@ -858,7 +858,7 @@
                 <item row="1" column="1">
                  <widget class="QStackedWidget" name="stackedWidgetWorkspace">
                   <property name="currentIndex">
-                   <number>1</number>
+                   <number>2</number>
                   </property>
                   <widget class="QWidget" name="home"/>
                   <widget class="QWidget" name="saveWorksMenu">
@@ -901,10 +901,7 @@
                    </layout>
                   </widget>
                   <widget class="QWidget" name="newWorkMenu">
-                   <layout class="QVBoxLayout" name="verticalLayout_5">
-                    <property name="spacing">
-                     <number>0</number>
-                    </property>
+                   <layout class="QGridLayout" name="gridLayout_10">
                     <property name="leftMargin">
                      <number>0</number>
                     </property>
@@ -917,7 +914,7 @@
                     <property name="bottomMargin">
                      <number>0</number>
                     </property>
-                    <item>
+                    <item row="0" column="0">
                      <widget class="QFrame" name="frameNew">
                       <property name="maximumSize">
                        <size>
@@ -932,8 +929,8 @@
                        <enum>QFrame::Raised</enum>
                       </property>
                       <layout class="QGridLayout" name="gridLayout_3">
-                       <item row="2" column="1">
-                        <widget class="QLineEdit" name="line_team"/>
+                       <item row="1" column="1">
+                        <widget class="QLineEdit" name="line_org"/>
                        </item>
                        <item row="2" column="0">
                         <widget class="QLabel" name="label_6">
@@ -942,15 +939,59 @@
                          </property>
                         </widget>
                        </item>
+                       <item row="3" column="0" colspan="2">
+                        <widget class="QFrame" name="frame">
+                         <property name="maximumSize">
+                          <size>
+                           <width>16777215</width>
+                           <height>40</height>
+                          </size>
+                         </property>
+                         <property name="frameShape">
+                          <enum>QFrame::StyledPanel</enum>
+                         </property>
+                         <property name="frameShadow">
+                          <enum>QFrame::Raised</enum>
+                         </property>
+                         <layout class="QHBoxLayout" name="horizontalLayout_2">
+                          <item>
+                           <widget class="QPushButton" name="addMembersBtn">
+                            <property name="maximumSize">
+                             <size>
+                              <width>100</width>
+                              <height>16777215</height>
+                             </size>
+                            </property>
+                            <property name="text">
+                             <string>Add members</string>
+                            </property>
+                           </widget>
+                          </item>
+                          <item>
+                           <widget class="QPushButton" name="moduleConfBtn">
+                            <property name="text">
+                             <string>Modules settings</string>
+                            </property>
+                           </widget>
+                          </item>
+                          <item>
+                           <widget class="QPushButton" name="saveWorkspaceBtn">
+                            <property name="maximumSize">
+                             <size>
+                              <width>200</width>
+                              <height>16777215</height>
+                             </size>
+                            </property>
+                            <property name="text">
+                             <string>Save workspace</string>
+                            </property>
+                           </widget>
+                          </item>
+                         </layout>
+                        </widget>
+                       </item>
                        <item row="0" column="1">
                         <widget class="QLineEdit" name="line_name"/>
-                       </item>
-                       <item row="3" column="1">
-                        <widget class="QPushButton" name="moduleConfBtn">
-                         <property name="text">
-                          <string>Modules settings</string>
-                         </property>
-                        </widget>
                        </item>
                        <item row="1" column="0">
                         <widget class="QLabel" name="LabelOrg">
@@ -959,14 +1000,49 @@
                          </property>
                         </widget>
                        </item>
-                       <item row="1" column="1">
-                        <widget class="QLineEdit" name="line_org"/>
-                       </item>
                        <item row="0" column="0">
                         <widget class="QLabel" name="LabelName">
                          <property name="text">
                           <string>Name</string>
                          </property>
+                        </widget>
+                       </item>
+                       <item row="2" column="1">
+                        <widget class="QLineEdit" name="line_team"/>
+                       </item>
+                       <item row="4" column="0" colspan="2">
+                        <widget class="QFrame" name="frame_2">
+                         <property name="maximumSize">
+                          <size>
+                           <width>16777215</width>
+                           <height>0</height>
+                          </size>
+                         </property>
+                         <property name="frameShape">
+                          <enum>QFrame::StyledPanel</enum>
+                         </property>
+                         <property name="frameShadow">
+                          <enum>QFrame::Raised</enum>
+                         </property>
+                         <layout class="QHBoxLayout" name="horizontalLayout_4">
+                          <item>
+                           <widget class="QLabel" name="label_10">
+                            <property name="text">
+                             <string>Name</string>
+                            </property>
+                           </widget>
+                          </item>
+                          <item>
+                           <widget class="QLineEdit" name="lineEdit"/>
+                          </item>
+                          <item>
+                           <widget class="QPushButton" name="pushButton">
+                            <property name="text">
+                             <string>Add</string>
+                            </property>
+                           </widget>
+                          </item>
+                         </layout>
                         </widget>
                        </item>
                       </layout>

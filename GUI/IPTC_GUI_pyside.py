@@ -27,8 +27,8 @@ class Ui_IPTC(object):
 "}")
         self.centralwidget = QWidget(IPTC)
         self.centralwidget.setObjectName(u"centralwidget")
-        self.gridLayout = QGridLayout(self.centralwidget)
-        self.gridLayout.setObjectName(u"gridLayout")
+        self.horizontalLayout_3 = QHBoxLayout(self.centralwidget)
+        self.horizontalLayout_3.setObjectName(u"horizontalLayout_3")
         self.mainwindow = QFrame(self.centralwidget)
         self.mainwindow.setObjectName(u"mainwindow")
         self.mainwindow.setMaximumSize(QSize(16777215, 16777215))
@@ -437,10 +437,9 @@ class Ui_IPTC(object):
         self.stackedWidgetWorkspace.addWidget(self.saveWorksMenu)
         self.newWorkMenu = QWidget()
         self.newWorkMenu.setObjectName(u"newWorkMenu")
-        self.verticalLayout_5 = QVBoxLayout(self.newWorkMenu)
-        self.verticalLayout_5.setSpacing(0)
-        self.verticalLayout_5.setObjectName(u"verticalLayout_5")
-        self.verticalLayout_5.setContentsMargins(0, 0, 0, 0)
+        self.gridLayout_10 = QGridLayout(self.newWorkMenu)
+        self.gridLayout_10.setObjectName(u"gridLayout_10")
+        self.gridLayout_10.setContentsMargins(0, 0, 0, 0)
         self.frameNew = QFrame(self.newWorkMenu)
         self.frameNew.setObjectName(u"frameNew")
         self.frameNew.setMaximumSize(QSize(16777215, 500))
@@ -448,43 +447,90 @@ class Ui_IPTC(object):
         self.frameNew.setFrameShadow(QFrame.Raised)
         self.gridLayout_3 = QGridLayout(self.frameNew)
         self.gridLayout_3.setObjectName(u"gridLayout_3")
-        self.line_team = QLineEdit(self.frameNew)
-        self.line_team.setObjectName(u"line_team")
+        self.line_org = QLineEdit(self.frameNew)
+        self.line_org.setObjectName(u"line_org")
 
-        self.gridLayout_3.addWidget(self.line_team, 2, 1, 1, 1)
+        self.gridLayout_3.addWidget(self.line_org, 1, 1, 1, 1)
 
         self.label_6 = QLabel(self.frameNew)
         self.label_6.setObjectName(u"label_6")
 
         self.gridLayout_3.addWidget(self.label_6, 2, 0, 1, 1)
 
+        self.frame = QFrame(self.frameNew)
+        self.frame.setObjectName(u"frame")
+        self.frame.setMaximumSize(QSize(16777215, 40))
+        self.frame.setFrameShape(QFrame.StyledPanel)
+        self.frame.setFrameShadow(QFrame.Raised)
+        self.horizontalLayout_2 = QHBoxLayout(self.frame)
+        self.horizontalLayout_2.setObjectName(u"horizontalLayout_2")
+        self.addMembersBtn = QPushButton(self.frame)
+        self.addMembersBtn.setObjectName(u"addMembersBtn")
+        self.addMembersBtn.setMaximumSize(QSize(100, 16777215))
+
+        self.horizontalLayout_2.addWidget(self.addMembersBtn)
+
+        self.moduleConfBtn = QPushButton(self.frame)
+        self.moduleConfBtn.setObjectName(u"moduleConfBtn")
+
+        self.horizontalLayout_2.addWidget(self.moduleConfBtn)
+
+        self.saveWorkspaceBtn = QPushButton(self.frame)
+        self.saveWorkspaceBtn.setObjectName(u"saveWorkspaceBtn")
+        self.saveWorkspaceBtn.setMaximumSize(QSize(200, 16777215))
+
+        self.horizontalLayout_2.addWidget(self.saveWorkspaceBtn)
+
+
+        self.gridLayout_3.addWidget(self.frame, 3, 0, 1, 2)
+
         self.line_name = QLineEdit(self.frameNew)
         self.line_name.setObjectName(u"line_name")
 
         self.gridLayout_3.addWidget(self.line_name, 0, 1, 1, 1)
-
-        self.moduleConfBtn = QPushButton(self.frameNew)
-        self.moduleConfBtn.setObjectName(u"moduleConfBtn")
-
-        self.gridLayout_3.addWidget(self.moduleConfBtn, 3, 1, 1, 1)
 
         self.LabelOrg = QLabel(self.frameNew)
         self.LabelOrg.setObjectName(u"LabelOrg")
 
         self.gridLayout_3.addWidget(self.LabelOrg, 1, 0, 1, 1)
 
-        self.line_org = QLineEdit(self.frameNew)
-        self.line_org.setObjectName(u"line_org")
-
-        self.gridLayout_3.addWidget(self.line_org, 1, 1, 1, 1)
-
         self.LabelName = QLabel(self.frameNew)
         self.LabelName.setObjectName(u"LabelName")
 
         self.gridLayout_3.addWidget(self.LabelName, 0, 0, 1, 1)
 
+        self.line_team = QLineEdit(self.frameNew)
+        self.line_team.setObjectName(u"line_team")
 
-        self.verticalLayout_5.addWidget(self.frameNew)
+        self.gridLayout_3.addWidget(self.line_team, 2, 1, 1, 1)
+
+        self.frame_2 = QFrame(self.frameNew)
+        self.frame_2.setObjectName(u"frame_2")
+        self.frame_2.setMaximumSize(QSize(16777215, 0))
+        self.frame_2.setFrameShape(QFrame.StyledPanel)
+        self.frame_2.setFrameShadow(QFrame.Raised)
+        self.horizontalLayout_4 = QHBoxLayout(self.frame_2)
+        self.horizontalLayout_4.setObjectName(u"horizontalLayout_4")
+        self.label_10 = QLabel(self.frame_2)
+        self.label_10.setObjectName(u"label_10")
+
+        self.horizontalLayout_4.addWidget(self.label_10)
+
+        self.lineEdit = QLineEdit(self.frame_2)
+        self.lineEdit.setObjectName(u"lineEdit")
+
+        self.horizontalLayout_4.addWidget(self.lineEdit)
+
+        self.pushButton = QPushButton(self.frame_2)
+        self.pushButton.setObjectName(u"pushButton")
+
+        self.horizontalLayout_4.addWidget(self.pushButton)
+
+
+        self.gridLayout_3.addWidget(self.frame_2, 4, 0, 1, 2)
+
+
+        self.gridLayout_10.addWidget(self.frameNew, 0, 0, 1, 1)
 
         self.stackedWidgetWorkspace.addWidget(self.newWorkMenu)
 
@@ -527,14 +573,14 @@ class Ui_IPTC(object):
         self.verticalLayout_2.addWidget(self.body_window)
 
 
-        self.gridLayout.addWidget(self.mainwindow, 0, 0, 1, 1)
+        self.horizontalLayout_3.addWidget(self.mainwindow)
 
         IPTC.setCentralWidget(self.centralwidget)
 
         self.retranslateUi(IPTC)
 
         self.stackedDataResults.setCurrentIndex(6)
-        self.stackedWidgetWorkspace.setCurrentIndex(1)
+        self.stackedWidgetWorkspace.setCurrentIndex(2)
 
 
         QMetaObject.connectSlotsByName(IPTC)
@@ -576,9 +622,13 @@ class Ui_IPTC(object):
         self.exportSettingsBtn.setText(QCoreApplication.translate("IPTC", u"Export settings", None))
         self.viewSavedBtn.setText(QCoreApplication.translate("IPTC", u"View saved tests", None))
         self.label_6.setText(QCoreApplication.translate("IPTC", u"Team", None))
+        self.addMembersBtn.setText(QCoreApplication.translate("IPTC", u"Add members", None))
         self.moduleConfBtn.setText(QCoreApplication.translate("IPTC", u"Modules settings", None))
+        self.saveWorkspaceBtn.setText(QCoreApplication.translate("IPTC", u"Save workspace", None))
         self.LabelOrg.setText(QCoreApplication.translate("IPTC", u"Org", None))
         self.LabelName.setText(QCoreApplication.translate("IPTC", u"Name", None))
+        self.label_10.setText(QCoreApplication.translate("IPTC", u"Name", None))
+        self.pushButton.setText(QCoreApplication.translate("IPTC", u"Add", None))
         self.selectWorkspaceBtn.setText(QCoreApplication.translate("IPTC", u"Choose a saved Workspace", None))
         self.newWorkspaceBtn.setText(QCoreApplication.translate("IPTC", u"Create a new workspace", None))
     # retranslateUi
