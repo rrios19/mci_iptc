@@ -18,12 +18,13 @@ from IPTC_GUI_pyside import *
 
 from qt_material import apply_stylesheet
 
+
 class VentanaPrincipal(QMainWindow):
     def __init__(self):
         QMainWindow.__init__(self)
         self.ui = Ui_IPTC()
         self.ui.setupUi(self)
-
+        self.currentPathToWorkspace = ""
         #######################################################################
         ## # Remover la barra de título
         ########################################################################    
@@ -149,11 +150,14 @@ class VentanaPrincipal(QMainWindow):
         #Develop and run tests side menu toggle button
         self.ui.newSeqBtn.clicked.connect(lambda: self.slideLeftMenu(self.ui.newSeq_slidemenu,self.ui.newSeqBtn))
 
+        #Add members edit line
+        self.ui.addMembersBtn.clicked.connect(lambda: self.slideDownMenu(self.ui.addMembersLine,self.ui.addMembersBtn))
         #Creating new Organization
 
         self.ui.saveWorkspaceBtn.clicked.connect(lambda: self.save_new_workspace())
 
-
+        #Adding members
+        self.ui.addBtn.clicked.connect(lambda: self.add_members())
 
 
         self.show()
@@ -294,28 +298,54 @@ class VentanaPrincipal(QMainWindow):
 
         parentDir = os.getcwd()
         pathToWorkspace = os.path.join(parentDir,name)
-        os.mkdir(pathToWorkspace)
-        pathWorkspaceResults = os.path.join(pathToWorkspace,"results")
-        os.mkdir(pathWorkspaceResults)
-        pathDevnRunTest = os.path.join(pathToWorkspace, "develop and run test")
-        os.mkdir(pathDevnRunTest)
-        pathConfigure = os.path.join(pathToWorkspace, "configuration")
-        os.mkdir(pathConfigure)
         
-        with open(f"{pathToWorkspace}/Workspace_Info.txt", "w") as file:
-            file.write(f"Name: {name}\n")
-            file.write(f"Organization: {org}\n")
-            file.write(f"Team: {team}\n")
-            file.close()
+        if os.path.exists(pathToWorkspace):
+            QMessageBox.warning(self, "Warning", f"{name} workspace already exists, try using another name.")
 
+        else:
+            self.currentPathToWorkspace = pathToWorkspace
+            os.mkdir(pathToWorkspace)
+            pathWorkspaceResults = os.path.join(pathToWorkspace,"results")
+            os.mkdir(pathWorkspaceResults)
+            pathDevnRunTest = os.path.join(pathToWorkspace, "develop and run test")
+            os.mkdir(pathDevnRunTest)
+            pathConfigure = os.path.join(pathToWorkspace, "configuration")
+            os.mkdir(pathConfigure)
+            
+            with open(f"{pathToWorkspace}/Workspace_Info.txt", "w") as file:
+                file.write(f"Name: {name}\n")
+                file.write(f"Organization: {org}\n")
+                file.write(f"Team: {team}\n")
+                file.close()
+
+            QMessageBox.information(self, "Information", f"{name} workspace created succesfully")
+            self.ui.line_name.clear()
+            self.ui.line_org.clear()
+            self.ui.line_team.clear()
     #########################################################################
     #Guardar añadir nuevos miembros
     #########################################################################
     def add_members(self):
         newMember = self.ui.line_newMember.text()
-        with open('f{pathToWorkspace}/Team_Members.txt', 'a') as file:
-            file.write(f"{newMember}")
-            file.close()
+        with open(f"{self.currentPathToWorkspace}/Team_Members.txt", "a+") as f:
+            f.seek(0)
+            members = f.readlines()
+            duplicateFlag = False
+            for member in members:
+                realmember = member.split("\n")[0]
+                if realmember == newMember:
+                    duplicateFlag = True
+                    break
+                else:
+                    duplicateFlag = False
+        
+            if duplicateFlag:
+                QMessageBox.warning(self, "Warning", f"The name {newMember} is already part of the team")
+            else:
+                f.write(f"{newMember}\n")
+                f.close()
+                QMessageBox.information(self, "Information", f"{newMember} added succesfully to the team")
+                self.ui.line_newMember.clear()
 
 if __name__ == "__main__":
     iptc = QApplication(sys.argv)

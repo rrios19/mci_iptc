@@ -958,7 +958,7 @@
                            <widget class="QPushButton" name="addMembersBtn">
                             <property name="maximumSize">
                              <size>
-                              <width>100</width>
+                              <width>200</width>
                               <height>16777215</height>
                              </size>
                             </property>
@@ -1011,7 +1011,13 @@
                         <widget class="QLineEdit" name="line_team"/>
                        </item>
                        <item row="4" column="0" colspan="2">
-                        <widget class="QFrame" name="frame_2">
+                        <widget class="QFrame" name="addMembersLine">
+                         <property name="minimumSize">
+                          <size>
+                           <width>0</width>
+                           <height>50</height>
+                          </size>
+                         </property>
                          <property name="maximumSize">
                           <size>
                            <width>16777215</width>
@@ -1033,10 +1039,10 @@
                            </widget>
                           </item>
                           <item>
-                           <widget class="QLineEdit" name="lineEdit"/>
+                           <widget class="QLineEdit" name="line_newMember"/>
                           </item>
                           <item>
-                           <widget class="QPushButton" name="pushButton">
+                           <widget class="QPushButton" name="addBtn">
                             <property name="text">
                              <string>Add</string>
                             </property>

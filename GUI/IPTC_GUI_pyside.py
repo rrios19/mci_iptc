@@ -466,7 +466,7 @@ class Ui_IPTC(object):
         self.horizontalLayout_2.setObjectName(u"horizontalLayout_2")
         self.addMembersBtn = QPushButton(self.frame)
         self.addMembersBtn.setObjectName(u"addMembersBtn")
-        self.addMembersBtn.setMaximumSize(QSize(100, 16777215))
+        self.addMembersBtn.setMaximumSize(QSize(200, 16777215))
 
         self.horizontalLayout_2.addWidget(self.addMembersBtn)
 
@@ -504,30 +504,30 @@ class Ui_IPTC(object):
 
         self.gridLayout_3.addWidget(self.line_team, 2, 1, 1, 1)
 
-        self.frame_2 = QFrame(self.frameNew)
-        self.frame_2.setObjectName(u"frame_2")
-        self.frame_2.setMaximumSize(QSize(16777215, 0))
-        self.frame_2.setFrameShape(QFrame.StyledPanel)
-        self.frame_2.setFrameShadow(QFrame.Raised)
-        self.horizontalLayout_4 = QHBoxLayout(self.frame_2)
+        self.addMembersLine = QFrame(self.frameNew)
+        self.addMembersLine.setObjectName(u"addMembersLine")
+        self.addMembersLine.setMaximumSize(QSize(16777215, 0))
+        self.addMembersLine.setFrameShape(QFrame.StyledPanel)
+        self.addMembersLine.setFrameShadow(QFrame.Raised)
+        self.horizontalLayout_4 = QHBoxLayout(self.addMembersLine)
         self.horizontalLayout_4.setObjectName(u"horizontalLayout_4")
-        self.label_10 = QLabel(self.frame_2)
+        self.label_10 = QLabel(self.addMembersLine)
         self.label_10.setObjectName(u"label_10")
 
         self.horizontalLayout_4.addWidget(self.label_10)
 
-        self.lineEdit = QLineEdit(self.frame_2)
-        self.lineEdit.setObjectName(u"lineEdit")
+        self.line_newMember = QLineEdit(self.addMembersLine)
+        self.line_newMember.setObjectName(u"line_newMember")
 
-        self.horizontalLayout_4.addWidget(self.lineEdit)
+        self.horizontalLayout_4.addWidget(self.line_newMember)
 
-        self.pushButton = QPushButton(self.frame_2)
-        self.pushButton.setObjectName(u"pushButton")
+        self.addBtn = QPushButton(self.addMembersLine)
+        self.addBtn.setObjectName(u"addBtn")
 
-        self.horizontalLayout_4.addWidget(self.pushButton)
+        self.horizontalLayout_4.addWidget(self.addBtn)
 
 
-        self.gridLayout_3.addWidget(self.frame_2, 4, 0, 1, 2)
+        self.gridLayout_3.addWidget(self.addMembersLine, 4, 0, 1, 2)
 
 
         self.gridLayout_10.addWidget(self.frameNew, 0, 0, 1, 1)
@@ -628,7 +628,7 @@ class Ui_IPTC(object):
         self.LabelOrg.setText(QCoreApplication.translate("IPTC", u"Org", None))
         self.LabelName.setText(QCoreApplication.translate("IPTC", u"Name", None))
         self.label_10.setText(QCoreApplication.translate("IPTC", u"Name", None))
-        self.pushButton.setText(QCoreApplication.translate("IPTC", u"Add", None))
+        self.addBtn.setText(QCoreApplication.translate("IPTC", u"Add", None))
         self.selectWorkspaceBtn.setText(QCoreApplication.translate("IPTC", u"Choose a saved Workspace", None))
         self.newWorkspaceBtn.setText(QCoreApplication.translate("IPTC", u"Create a new workspace", None))
     # retranslateUi
