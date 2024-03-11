@@ -363,7 +363,8 @@ class VentanaPrincipal(QMainWindow):
                 root = tree.getroot()
 
                 # Set the column count of the tree widget
-                self.ui.treeWidget.setColumnCount(1)
+                self.ui.treeWidget.setColumnCount(2)
+                self.ui.treeWidget.setHeaderLabels(["Element", "Value"])
 
                 # Add the root item to the tree widget
                 root_item = QTreeWidgetItem([root.tag])
@@ -377,16 +378,56 @@ class VentanaPrincipal(QMainWindow):
                         add_items(child_item, child)
                         # Check if the child has text content
                         if child.text is not None:
-                            content_item = QTreeWidgetItem([child.text])
+                            content_item = QTreeWidgetItem(["Value", child.text])
                             child_item.addChild(content_item)
 
                 # Populate the tree widget with XML data
                 add_items(root_item, root)
 
+                # Function to add a new child element
+                def add_child_element():
+                    selected_item = self.ui.treeWidget.currentItem()
+                    if selected_item is not None:
+                        new_element_name, ok = QInputDialog.getText(self, "Add Child Element", "Enter the name of the new element:")
+                        if ok and new_element_name:
+                            new_element = ET.Element(new_element_name)
+                            new_element.text, ok = QInputDialog.getText(self, "Set Value", "Enter the value for the new element:")
+                            if ok:
+                                new_item = QTreeWidgetItem([new_element.tag])
+                                selected_item.addChild(new_item)
+                                if new_element.text:
+                                    value_item = QTreeWidgetItem(["Value", new_element.text])
+                                    new_item.addChild(value_item)
+                                selected_element = tree.find(selected_item.text(0))
+                                selected_element.append(new_element)
+
+                # Function to modify the value of an element
+                def modify_element_value():
+                    selected_item = self.ui.treeWidget.currentItem()
+                    if selected_item is not None:
+                        if selected_item.childCount() > 0:
+                            value_item = selected_item.child(0)
+                            new_value, ok = QInputDialog.getText(self, "Modify Value", "Enter the new value:")
+                            if ok:
+                                value_item.setText(1, new_value)
+                                selected_element = tree.find(selected_item.text(0))
+                                selected_element.text = new_value
+
+                # Add actions to the tree widget context menu
+                self.ui.treeWidget.setContextMenuPolicy(Qt.ActionsContextMenu)
+                add_child_action = QAction("Add Child Element", self.ui.treeWidget)
+                add_child_action.triggered.connect(add_child_element)
+                modify_value_action = QAction("Modify Value", self.ui.treeWidget)
+                modify_value_action.triggered.connect(modify_element_value)
+                self.ui.treeWidget.addAction(add_child_action)
+                self.ui.treeWidget.addAction(modify_value_action)
+
                 QMessageBox.information(self, "Success", "XML data loaded successfully into the tree widget.")
 
             except Exception as e:
                 QMessageBox.warning(self, "Error", f"Failed to parse XML file: {str(e)}")
+
+
 
     #########################################################################
     #Guardar añadir nuevos miembros
