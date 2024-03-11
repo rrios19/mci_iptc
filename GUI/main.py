@@ -362,17 +362,23 @@ class VentanaPrincipal(QMainWindow):
                 tree = ET.parse(selected_file)
                 root = tree.getroot()
 
-                # Add root item to the tree widget
-                root_item = QTreeWidgetItem(self.ui.treeWidget)
-                root_item.setText(0, root.tag)
+                # Set the column count of the tree widget
+                self.ui.treeWidget.setColumnCount(1)
+
+                # Add the root item to the tree widget
+                root_item = QTreeWidgetItem([root.tag])
+                self.ui.treeWidget.addTopLevelItem(root_item)
 
                 # Recursive function to add child items
                 def add_items(parent_item, xml_element):
                     for child in xml_element:
-                        child_item = QTreeWidgetItem(parent_item)
-                        child_item.setText(0, child.tag)
-                        child_item.setExpanded(True)
+                        child_item = QTreeWidgetItem([child.tag])
+                        parent_item.addChild(child_item)
                         add_items(child_item, child)
+                        # Check if the child has text content
+                        if child.text is not None:
+                            content_item = QTreeWidgetItem([child.text])
+                            child_item.addChild(content_item)
 
                 # Populate the tree widget with XML data
                 add_items(root_item, root)
@@ -381,7 +387,6 @@ class VentanaPrincipal(QMainWindow):
 
             except Exception as e:
                 QMessageBox.warning(self, "Error", f"Failed to parse XML file: {str(e)}")
-
 
     #########################################################################
     #Guardar añadir nuevos miembros
