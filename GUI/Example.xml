@@ -1,0 +1,110 @@
+<Test >
+    <Sequence>
+        <Sequence_Properties>
+            <Tested_Module>
+                <Selected> BTM </Selected>
+                <Type> Charge </Type>
+            </Tested_Module>
+        </Sequence_Properties>
+        <Module>
+            <Selected_module> BTM </Selected_module>
+            <Desired>
+                <Voltage> 4.2 </Voltage>
+                <Charge> CC </Charge>
+                <Power> 10 </Power>
+            </Desired>
+        </Module>
+        <Module>
+            <Selected_module> SAM </Selected_module>
+            <Desired>
+                <Irradiance>1000</Irradiance>
+                <Rin>0.5</Rin>
+                <T>25</T>
+                <SolarPow>3</SolarPow>
+            </Desired>
+        </Module>
+    </Sequence>
+    <Sequence>
+        <Sequence_Properties>
+            <Tested_Module>
+                <Selected> SAM </Selected>
+                <Type> Emulate </Type>
+            </Tested_Module>
+        </Sequence_Properties>
+        <Module>
+            <Selected_module> SAM </Selected_module>
+            <Desired>
+                <Irradiance>1000</Irradiance>
+                <Rin>0.5</Rin>
+                <T>25</T>
+                <SolarPow>3</SolarPow>
+            </Desired>
+        </Module>
+        <Module>
+            <Selected_module> VELM </Selected_module>
+            <Desired>
+                <Step>
+                    <Pow> 10 </Pow>
+                    <Time> 60 </Time>
+                </Step>
+                <Step>
+                    <Pow> 10 </Pow>
+                    <Time> 60 </Time>
+                </Step>
+                <Step>
+                    <Pow> 10 </Pow>
+                    <Time> 60 </Time>
+                </Step>
+                <Step>
+                    <Pow> 10 </Pow>
+                    <Time> 60 </Time>
+                </Step>
+                <Step>
+                    <Pow> 10 </Pow>
+                    <Time> 60 </Time>
+                </Step>
+            </Desired>
+        </Module>
+    </Sequence>
+    <Sequence>
+        <Sequence_Properties>
+            <Tested_Module>
+                <Selected> BTM </Selected>
+                <Type> Discharge </Type>
+            </Tested_Module>
+        </Sequence_Properties>
+        <Module>
+            <Selected_module> BTM </Selected_module>
+            <Desired>
+                <Voltage> 3 </Voltage>
+                <Charge> CC </Charge>
+                <Power> 10 </Power>
+            </Desired>
+        </Module>
+        <Module>
+            <Selected_module> VELM </Selected_module>
+            <Desired>
+                <Step>
+                    <Pow> 10 </Pow>
+                    <Time> 60 </Time>
+                </Step>
+                <Step>
+                    <Pow> 10 </Pow>
+                    <Time> 60 </Time>
+                </Step>
+                <Step>
+                    <Pow> 10 </Pow>
+                    <Time> 60 </Time>
+                </Step>
+                <Step>
+                    <Pow> 10 </Pow>
+                    <Time> 60 </Time>
+                </Step>
+                <Step>
+                    <Pow> 10 </Pow>
+                    <Time> 60 </Time>
+                </Step>
+            </Desired>
+        </Module>
+    </Sequence>
+</Test>

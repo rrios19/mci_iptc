@@ -17,7 +17,7 @@ from PySide2 import *
 from IPTC_GUI_pyside import *
 
 from qt_material import apply_stylesheet
-
+import xml.etree.ElementTree as ET
 
 class VentanaPrincipal(QMainWindow):
     def __init__(self):
@@ -65,7 +65,11 @@ class VentanaPrincipal(QMainWindow):
         self.ui.stackedWidgetWorkspace.setCurrentWidget(self.ui.home)
 
         #Cambiar a la página designada para espacio de trabajo guardado
-        self.ui.selectWorkspaceBtn.clicked.connect(lambda: self.ui.stackedWidgetWorkspace.setCurrentWidget(self.ui.saveWorksMenu))
+        self.ui.selectWorkspaceBtn.clicked.connect(self.select_workspace_and_change_widget)
+
+        #Añadir file al treewidget
+        self.ui.tests_recent_btn.clicked.connect(self.upload_xml_to_tree_widget)
+
 
         #Cambiar a la página designada para espacio de nueva estación de trabajo
         self.ui.newWorkspaceBtn.clicked.connect(lambda: self.ui.stackedWidgetWorkspace.setCurrentWidget(self.ui.newWorkMenu))
@@ -91,7 +95,6 @@ class VentanaPrincipal(QMainWindow):
 
         #Selecciona frame de customize report
         self.ui.customReportBtn.clicked.connect(lambda: self.ui.stackedDataResults.setCurrentWidget(self.ui.customRepOpt))
-
 
         
         # ###############################################
@@ -297,31 +300,89 @@ class VentanaPrincipal(QMainWindow):
         team = self.ui.line_team.text()
 
         parentDir = os.getcwd()
-        pathToWorkspace = os.path.join(parentDir,name)
-        
+        pathToWorkspace = os.path.join(parentDir, name)
+
         if os.path.exists(pathToWorkspace):
             QMessageBox.warning(self, "Warning", f"{name} workspace already exists, try using another name.")
-
         else:
             self.currentPathToWorkspace = pathToWorkspace
             os.mkdir(pathToWorkspace)
-            pathWorkspaceResults = os.path.join(pathToWorkspace,"results")
+            pathWorkspaceResults = os.path.join(pathToWorkspace, "results")
             os.mkdir(pathWorkspaceResults)
             pathDevnRunTest = os.path.join(pathToWorkspace, "develop and run test")
             os.mkdir(pathDevnRunTest)
             pathConfigure = os.path.join(pathToWorkspace, "configuration")
             os.mkdir(pathConfigure)
-            
+            self.ui.label_working_path.setText(name)  # Update the label text
             with open(f"{pathToWorkspace}/Workspace_Info.txt", "w") as file:
                 file.write(f"Name: {name}\n")
                 file.write(f"Organization: {org}\n")
                 file.write(f"Team: {team}\n")
                 file.close()
 
-            QMessageBox.information(self, "Information", f"{name} workspace created succesfully")
+            # Create a hidden .iptc file as a valid workspace identifier
+            with open(os.path.join(pathToWorkspace, ".iptc"), "w") as iptc_file:
+                iptc_file.write("This is a valid IPTC workspace")
+
+            QMessageBox.information(self, "Information", f"{name} workspace created successfully")
             self.ui.line_name.clear()
             self.ui.line_org.clear()
             self.ui.line_team.clear()
+
+    def select_workspace_and_change_widget(self):
+        self.select_workspace()
+        self.ui.stackedWidgetWorkspace.setCurrentWidget(self.ui.saveWorksMenu)
+
+    # Function to select a saved workspace
+    def select_workspace(self):
+        options = QFileDialog.Options()
+        selected_folder = QFileDialog.getExistingDirectory(self, "Select Workspace", options=options)
+
+        if selected_folder:
+            # Check if the selected folder contains the .iptc file
+            iptc_file_path = os.path.join(selected_folder, ".iptc")
+            if os.path.exists(iptc_file_path):
+                self.currentPathToWorkspace = selected_folder
+                self.ui.label_working_path.setText(selected_folder)  # Update the label text with the selected folder
+                QMessageBox.information(self, "Information", "Workspace selected successfully")
+            else:
+                QMessageBox.warning(self, "Warning", "Selected folder is not a valid workspace")
+
+    # Function to upload to the xml_tree
+    def upload_xml_to_tree_widget(self):
+        options = QFileDialog.Options()
+        selected_file, _ = QFileDialog.getOpenFileName(self, "Select XML File", "", "XML Files (*.xml)", options=options)
+
+        if selected_file:
+            # Clear existing items in the tree widget
+            self.ui.treeWidget.clear()
+
+            try:
+                # Parse the XML file
+                tree = ET.parse(selected_file)
+                root = tree.getroot()
+
+                # Add root item to the tree widget
+                root_item = QTreeWidgetItem(self.ui.treeWidget)
+                root_item.setText(0, root.tag)
+
+                # Recursive function to add child items
+                def add_items(parent_item, xml_element):
+                    for child in xml_element:
+                        child_item = QTreeWidgetItem(parent_item)
+                        child_item.setText(0, child.tag)
+                        child_item.setExpanded(True)
+                        add_items(child_item, child)
+
+                # Populate the tree widget with XML data
+                add_items(root_item, root)
+
+                QMessageBox.information(self, "Success", "XML data loaded successfully into the tree widget.")
+
+            except Exception as e:
+                QMessageBox.warning(self, "Error", f"Failed to parse XML file: {str(e)}")
+
+
     #########################################################################
     #Guardar añadir nuevos miembros
     #########################################################################

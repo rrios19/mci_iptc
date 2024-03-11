@@ -19,7 +19,7 @@
   </property>
   <property name="styleSheet">
    <string notr="true">*{
-	border:none;
+border:none;
 }</string>
   </property>
   <widget class="QWidget" name="centralwidget">
@@ -53,7 +53,7 @@
          <property name="frameShadow">
           <enum>QFrame::Raised</enum>
          </property>
-         <layout class="QHBoxLayout" name="horizontalLayout" stretch="0,0,0,0">
+         <layout class="QHBoxLayout" name="horizontalLayout" stretch="0,0,0,0,0,0">
           <property name="spacing">
            <number>10</number>
           </property>
@@ -182,7 +182,7 @@
            </widget>
           </item>
           <item alignment="Qt::AlignHCenter">
-           <widget class="QLabel" name="label_2">
+           <widget class="QLabel" name="IPTC_label">
             <property name="maximumSize">
              <size>
               <width>250</width>
@@ -200,6 +200,23 @@
             </property>
             <property name="margin">
              <number>1</number>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="label_current_status">
+            <property name="text">
+             <string/>
+            </property>
+            <property name="pixmap">
+             <pixmap resource="icons.qrc">:/icons/icons/zap-off.svg</pixmap>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="label_working_path">
+            <property name="text">
+             <string/>
             </property>
            </widget>
           </item>
@@ -529,6 +546,27 @@
                     </widget>
                    </item>
                   </layout>
+                 </widget>
+                </item>
+               </layout>
+              </widget>
+             </item>
+             <item row="1" column="2">
+              <widget class="QFrame" name="frame_2">
+               <property name="frameShape">
+                <enum>QFrame::StyledPanel</enum>
+               </property>
+               <property name="frameShadow">
+                <enum>QFrame::Raised</enum>
+               </property>
+               <layout class="QHBoxLayout" name="horizontalLayout_5">
+                <item>
+                 <widget class="QTreeWidget" name="treeWidget">
+                  <column>
+                   <property name="text">
+                    <string notr="true">1</string>
+                   </property>
+                  </column>
                  </widget>
                 </item>
                </layout>
@@ -1104,6 +1142,19 @@
             <property name="frameShadow">
              <enum>QFrame::Raised</enum>
             </property>
+            <widget class="QLabel" name="hel_label_on_menu">
+             <property name="geometry">
+              <rect>
+               <x>20</x>
+               <y>20</y>
+               <width>288</width>
+               <height>17</height>
+              </rect>
+             </property>
+             <property name="text">
+              <string>IPTC GUI is an application for writing tests.</string>
+             </property>
+            </widget>
            </widget>
           </item>
          </layout>

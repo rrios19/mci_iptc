@@ -23,7 +23,7 @@ class Ui_IPTC(object):
         icon.addFile(u":/icons/icons/IPTC_logo.svg", QSize(), QIcon.Normal, QIcon.Off)
         IPTC.setWindowIcon(icon)
         IPTC.setStyleSheet(u"*{\n"
-"	border:none;\n"
+"border:none;\n"
 "}")
         self.centralwidget = QWidget(IPTC)
         self.centralwidget.setObjectName(u"centralwidget")
@@ -95,14 +95,25 @@ class Ui_IPTC(object):
 
         self.horizontalLayout.addWidget(self.SETECLabel, 0, Qt.AlignHCenter)
 
-        self.label_2 = QLabel(self.project_info)
-        self.label_2.setObjectName(u"label_2")
-        self.label_2.setMaximumSize(QSize(250, 16777215))
-        self.label_2.setPixmap(QPixmap(u":/icons/icons/IPTC_logo.svg"))
-        self.label_2.setScaledContents(True)
-        self.label_2.setMargin(1)
+        self.IPTC_label = QLabel(self.project_info)
+        self.IPTC_label.setObjectName(u"IPTC_label")
+        self.IPTC_label.setMaximumSize(QSize(250, 16777215))
+        self.IPTC_label.setPixmap(QPixmap(u":/icons/icons/IPTC_logo.svg"))
+        self.IPTC_label.setScaledContents(True)
+        self.IPTC_label.setMargin(1)
 
-        self.horizontalLayout.addWidget(self.label_2, 0, Qt.AlignHCenter)
+        self.horizontalLayout.addWidget(self.IPTC_label, 0, Qt.AlignHCenter)
+
+        self.label_current_status = QLabel(self.project_info)
+        self.label_current_status.setObjectName(u"label_current_status")
+        self.label_current_status.setPixmap(QPixmap(u":/icons/icons/zap-off.svg"))
+
+        self.horizontalLayout.addWidget(self.label_current_status)
+
+        self.label_working_path = QLabel(self.project_info)
+        self.label_working_path.setObjectName(u"label_working_path")
+
+        self.horizontalLayout.addWidget(self.label_working_path)
 
         self.size_grip = QFrame(self.project_info)
         self.size_grip.setObjectName(u"size_grip")
@@ -259,6 +270,23 @@ class Ui_IPTC(object):
 
 
         self.gridLayout_4.addWidget(self.testsopt_slide, 1, 1, 1, 1)
+
+        self.frame_2 = QFrame(self.slide_devtstmenu)
+        self.frame_2.setObjectName(u"frame_2")
+        self.frame_2.setFrameShape(QFrame.StyledPanel)
+        self.frame_2.setFrameShadow(QFrame.Raised)
+        self.horizontalLayout_5 = QHBoxLayout(self.frame_2)
+        self.horizontalLayout_5.setObjectName(u"horizontalLayout_5")
+        self.treeWidget = QTreeWidget(self.frame_2)
+        __qtreewidgetitem = QTreeWidgetItem()
+        __qtreewidgetitem.setText(0, u"1");
+        self.treeWidget.setHeaderItem(__qtreewidgetitem)
+        self.treeWidget.setObjectName(u"treeWidget")
+
+        self.horizontalLayout_5.addWidget(self.treeWidget)
+
+
+        self.gridLayout_4.addWidget(self.frame_2, 1, 2, 1, 1)
 
 
         self.verticalLayout.addWidget(self.slide_devtstmenu)
@@ -506,6 +534,7 @@ class Ui_IPTC(object):
 
         self.addMembersLine = QFrame(self.frameNew)
         self.addMembersLine.setObjectName(u"addMembersLine")
+        self.addMembersLine.setMinimumSize(QSize(0, 50))
         self.addMembersLine.setMaximumSize(QSize(16777215, 0))
         self.addMembersLine.setFrameShape(QFrame.StyledPanel)
         self.addMembersLine.setFrameShadow(QFrame.Raised)
@@ -566,6 +595,9 @@ class Ui_IPTC(object):
         self.help_menu.setMaximumSize(QSize(16777215, 0))
         self.help_menu.setFrameShape(QFrame.StyledPanel)
         self.help_menu.setFrameShadow(QFrame.Raised)
+        self.hel_label_on_menu = QLabel(self.help_menu)
+        self.hel_label_on_menu.setObjectName(u"hel_label_on_menu")
+        self.hel_label_on_menu.setGeometry(QRect(20, 20, 288, 17))
 
         self.verticalLayout.addWidget(self.help_menu)
 
@@ -592,7 +624,9 @@ class Ui_IPTC(object):
         self.maximize_btn.setText("")
         self.close_btn.setText("")
         self.SETECLabel.setText("")
-        self.label_2.setText("")
+        self.IPTC_label.setText("")
+        self.label_current_status.setText("")
+        self.label_working_path.setText("")
         self.confWorkspaceBtn.setText(QCoreApplication.translate("IPTC", u"Configure Workspace", None))
         self.devBtnTest.setText(QCoreApplication.translate("IPTC", u"Develop and run tests", None))
         self.dataResultBtn.setText(QCoreApplication.translate("IPTC", u"Data results", None))
@@ -631,5 +665,6 @@ class Ui_IPTC(object):
         self.addBtn.setText(QCoreApplication.translate("IPTC", u"Add", None))
         self.selectWorkspaceBtn.setText(QCoreApplication.translate("IPTC", u"Choose a saved Workspace", None))
         self.newWorkspaceBtn.setText(QCoreApplication.translate("IPTC", u"Create a new workspace", None))
+        self.hel_label_on_menu.setText(QCoreApplication.translate("IPTC", u"IPTC GUI is an application for writing tests.", None))
     # retranslateUi
 
