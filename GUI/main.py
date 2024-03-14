@@ -356,6 +356,9 @@ class VentanaPrincipal(QMainWindow):
         if selected_file:
             # Clear existing items in the tree widget
             self.ui.treeWidget.clear()
+            self.ui.treeWidget.setMaximumWidth(600)
+            self.ui.treeWidget.setColumnWidth(0, 250)  # Set the width of the first column to 200 pixels
+            self.ui.treeWidget.setColumnWidth(1, 200)  # Adjust as necessary for your content
 
             try:
                 # Parse the XML file
@@ -371,38 +374,104 @@ class VentanaPrincipal(QMainWindow):
                 self.ui.treeWidget.addTopLevelItem(root_item)
 
                 # Recursive function to add child items
+                '''def add_items(parent_item, xml_element):
+                    for child in xml_element:
+                        # Handle element with attributes
+                        if child.attrib:
+                            for attr_name, attr_value in child.attrib.items():
+                                attr_item = QTreeWidgetItem([child.tag + " @" + attr_name, attr_value])
+                                parent_item.addChild(attr_item)
+                        else:
+                            child_item = QTreeWidgetItem([child.tag])
+                            parent_item.addChild(child_item)
+                            add_items(child_item, child)
+                            # Check if the child has text content
+                        
+                        if child.text and not child.text.isspace():
+                            content_item = QTreeWidgetItem(["Value", child.text])
+                            child_item.addChild(content_item)'''
                 def add_items(parent_item, xml_element):
                     for child in xml_element:
                         child_item = QTreeWidgetItem([child.tag])
                         parent_item.addChild(child_item)
+                        
+                        # Store the associated xml_element with the tree widget item
+                        child_item.setData(0, Qt.UserRole, child)
+                        
+                        # Add attributes as children of the element item
+                        for attr_name, attr_value in child.attrib.items():
+                            attr_item = QTreeWidgetItem([f"@{attr_name}", attr_value])
+                            child_item.addChild(attr_item)
+
+                        # Recursively add child elements
                         add_items(child_item, child)
-                        # Check if the child has text content
-                        if child.text is not None:
-                            content_item = QTreeWidgetItem(["Value", child.text])
+
+                        # Add text content, if present and not just whitespace
+                        if child.text and not child.text.isspace():
+                            content_item = QTreeWidgetItem(["Value", child.text.strip()])
                             child_item.addChild(content_item)
 
                 # Populate the tree widget with XML data
                 add_items(root_item, root)
 
+                
+
                 # Function to add a new child element
                 def add_child_element():
                     selected_item = self.ui.treeWidget.currentItem()
                     if selected_item is not None:
+                        xmlElement = selected_item.data(0, Qt.UserRole)  # Retrieve the associated XML element
                         new_element_name, ok = QInputDialog.getText(self, "Add Child Element", "Enter the name of the new element:")
+                        
                         if ok and new_element_name:
-                            new_element = ET.Element(new_element_name)
-                            new_element.text, ok = QInputDialog.getText(self, "Set Value", "Enter the value for the new element:")
+                            new_element = ET.SubElement(xmlElement, new_element_name)  # Create and append the new element
+                            new_element_text, ok = QInputDialog.getText(self, "Set Value", "Enter the value for the new element:")
+                            
                             if ok:
+                                new_element.text = new_element_text  # Set text for the new element
+                                # Reflect the changes in the QTreeWidget
                                 new_item = QTreeWidgetItem([new_element.tag])
                                 selected_item.addChild(new_item)
+                                
                                 if new_element.text:
                                     value_item = QTreeWidgetItem(["Value", new_element.text])
                                     new_item.addChild(value_item)
-                                selected_element = tree.find(selected_item.text(0))
-                                selected_element.append(new_element)
+                                
+                                # Update the association for the new QTreeWidgetItem
+                                new_item.setData(0, Qt.UserRole, new_element)
+                                
+                                # Write changes to the file
+                                tree.write(selected_file, encoding="utf-8", xml_declaration=True)
+
+
+
 
                 # Function to modify the value of an element
                 def modify_element_value():
+                    selected_item = self.ui.treeWidget.currentItem()
+                    if selected_item is not None:
+                        item_text = selected_item.text(0)
+                        new_value, ok = QInputDialog.getText(self, "Modify Value", "Enter the new value:")
+
+                        if ok:
+                            if item_text.startswith("@"):  # This item represents an attribute
+                                attr_name = item_text[1:]  # Extract attribute name
+                                parent_item = selected_item.parent()
+                                parent_element_tag = parent_item.text(0)
+                                parent_element = tree.find(f".//{parent_element_tag}")
+                                if parent_element is not None:
+                                    parent_element.set(attr_name, new_value)
+                                    selected_item.setText(1, new_value)  # Update GUI
+
+                            elif item_text == "Value":  # This item represents element text content
+                                parent_item = selected_item.parent()
+                                parent_element_tag = parent_item.text(0)
+                                parent_element = tree.find(f".//{parent_element_tag}")
+                                if parent_element is not None:
+                                    parent_element.text = new_value
+                                    selected_item.setText(1, new_value)  # Update GUI
+                    tree.write(selected_file, encoding="utf-8", xml_declaration=True)
+                '''def modify_element_value():
                     selected_item = self.ui.treeWidget.currentItem()
                     if selected_item is not None:
                         if selected_item.childCount() > 0:
@@ -411,7 +480,9 @@ class VentanaPrincipal(QMainWindow):
                             if ok:
                                 value_item.setText(1, new_value)
                                 selected_element = tree.find(selected_item.text(0))
-                                selected_element.text = new_value
+                                selected_element.text = new_value'''
+                    
+
 
                 # Add actions to the tree widget context menu
                 self.ui.treeWidget.setContextMenuPolicy(Qt.ActionsContextMenu)
@@ -421,6 +492,7 @@ class VentanaPrincipal(QMainWindow):
                 modify_value_action.triggered.connect(modify_element_value)
                 self.ui.treeWidget.addAction(add_child_action)
                 self.ui.treeWidget.addAction(modify_value_action)
+
 
                 QMessageBox.information(self, "Success", "XML data loaded successfully into the tree widget.")
 
