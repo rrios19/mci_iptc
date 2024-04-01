@@ -14,7 +14,7 @@
    <string>IPTC</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="icons.qrc">
+   <iconset>
     <normaloff>:/icons/icons/IPTC_logo.svg</normaloff>:/icons/icons/IPTC_logo.svg</iconset>
   </property>
   <property name="styleSheet">
@@ -114,7 +114,7 @@ border:none;
                 <string/>
                </property>
                <property name="icon">
-                <iconset resource="icons.qrc">
+                <iconset>
                  <normaloff>:/icons/icons/minus.svg</normaloff>:/icons/icons/minus.svg</iconset>
                </property>
               </widget>
@@ -134,7 +134,7 @@ border:none;
                 <string/>
                </property>
                <property name="icon">
-                <iconset resource="icons.qrc">
+                <iconset>
                  <normaloff>:/icons/icons/maximize-2.svg</normaloff>:/icons/icons/maximize-2.svg</iconset>
                </property>
               </widget>
@@ -151,7 +151,7 @@ border:none;
                 <string/>
                </property>
                <property name="icon">
-                <iconset resource="icons.qrc">
+                <iconset>
                  <normaloff>:/icons/icons/x.svg</normaloff>:/icons/icons/x.svg</iconset>
                </property>
               </widget>
@@ -171,7 +171,7 @@ border:none;
              <string/>
             </property>
             <property name="pixmap">
-             <pixmap resource="icons.qrc">:/icons/icons/SETECLab_logo.svg</pixmap>
+             <pixmap>:/icons/icons/SETECLab_logo.svg</pixmap>
             </property>
             <property name="scaledContents">
              <bool>true</bool>
@@ -193,7 +193,7 @@ border:none;
              <string/>
             </property>
             <property name="pixmap">
-             <pixmap resource="icons.qrc">:/icons/icons/IPTC_logo.svg</pixmap>
+             <pixmap>:/icons/icons/IPTC_logo.svg</pixmap>
             </property>
             <property name="scaledContents">
              <bool>true</bool>
@@ -209,7 +209,7 @@ border:none;
              <string/>
             </property>
             <property name="pixmap">
-             <pixmap resource="icons.qrc">:/icons/icons/zap-off.svg</pixmap>
+             <pixmap>:/icons/icons/zap-off.svg</pixmap>
             </property>
            </widget>
           </item>
@@ -282,7 +282,7 @@ border:none;
                 <string>Configure Workspace</string>
                </property>
                <property name="icon">
-                <iconset resource="icons.qrc">
+                <iconset>
                  <normaloff>:/icons/icons/settings.svg</normaloff>:/icons/icons/settings.svg</iconset>
                </property>
                <property name="iconSize">
@@ -302,7 +302,7 @@ border:none;
                 <string>Develop and run tests</string>
                </property>
                <property name="icon">
-                <iconset resource="icons.qrc">
+                <iconset>
                  <normaloff>:/icons/icons/battery-charging.svg</normaloff>:/icons/icons/battery-charging.svg</iconset>
                </property>
                <property name="iconSize">
@@ -328,7 +328,7 @@ border:none;
                 <string>Data results</string>
                </property>
                <property name="icon">
-                <iconset resource="icons.qrc">
+                <iconset>
                  <normaloff>:/icons/icons/bar-chart-2.svg</normaloff>:/icons/icons/bar-chart-2.svg</iconset>
                </property>
                <property name="iconSize">
@@ -354,7 +354,7 @@ border:none;
                 <string>Help</string>
                </property>
                <property name="icon">
-                <iconset resource="icons.qrc">
+                <iconset>
                  <normaloff>:/icons/icons/help-circle.svg</normaloff>:/icons/icons/help-circle.svg</iconset>
                </property>
                <property name="iconSize">
@@ -431,7 +431,7 @@ border:none;
                    <string/>
                   </property>
                   <property name="icon">
-                   <iconset resource="icons.qrc">
+                   <iconset>
                     <normaloff>:/icons/icons/chevron-left.svg</normaloff>:/icons/icons/chevron-left.svg</iconset>
                   </property>
                   <property name="iconSize">
@@ -562,6 +562,12 @@ border:none;
                <layout class="QHBoxLayout" name="horizontalLayout_5">
                 <item>
                  <widget class="QTreeWidget" name="treeWidget">
+                  <property name="maximumSize">
+                   <size>
+                    <width>0</width>
+                    <height>16777215</height>
+                   </size>
+                  </property>
                   <column>
                    <property name="text">
                     <string notr="true">1</string>
@@ -632,7 +638,7 @@ border:none;
                    <string/>
                   </property>
                   <property name="icon">
-                   <iconset resource="icons.qrc">
+                   <iconset>
                     <normaloff>:/icons/icons/chevron-left.svg</normaloff>:/icons/icons/chevron-left.svg</iconset>
                   </property>
                   <property name="iconSize">

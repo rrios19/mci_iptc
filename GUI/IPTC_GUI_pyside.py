@@ -282,6 +282,7 @@ class Ui_IPTC(object):
         __qtreewidgetitem.setText(0, u"1");
         self.treeWidget.setHeaderItem(__qtreewidgetitem)
         self.treeWidget.setObjectName(u"treeWidget")
+        self.treeWidget.setMaximumSize(QSize(0, 16777215))
 
         self.horizontalLayout_5.addWidget(self.treeWidget)
 
