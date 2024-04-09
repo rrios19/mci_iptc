@@ -18,13 +18,15 @@ from IPTC_GUI_pyside import *
 
 from qt_material import apply_stylesheet
 import xml.etree.ElementTree as ET
-
+from AuthWindow import AuthDialog
+from ssh_connection import SshCommunication as ssh
 class VentanaPrincipal(QMainWindow):
     def __init__(self):
         QMainWindow.__init__(self)
         self.ui = Ui_IPTC()
         self.ui.setupUi(self)
         self.currentPathToWorkspace = ""
+        self.ssh_link = ssh()
         #######################################################################
         ## # Remover la barra de título
         ########################################################################    
@@ -101,6 +103,16 @@ class VentanaPrincipal(QMainWindow):
         #Selecciona frame de customize report
         self.ui.customReportBtn.clicked.connect(lambda: self.ui.stackedDataResults.setCurrentWidget(self.ui.customRepOpt))
 
+        #Establece la conexión ssh con la raspberry pi
+        self.ui.linkDeviceBtn.clicked.connect(lambda: self.ssh_connect())
+
+        #Función para enviar pruebas a la cola
+
+        self.ui.add2QueueBtn.clicked.connect(lambda: self.add_tests_to_queue())
+
+        #Corta la comunicación ssh con la Raspberry pi
+
+        self.ui.closeCntBtn.clicked.connect(lambda: self.ssh_close_connection())
         
         # ###############################################
         # Función para mover la ventana cuando con el mouse en la barra de título
@@ -134,19 +146,19 @@ class VentanaPrincipal(QMainWindow):
         #       SLIDE MENUS
         #
         #Develop and run tests toggle button
-        self.ui.devBtnTest.clicked.connect(lambda: self.slideDownMenu(self.ui.slide_devtstmenu,self.ui.devBtnTest))
+        self.ui.devBtnTest.clicked.connect(lambda: self.slideDownMenu(self.ui.slide_devtstmenu,self.ui.devBtnTest,800))
         self.ui.devBtnTest.clicked.connect(lambda: self.ui.stackedDataResults.setCurrentWidget(self.ui.homeDataResOpt))
 
         #Configure workspace toggle button
-        self.ui.confWorkspaceBtn.clicked.connect(lambda: self.slideDownMenu(self.ui.confWokspace_menu,self.ui.confWorkspaceBtn))
+        self.ui.confWorkspaceBtn.clicked.connect(lambda: self.slideDownMenu(self.ui.confWokspace_menu,self.ui.confWorkspaceBtn,800))
         self.ui.confWorkspaceBtn.clicked.connect(lambda: self.ui.stackedDataResults.setCurrentWidget(self.ui.homeDataResOpt))
 
         #Data results toggle button
-        self.ui.dataResultBtn.clicked.connect(lambda: self.slideDownMenu(self.ui.dataResults_menu,self.ui.dataResultBtn))
+        self.ui.dataResultBtn.clicked.connect(lambda: self.slideDownMenu(self.ui.dataResults_menu,self.ui.dataResultBtn,800))
         self.ui.dataResultBtn.clicked.connect(lambda: self.ui.stackedDataResults.setCurrentWidget(self.ui.homeDataResOpt))        
 
         #Help toggle button
-        self.ui.helpBtn.clicked.connect(lambda: self.slideDownMenu(self.ui.help_menu,self.ui.helpBtn))
+        self.ui.helpBtn.clicked.connect(lambda: self.slideDownMenu(self.ui.help_menu,self.ui.helpBtn,800))
         self.ui.helpBtn.clicked.connect(lambda: self.ui.stackedDataResults.setCurrentWidget(self.ui.homeDataResOpt)) 
 
         #Data results side menu toggle button
@@ -157,10 +169,10 @@ class VentanaPrincipal(QMainWindow):
 
 
         #Develop and run tests side menu toggle button
-        self.ui.newSeqBtn.clicked.connect(lambda: self.slideDownMenu(self.ui.newSeq_slidemenu,self.ui.newSeqBtn))
+        self.ui.newSeqBtn.clicked.connect(lambda: self.slideDownMenu(self.ui.newSeq_slidemenu,self.ui.newSeqBtn,50))
 
         #Add members edit line
-        self.ui.addMembersBtn.clicked.connect(lambda: self.slideDownMenu(self.ui.addMembersLine,self.ui.addMembersBtn))
+        self.ui.addMembersBtn.clicked.connect(lambda: self.slideDownMenu(self.ui.addMembersLine,self.ui.addMembersBtn,800))
         #Creating new Organization
 
         self.ui.saveWorkspaceBtn.clicked.connect(lambda: self.save_new_workspace())
@@ -204,7 +216,7 @@ class VentanaPrincipal(QMainWindow):
    ########################################################################
     # Función  para deslizar menú hacia abajo
     ########################################################################
-    def slideDownMenu(self,slidedown_menu,btn):
+    def slideDownMenu(self,slidedown_menu,btn,menu_height):
         # Obtener ancho de la ventana de menu
         height = slidedown_menu.height()
         # Si está minimizado
@@ -235,7 +247,7 @@ class VentanaPrincipal(QMainWindow):
                         actBtn.setIcon(QtGui.QIcon(actBtnIconPath)) #Y coloca el ícono inicial
 
                 # Expandir el menú deseado
-                newHeight = 800
+                newHeight = menu_height
             
                 btn.setIcon(QtGui.QIcon(u":/icons/icons/chevron-up.svg"))
             # Si está maximizado
@@ -255,7 +267,7 @@ class VentanaPrincipal(QMainWindow):
                 btn.setIcon(QtGui.QIcon(btnIconPath))
         else:
             if height == 0:
-                newHeight = 800
+                newHeight = menu_height
 
             else:
                 newHeight = 0
@@ -395,9 +407,9 @@ class VentanaPrincipal(QMainWindow):
         if selected_file:
             # Clear existing items in the tree widget
             self.ui.treeWidget.clear()
-            self.ui.treeWidget.setMaximumWidth(600)
+            self.ui.treeWidget.setMaximumWidth(500)
             self.ui.treeWidget.setColumnWidth(0, 250)  # Set the width of the first column to 200 pixels
-            self.ui.treeWidget.setColumnWidth(1, 200)  # Adjust as necessary for your content
+            self.ui.treeWidget.setColumnWidth(1,250)  # Adjust as necessary for your content
 
             try:
                 # Parse the XML file
@@ -640,7 +652,128 @@ class VentanaPrincipal(QMainWindow):
             except Exception as e:
                 QMessageBox.warning(self, "Error", f"Failed to parse XML file: {str(e)}")
 
+        self.ui.TestActionsFrame.setMaximumWidth(350)
+
+    #Función para enviar tests a la Raspberry y añadirlos a la cola
+                
+    def add_tests_to_queue(self):
+        
+        if self.ssh_link.connected:
+            if self.currentPathToWorkspace != "":
+                new_file_command = ["cd /Desktop","touch queued_tests.txt"]
+                
+            else:
+                QMessageBox.warning(self, "Warning", f"No workspace has been selected, please choose a workspace to save the tests results")
+        else:
+            QMessageBox.warning(self, "Warning", f"An ssh connection must be established first, please select a device and the send the test")
+
+    #Función para enviar tests
+
+                
+    #Función para establecer conexión con la rasp
+    def ssh_connect(self):
+        no_error = False  ##Booleano para definir un ciclo para obtener valor de hostname
+
+        ## HOSTNAME
+
+        #Loops until it gets a correct format for the hostname
+        while not no_error:
+            #Ask for Rpi hostname
+            rpi_hostname, ok_hostname = QInputDialog.getText(self, "SSH Login", "Please enter your hostname (IP address):")
+            if ok_hostname == QInputDialog.Accepted:
+                try:
+                    self.ssh_link.hostname = rpi_hostname
+                    no_error = True
+                except ValueError as HostError:
+                    QMessageBox.warning(self, "Warning", str(HostError))
+            else:
+                break
+
+        if self.ssh_link.hostname != "":
+            no_error = False
+            ## USERNAME
+            #Ask for Rpi username
+            while not no_error:
+                rpi_username, ok_username = QInputDialog.getText(self, "SSH Login", "Please enter your username:")
+                
+                if ok_username == QInputDialog.Accepted:
+                    try:
+                        self.ssh_link.username = rpi_username
+                        no_error = True
+                    except ValueError as UsernameError:
+                        QMessageBox.warning(self, "Warning", str(UsernameError))
+                else:
+                    break
+
+            if self.ssh_link.username != "":
+                ## PASSWORD or PRIVATE KEY LOCATION
+
+                ##Abrir ventana de dialogo para selección de autenticación ssh
+                dialog = AuthDialog(self)
+                result = dialog.exec_()
+                if result == QDialog.Accepted:
+                    try:
+                        self.ssh_link.passwd_auth = dialog.passwd_auth
+                        #print(f"Dialog Accepted, {dialog.selected_method} authentication was selected")
+                    except ValueError as AuthError:
+                        QMessageBox.warning(self, "Warning", str(AuthError))
+                else:
+                    QMessageBox.warning(self, "Warning", "An authentication method must be selected to establish connection")
+
+                if self.ssh_link.passwd_auth:
+                    rpi_password, ok_password = QInputDialog.getText(self, "SSH Login", "Please enter your password:", QLineEdit.Password)
+                    if ok_password == QInputDialog.Accepted:
+                        status = self.ssh_link.connect(rpi_password)
+                        if Exception:
+                            QMessageBox.warning(self, "Warning", status)
+                        self.ui.label_current_status.setPixmap(QPixmap(u":/icons/icons/zap.svg"))
+                    else: 
+                        QMessageBox.warning(self, "Warning", f"Password required")
+                else:
+                    ssh_dir = os.path.expanduser('~/.ssh') # Default private key location
+                    private_key_path = os.path.join(ssh_dir, f'id_rsa')
+                    public_key_path = f'{private_key_path}.pub'
+
+                    # Check if both the private and public keys exist
+                    private_key_exists = os.path.isfile(private_key_path)
+                    public_key_exists = os.path.isfile(public_key_path)
+
+                    if private_key_exists and public_key_exists:
+                        status = self.ssh_link.connect(private_key_path)
+                        if Exception:
+                            QMessageBox.warning(self, "Warning", status)
+                    else:
+                        rpi_username, ok_username = QInputDialog.getText(self, "SSH Login", "Please enter path to your ssh private key directory:")
+                        
+                
+            """
+        if ok_hostname and rpi_hostname:
+            rpi_username, ok_username = QInputDialog.getText(self, "SSH Login", "Please enter your username:")
+            if ok_username and rpi_username:
+                rpi_password, ok_password = QInputDialog.getText(self, "SSH Login", "Please enter your password:", QLineEdit.Password)
+                if ok_password and rpi_password:
+                    self.ssh_link = ssh(rpi_hostname,rpi_username,rpi_password)
+                    QMessageBox.information(self, "Information", f"Connection established with {rpi_username}")
+                    self.ui.label_current_status.setPixmap(QPixmap(u":/icons/icons/zap.svg"))
+                else: 
+                    QMessageBox.warning(self, "Warning", f"Password required")
+            else:
+                QMessageBox.warning(self, "Warning", f"Username required")
+        else:
+            QMessageBox.warning(self, "Warning", f"Hostname required to establish ssh connection")
+        """        
+
+    #Función para cerrar conexión ssh
+    def ssh_close_connection(self):
+        if self.ssh_link.connected:
+            self.ssh_link.close_connection()
+            QMessageBox.information(self, "Information", f"Connection closed with {self.ssh_link.hostname}")
+            self.ui.label_current_status.setPixmap(QPixmap(u":/icons/icons/zap-off.svg"))
+        else:
+            QMessageBox.warning(self, "Warning", f"No ssh connection has been established yet")
+
     
+
 
     #########################################################################
     #Guardar añadir nuevos miembros

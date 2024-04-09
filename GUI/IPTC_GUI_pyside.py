@@ -18,7 +18,7 @@ class Ui_IPTC(object):
     def setupUi(self, IPTC):
         if not IPTC.objectName():
             IPTC.setObjectName(u"IPTC")
-        IPTC.resize(689, 551)
+        IPTC.resize(744, 549)
         icon = QIcon()
         icon.addFile(u":/icons/icons/IPTC_logo.svg", QSize(), QIcon.Normal, QIcon.Off)
         IPTC.setWindowIcon(icon)
@@ -27,8 +27,8 @@ class Ui_IPTC(object):
 "}")
         self.centralwidget = QWidget(IPTC)
         self.centralwidget.setObjectName(u"centralwidget")
-        self.horizontalLayout_3 = QHBoxLayout(self.centralwidget)
-        self.horizontalLayout_3.setObjectName(u"horizontalLayout_3")
+        self.verticalLayout_5 = QVBoxLayout(self.centralwidget)
+        self.verticalLayout_5.setObjectName(u"verticalLayout_5")
         self.mainwindow = QFrame(self.centralwidget)
         self.mainwindow.setObjectName(u"mainwindow")
         self.mainwindow.setMaximumSize(QSize(16777215, 16777215))
@@ -142,12 +142,23 @@ class Ui_IPTC(object):
         self.func_select.setFrameShadow(QFrame.Raised)
         self.gridLayout_5 = QGridLayout(self.func_select)
         self.gridLayout_5.setObjectName(u"gridLayout_5")
+        self.dataResultBtn = QPushButton(self.func_select)
+        self.dataResultBtn.setObjectName(u"dataResultBtn")
+        self.dataResultBtn.setMaximumSize(QSize(16777215, 50))
+        self.dataResultBtn.setStyleSheet(u"*{border:none;}")
+        icon4 = QIcon()
+        icon4.addFile(u":/icons/icons/bar-chart-2.svg", QSize(), QIcon.Normal, QIcon.Off)
+        self.dataResultBtn.setIcon(icon4)
+        self.dataResultBtn.setIconSize(QSize(20, 20))
+
+        self.gridLayout_5.addWidget(self.dataResultBtn, 0, 2, 1, 1)
+
         self.confWorkspaceBtn = QPushButton(self.func_select)
         self.confWorkspaceBtn.setObjectName(u"confWorkspaceBtn")
         self.confWorkspaceBtn.setStyleSheet(u"*{border:none;}")
-        icon4 = QIcon()
-        icon4.addFile(u":/icons/icons/settings.svg", QSize(), QIcon.Normal, QIcon.Off)
-        self.confWorkspaceBtn.setIcon(icon4)
+        icon5 = QIcon()
+        icon5.addFile(u":/icons/icons/settings.svg", QSize(), QIcon.Normal, QIcon.Off)
+        self.confWorkspaceBtn.setIcon(icon5)
         self.confWorkspaceBtn.setIconSize(QSize(20, 20))
 
         self.gridLayout_5.addWidget(self.confWorkspaceBtn, 0, 0, 1, 1)
@@ -155,27 +166,16 @@ class Ui_IPTC(object):
         self.devBtnTest = QPushButton(self.func_select)
         self.devBtnTest.setObjectName(u"devBtnTest")
         self.devBtnTest.setStyleSheet(u"*{border:none;}")
-        icon5 = QIcon()
-        icon5.addFile(u":/icons/icons/battery-charging.svg", QSize(), QIcon.Normal, QIcon.Off)
-        self.devBtnTest.setIcon(icon5)
+        icon6 = QIcon()
+        icon6.addFile(u":/icons/icons/battery-charging.svg", QSize(), QIcon.Normal, QIcon.Off)
+        self.devBtnTest.setIcon(icon6)
         self.devBtnTest.setIconSize(QSize(20, 20))
 
         self.gridLayout_5.addWidget(self.devBtnTest, 0, 1, 1, 1)
 
-        self.dataResultBtn = QPushButton(self.func_select)
-        self.dataResultBtn.setObjectName(u"dataResultBtn")
-        self.dataResultBtn.setMaximumSize(QSize(150, 50))
-        self.dataResultBtn.setStyleSheet(u"*{border:none;}")
-        icon6 = QIcon()
-        icon6.addFile(u":/icons/icons/bar-chart-2.svg", QSize(), QIcon.Normal, QIcon.Off)
-        self.dataResultBtn.setIcon(icon6)
-        self.dataResultBtn.setIconSize(QSize(20, 20))
-
-        self.gridLayout_5.addWidget(self.dataResultBtn, 0, 2, 1, 1)
-
         self.helpBtn = QPushButton(self.func_select)
         self.helpBtn.setObjectName(u"helpBtn")
-        self.helpBtn.setMaximumSize(QSize(100, 16777215))
+        self.helpBtn.setMaximumSize(QSize(16777215, 16777215))
         self.helpBtn.setStyleSheet(u"*{border:none;}")
         icon7 = QIcon()
         icon7.addFile(u":/icons/icons/help-circle.svg", QSize(), QIcon.Normal, QIcon.Off)
@@ -233,6 +233,16 @@ class Ui_IPTC(object):
         self.verticalLayout_4.setSpacing(0)
         self.verticalLayout_4.setObjectName(u"verticalLayout_4")
         self.verticalLayout_4.setContentsMargins(0, 0, 0, 0)
+        self.linkDeviceBtn = QPushButton(self.opt_menu)
+        self.linkDeviceBtn.setObjectName(u"linkDeviceBtn")
+
+        self.verticalLayout_4.addWidget(self.linkDeviceBtn)
+
+        self.closeCntBtn = QPushButton(self.opt_menu)
+        self.closeCntBtn.setObjectName(u"closeCntBtn")
+
+        self.verticalLayout_4.addWidget(self.closeCntBtn)
+
         self.tests_recent_btn = QPushButton(self.opt_menu)
         self.tests_recent_btn.setObjectName(u"tests_recent_btn")
 
@@ -243,12 +253,9 @@ class Ui_IPTC(object):
 
         self.verticalLayout_4.addWidget(self.newSeqBtn)
 
-
-        self.gridLayout_7.addWidget(self.opt_menu, 0, 0, 1, 1)
-
-        self.newSeq_slidemenu = QFrame(self.testsopt_slide)
+        self.newSeq_slidemenu = QFrame(self.opt_menu)
         self.newSeq_slidemenu.setObjectName(u"newSeq_slidemenu")
-        self.newSeq_slidemenu.setMaximumSize(QSize(0, 16777215))
+        self.newSeq_slidemenu.setMaximumSize(QSize(150, 0))
         self.newSeq_slidemenu.setFrameShape(QFrame.StyledPanel)
         self.newSeq_slidemenu.setFrameShadow(QFrame.Raised)
         self.gridLayout_6 = QGridLayout(self.newSeq_slidemenu)
@@ -257,16 +264,21 @@ class Ui_IPTC(object):
         self.gridLayout_6.setContentsMargins(0, 0, 0, 0)
         self.uploadFile = QPushButton(self.newSeq_slidemenu)
         self.uploadFile.setObjectName(u"uploadFile")
+        self.uploadFile.setMaximumSize(QSize(16777215, 30))
 
         self.gridLayout_6.addWidget(self.uploadFile, 0, 0, 1, 1)
 
         self.template_2 = QPushButton(self.newSeq_slidemenu)
         self.template_2.setObjectName(u"template_2")
+        self.template_2.setMaximumSize(QSize(16777215, 30))
 
         self.gridLayout_6.addWidget(self.template_2, 1, 0, 1, 1)
 
 
-        self.gridLayout_7.addWidget(self.newSeq_slidemenu, 0, 1, 1, 1)
+        self.verticalLayout_4.addWidget(self.newSeq_slidemenu, 0, Qt.AlignHCenter)
+
+
+        self.gridLayout_7.addWidget(self.opt_menu, 0, 0, 1, 1)
 
 
         self.gridLayout_4.addWidget(self.testsopt_slide, 1, 1, 1, 1)
@@ -275,16 +287,36 @@ class Ui_IPTC(object):
         self.frame_2.setObjectName(u"frame_2")
         self.frame_2.setFrameShape(QFrame.StyledPanel)
         self.frame_2.setFrameShadow(QFrame.Raised)
-        self.horizontalLayout_5 = QHBoxLayout(self.frame_2)
-        self.horizontalLayout_5.setObjectName(u"horizontalLayout_5")
+        self.verticalLayout_8 = QVBoxLayout(self.frame_2)
+        self.verticalLayout_8.setObjectName(u"verticalLayout_8")
         self.treeWidget = QTreeWidget(self.frame_2)
-        __qtreewidgetitem = QTreeWidgetItem()
-        __qtreewidgetitem.setText(0, u"1");
-        self.treeWidget.setHeaderItem(__qtreewidgetitem)
+        self.treeWidget.headerItem().setText(0, "")
         self.treeWidget.setObjectName(u"treeWidget")
         self.treeWidget.setMaximumSize(QSize(0, 16777215))
 
-        self.horizontalLayout_5.addWidget(self.treeWidget)
+        self.verticalLayout_8.addWidget(self.treeWidget)
+
+        self.TestActionsFrame = QFrame(self.frame_2)
+        self.TestActionsFrame.setObjectName(u"TestActionsFrame")
+        self.TestActionsFrame.setMaximumSize(QSize(500, 0))
+        self.TestActionsFrame.setFrameShape(QFrame.StyledPanel)
+        self.TestActionsFrame.setFrameShadow(QFrame.Raised)
+        self.horizontalLayout_3 = QHBoxLayout(self.TestActionsFrame)
+        self.horizontalLayout_3.setObjectName(u"horizontalLayout_3")
+        self.ExcTestBtn = QPushButton(self.TestActionsFrame)
+        self.ExcTestBtn.setObjectName(u"ExcTestBtn")
+
+        self.horizontalLayout_3.addWidget(self.ExcTestBtn)
+
+        self.add2QueueBtn = QPushButton(self.TestActionsFrame)
+        self.add2QueueBtn.setObjectName(u"add2QueueBtn")
+        self.add2QueueBtn.setStyleSheet(u"")
+        self.add2QueueBtn.setAutoDefault(False)
+
+        self.horizontalLayout_3.addWidget(self.add2QueueBtn)
+
+
+        self.verticalLayout_8.addWidget(self.TestActionsFrame)
 
 
         self.gridLayout_4.addWidget(self.frame_2, 1, 2, 1, 1)
@@ -606,12 +638,13 @@ class Ui_IPTC(object):
         self.verticalLayout_2.addWidget(self.body_window)
 
 
-        self.horizontalLayout_3.addWidget(self.mainwindow)
+        self.verticalLayout_5.addWidget(self.mainwindow)
 
         IPTC.setCentralWidget(self.centralwidget)
 
         self.retranslateUi(IPTC)
 
+        self.add2QueueBtn.setDefault(False)
         self.stackedDataResults.setCurrentIndex(6)
         self.stackedWidgetWorkspace.setCurrentIndex(2)
 
@@ -628,15 +661,19 @@ class Ui_IPTC(object):
         self.IPTC_label.setText("")
         self.label_current_status.setText("")
         self.label_working_path.setText("")
+        self.dataResultBtn.setText(QCoreApplication.translate("IPTC", u"Data results", None))
         self.confWorkspaceBtn.setText(QCoreApplication.translate("IPTC", u"Configure Workspace", None))
         self.devBtnTest.setText(QCoreApplication.translate("IPTC", u"Develop and run tests", None))
-        self.dataResultBtn.setText(QCoreApplication.translate("IPTC", u"Data results", None))
         self.helpBtn.setText(QCoreApplication.translate("IPTC", u"Help", None))
         self.side_btn_tests.setText("")
+        self.linkDeviceBtn.setText(QCoreApplication.translate("IPTC", u"Link device", None))
+        self.closeCntBtn.setText(QCoreApplication.translate("IPTC", u"Close connection", None))
         self.tests_recent_btn.setText(QCoreApplication.translate("IPTC", u"Recents", None))
         self.newSeqBtn.setText(QCoreApplication.translate("IPTC", u"New sequence", None))
         self.uploadFile.setText(QCoreApplication.translate("IPTC", u"Upload file", None))
         self.template_2.setText(QCoreApplication.translate("IPTC", u"Template", None))
+        self.ExcTestBtn.setText(QCoreApplication.translate("IPTC", u"Excute test", None))
+        self.add2QueueBtn.setText(QCoreApplication.translate("IPTC", u"Add test to queue", None))
         self.sideResultsBtn.setText("")
         self.intAnalysisBtn.setText(QCoreApplication.translate("IPTC", u"Integrated analysis", None))
         self.filTagsGrBtn.setText(QCoreApplication.translate("IPTC", u"Filters, Tags & Groups", None))
