@@ -54,7 +54,6 @@ class SshCommunication:
 
 
     def connect(self, passwd_key):
-
         try:
             if self._passwd_auth:
                 # Connect to the Raspberry Pi
@@ -63,41 +62,65 @@ class SshCommunication:
 
             else:
                 key = paramiko.RSAKey.from_private_key_file(passwd_key)
-                
-                self.client.connect(self.hostname, username=self.username, pkey=key)
+                self.client.connect(hostname = self.hostname, username = self.username, pkey = key)
                 self.connected = True
-                print("Connected successfully")
+
+            return f"Connected successfully to <b>{self.username}</b>"
         except Exception as e:
             return f"Failed to establish connection with the specified device: {e}"
 
+    def send_file(self,local_path, remote_path,filename):
+        try:
+            sftp = self.client.open_sftp()
+            
+            # Send the file
+            sftp.put(local_path, remote_path)
+            
+            # Close the SFTP session
+            sftp.close()
+
+            return f"File {filename} has been transferred to {self.username}"
+
+        except Exception as e:
+            return f"An error occurred: {e}"
 
     def execute_command(self,cmd_list):
-            try:
-                # Execute a command list
-                channel = self.client.invoke_shell()
-                ##Opens a shell and keeps the context, it does not restart the session when a new command is executed
-                for command in cmd_list:
-                    channel.send(command + "\n")
-                    time.sleep(1)  # Adjust based on command execution time
+        try:
+            # Execute a command list
+            channel = self.client.invoke_shell()
+            ##Opens a shell and keeps the context, it does not restart the session when a new command is executed
+            for command in cmd_list:
+                channel.send(command + "\n")
+                time.sleep(1.25)  # Adjust based on command execution time
 
-                    """# Receive output 
-                    while not channel.recv_ready():  # Wait for the command to execute
-                        time.sleep(0.5)
-                    output = channel.recv(65535).decode('utf-8')  # Adjust buffer size if necessary
-                    print(output)""" #Uncomment if the output is needed
-
-                # Close the channel
-                channel.close()
-            
+                """   #Receive output 
+                while not channel.recv_ready():  # Wait for the command to execute
+                    time.sleep(0.5)
+                output = channel.recv(65535).decode('utf-8')  # Adjust buffer size if necessary
+                print(output) #Uncomment if the output is needed
+            # Close the channel"""
+            channel.close()
 
 
-            except Exception as e:
-                print(f"Failed to execute command: {e}")
+        except Exception as e:
+            return f"Failed to execute command: {e}"
                 
+    def reset_connection(self):
+        self._hostname = ""
+        self._username = ""
+        self.connected = False
+        self._passwd_auth = False
+        # Optionally reinitialize the SSH client
+        self.client = paramiko.SSHClient()
+        self.client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+    
+
     def close_connection(self):
         try:
             # Close the connection
             self.client.close()
-            self.connected = False
         except Exception as e:
-            print(f"Something went wrong, couldn't close de ssh connection: {e}")
+            return f"Something went wrong, couldn't close de ssh connection: {e}"
+        
+        finally: 
+            self.reset_connection()

@@ -6,20 +6,26 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>499</width>
-    <height>209</height>
+    <width>776</width>
+    <height>532</height>
    </rect>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>16777215</width>
+    <height>800</height>
+   </size>
   </property>
   <property name="windowTitle">
    <string>IPTC</string>
   </property>
   <property name="windowIcon">
-   <iconset>
+   <iconset resource="icons.qrc">
     <normaloff>:/icons/icons/IPTC_logo.svg</normaloff>:/icons/icons/IPTC_logo.svg</iconset>
   </property>
   <property name="styleSheet">
    <string notr="true">*{
-border:none;
+	border:none;
 }</string>
   </property>
   <widget class="QWidget" name="centralwidget">
@@ -44,7 +50,7 @@ border:none;
          <property name="maximumSize">
           <size>
            <width>16777215</width>
-           <height>50</height>
+           <height>75</height>
           </size>
          </property>
          <property name="frameShape">
@@ -53,7 +59,7 @@ border:none;
          <property name="frameShadow">
           <enum>QFrame::Raised</enum>
          </property>
-         <layout class="QHBoxLayout" name="horizontalLayout" stretch="0,0,0,0,0,0">
+         <layout class="QHBoxLayout" name="horizontalLayout" stretch="0,0,0,0,0">
           <property name="spacing">
            <number>10</number>
           </property>
@@ -104,17 +110,34 @@ border:none;
              </property>
              <item>
               <widget class="QPushButton" name="minimize_btn">
+               <property name="minimumSize">
+                <size>
+                 <width>20</width>
+                 <height>20</height>
+                </size>
+               </property>
                <property name="maximumSize">
                 <size>
                  <width>20</width>
                  <height>20</height>
                 </size>
                </property>
+               <property name="styleSheet">
+                <string notr="true">QPushButton:hover{
+background-color:#ffff00;
+}
+QPushButton{
+border-top-left-radius:10px;
+border-top-right-radius:10px;
+border-bottom-left-radius:10px;
+border-bottom-right-radius:10px;
+}</string>
+               </property>
                <property name="text">
                 <string/>
                </property>
                <property name="icon">
-                <iconset>
+                <iconset resource="icons.qrc">
                  <normaloff>:/icons/icons/minus.svg</normaloff>:/icons/icons/minus.svg</iconset>
                </property>
               </widget>
@@ -124,34 +147,68 @@ border:none;
                <property name="enabled">
                 <bool>true</bool>
                </property>
+               <property name="minimumSize">
+                <size>
+                 <width>20</width>
+                 <height>20</height>
+                </size>
+               </property>
                <property name="maximumSize">
                 <size>
                  <width>20</width>
                  <height>20</height>
                 </size>
                </property>
+               <property name="styleSheet">
+                <string notr="true">QPushButton:hover{
+background-color:#00ff00;
+}
+QPushButton{
+border-top-left-radius:10px;
+border-top-right-radius:10px;
+border-bottom-left-radius:10px;
+border-bottom-right-radius:10px;
+}</string>
+               </property>
                <property name="text">
                 <string/>
                </property>
                <property name="icon">
-                <iconset>
+                <iconset resource="icons.qrc">
                  <normaloff>:/icons/icons/maximize-2.svg</normaloff>:/icons/icons/maximize-2.svg</iconset>
                </property>
               </widget>
              </item>
              <item>
               <widget class="QPushButton" name="close_btn">
+               <property name="minimumSize">
+                <size>
+                 <width>20</width>
+                 <height>20</height>
+                </size>
+               </property>
                <property name="maximumSize">
                 <size>
                  <width>20</width>
                  <height>20</height>
                 </size>
                </property>
+               <property name="styleSheet">
+                <string notr="true">QPushButton{
+border-top-left-radius:10px;
+border-top-right-radius:10px;
+border-bottom-left-radius:10px;
+border-bottom-right-radius:10px;
+}
+QPushButton:hover{
+background-color:#ff0000;
+}</string>
+               </property>
                <property name="text">
                 <string/>
                </property>
                <property name="icon">
-                <iconset>
+                <iconset resource="icons.qrc">
                  <normaloff>:/icons/icons/x.svg</normaloff>:/icons/icons/x.svg</iconset>
                </property>
               </widget>
@@ -171,7 +228,7 @@ border:none;
              <string/>
             </property>
             <property name="pixmap">
-             <pixmap>:/icons/icons/SETECLab_logo.svg</pixmap>
+             <pixmap resource="icons.qrc">:/icons/icons/SETECLab_logo.svg</pixmap>
             </property>
             <property name="scaledContents">
              <bool>true</bool>
@@ -193,7 +250,7 @@ border:none;
              <string/>
             </property>
             <property name="pixmap">
-             <pixmap>:/icons/icons/IPTC_logo.svg</pixmap>
+             <pixmap resource="icons.qrc">:/icons/icons/IPTC_logo.svg</pixmap>
             </property>
             <property name="scaledContents">
              <bool>true</bool>
@@ -204,29 +261,72 @@ border:none;
            </widget>
           </item>
           <item>
-           <widget class="QLabel" name="label_current_status">
-            <property name="text">
-             <string/>
+           <widget class="QFrame" name="ConnectControlFrame">
+            <property name="frameShape">
+             <enum>QFrame::StyledPanel</enum>
             </property>
-            <property name="pixmap">
-             <pixmap>:/icons/icons/zap-off.svg</pixmap>
+            <property name="frameShadow">
+             <enum>QFrame::Raised</enum>
             </property>
+            <layout class="QVBoxLayout" name="verticalLayout_7">
+             <item>
+              <widget class="QPushButton" name="ssh_connect_btn">
+               <property name="styleSheet">
+                <string notr="true">QPushButton:hover{
+background-color:#99ffee;
+}
+QPushButton{
+font:bold;
+color:black;
+}</string>
+               </property>
+               <property name="text">
+                <string>SSH</string>
+               </property>
+               <property name="icon">
+                <iconset resource="icons.qrc">
+                 <normaloff>:/icons/icons/zap-off.svg</normaloff>:/icons/icons/zap-off.svg</iconset>
+               </property>
+               <property name="iconSize">
+                <size>
+                 <width>30</width>
+                 <height>30</height>
+                </size>
+               </property>
+              </widget>
+             </item>
+             <item alignment="Qt::AlignHCenter">
+              <widget class="QFrame" name="connectionStatus">
+               <property name="maximumSize">
+                <size>
+                 <width>16777215</width>
+                 <height>0</height>
+                </size>
+               </property>
+               <property name="frameShape">
+                <enum>QFrame::StyledPanel</enum>
+               </property>
+               <property name="frameShadow">
+                <enum>QFrame::Raised</enum>
+               </property>
+               <layout class="QHBoxLayout" name="horizontalLayout_5">
+                <item>
+                 <widget class="QLabel" name="connectLabel">
+                  <property name="text">
+                   <string/>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </widget>
+             </item>
+            </layout>
            </widget>
           </item>
           <item>
            <widget class="QLabel" name="label_working_path">
             <property name="text">
              <string/>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QFrame" name="size_grip">
-            <property name="frameShape">
-             <enum>QFrame::StyledPanel</enum>
-            </property>
-            <property name="frameShadow">
-             <enum>QFrame::Raised</enum>
             </property>
            </widget>
           </item>
@@ -273,23 +373,20 @@ border:none;
              <enum>QFrame::Raised</enum>
             </property>
             <layout class="QGridLayout" name="gridLayout_5">
-             <item row="0" column="2">
-              <widget class="QPushButton" name="dataResultBtn">
-               <property name="maximumSize">
-                <size>
-                 <width>16777215</width>
-                 <height>50</height>
-                </size>
-               </property>
+             <item row="0" column="1">
+              <widget class="QPushButton" name="devBtnTest">
                <property name="styleSheet">
-                <string notr="true">*{border:none;}</string>
+                <string notr="true">*{border:none;}
+QPushButton:hover{
+background-color:#99ffee;
+}</string>
                </property>
                <property name="text">
-                <string>Data results</string>
+                <string>Develop and run tests</string>
                </property>
                <property name="icon">
-                <iconset>
-                 <normaloff>:/icons/icons/bar-chart-2.svg</normaloff>:/icons/icons/bar-chart-2.svg</iconset>
+                <iconset resource="icons.qrc">
+                 <normaloff>:/icons/icons/battery-charging.svg</normaloff>:/icons/icons/battery-charging.svg</iconset>
                </property>
                <property name="iconSize">
                 <size>
@@ -302,34 +399,17 @@ border:none;
              <item row="0" column="0">
               <widget class="QPushButton" name="confWorkspaceBtn">
                <property name="styleSheet">
-                <string notr="true">*{border:none;}</string>
+                <string notr="true">*{border:none;}
+QPushButton:hover{
+background-color:#99ffee;
+}</string>
                </property>
                <property name="text">
                 <string>Configure Workspace</string>
                </property>
                <property name="icon">
-                <iconset>
+                <iconset resource="icons.qrc">
                  <normaloff>:/icons/icons/settings.svg</normaloff>:/icons/icons/settings.svg</iconset>
-               </property>
-               <property name="iconSize">
-                <size>
-                 <width>20</width>
-                 <height>20</height>
-                </size>
-               </property>
-              </widget>
-             </item>
-             <item row="0" column="1">
-              <widget class="QPushButton" name="devBtnTest">
-               <property name="styleSheet">
-                <string notr="true">*{border:none;}</string>
-               </property>
-               <property name="text">
-                <string>Develop and run tests</string>
-               </property>
-               <property name="icon">
-                <iconset>
-                 <normaloff>:/icons/icons/battery-charging.svg</normaloff>:/icons/icons/battery-charging.svg</iconset>
                </property>
                <property name="iconSize">
                 <size>
@@ -348,14 +428,46 @@ border:none;
                 </size>
                </property>
                <property name="styleSheet">
-                <string notr="true">*{border:none;}</string>
+                <string notr="true">*{border:none;}
+QPushButton:hover{
+background-color:#99ffee;
+}</string>
                </property>
                <property name="text">
                 <string>Help</string>
                </property>
                <property name="icon">
-                <iconset>
+                <iconset resource="icons.qrc">
                  <normaloff>:/icons/icons/help-circle.svg</normaloff>:/icons/icons/help-circle.svg</iconset>
+               </property>
+               <property name="iconSize">
+                <size>
+                 <width>20</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="2">
+              <widget class="QPushButton" name="dataResultBtn">
+               <property name="maximumSize">
+                <size>
+                 <width>16777215</width>
+                 <height>50</height>
+                </size>
+               </property>
+               <property name="styleSheet">
+                <string notr="true">*{border:none;}
+QPushButton:hover{
+background-color:#99ffee;
+}</string>
+               </property>
+               <property name="text">
+                <string>Data results</string>
+               </property>
+               <property name="icon">
+                <iconset resource="icons.qrc">
+                 <normaloff>:/icons/icons/bar-chart-2.svg</normaloff>:/icons/icons/bar-chart-2.svg</iconset>
                </property>
                <property name="iconSize">
                 <size>
@@ -382,8 +494,8 @@ border:none;
             <property name="frameShadow">
              <enum>QFrame::Raised</enum>
             </property>
-            <layout class="QGridLayout" name="gridLayout_4">
-             <item row="1" column="0">
+            <layout class="QHBoxLayout" name="horizontalLayout_6">
+             <item>
               <widget class="QFrame" name="slideBtnFrame">
                <property name="enabled">
                 <bool>true</bool>
@@ -431,7 +543,7 @@ border:none;
                    <string/>
                   </property>
                   <property name="icon">
-                   <iconset>
+                   <iconset resource="icons.qrc">
                     <normaloff>:/icons/icons/chevron-left.svg</normaloff>:/icons/icons/chevron-left.svg</iconset>
                   </property>
                   <property name="iconSize">
@@ -445,75 +557,7 @@ border:none;
                </layout>
               </widget>
              </item>
-             <item row="1" column="2">
-              <widget class="QFrame" name="frame_2">
-               <property name="frameShape">
-                <enum>QFrame::StyledPanel</enum>
-               </property>
-               <property name="frameShadow">
-                <enum>QFrame::Raised</enum>
-               </property>
-               <layout class="QVBoxLayout" name="verticalLayout_8">
-                <item>
-                 <widget class="QTreeWidget" name="treeWidget">
-                  <property name="maximumSize">
-                   <size>
-                    <width>0</width>
-                    <height>16777215</height>
-                   </size>
-                  </property>
-                  <column>
-                   <property name="text">
-                    <string notr="true"/>
-                   </property>
-                  </column>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QFrame" name="TestActionsFrame">
-                  <property name="maximumSize">
-                   <size>
-                    <width>500</width>
-                    <height>0</height>
-                   </size>
-                  </property>
-                  <property name="frameShape">
-                   <enum>QFrame::StyledPanel</enum>
-                  </property>
-                  <property name="frameShadow">
-                   <enum>QFrame::Raised</enum>
-                  </property>
-                  <layout class="QHBoxLayout" name="horizontalLayout_3">
-                   <item>
-                    <widget class="QPushButton" name="ExcTestBtn">
-                     <property name="text">
-                      <string>Excute test</string>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <widget class="QPushButton" name="add2QueueBtn">
-                     <property name="styleSheet">
-                      <string notr="true"/>
-                     </property>
-                     <property name="text">
-                      <string>Add test to queue</string>
-                     </property>
-                     <property name="autoDefault">
-                      <bool>false</bool>
-                     </property>
-                     <property name="default">
-                      <bool>false</bool>
-                     </property>
-                    </widget>
-                   </item>
-                  </layout>
-                 </widget>
-                </item>
-               </layout>
-              </widget>
-             </item>
-             <item row="1" column="1">
+             <item>
               <widget class="QFrame" name="testsopt_slide">
                <property name="frameShape">
                 <enum>QFrame::StyledPanel</enum>
@@ -552,20 +596,6 @@ border:none;
                    <property name="bottomMargin">
                     <number>0</number>
                    </property>
-                   <item>
-                    <widget class="QPushButton" name="linkDeviceBtn">
-                     <property name="text">
-                      <string>Link device</string>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <widget class="QPushButton" name="closeCntBtn">
-                     <property name="text">
-                      <string>Close connection</string>
-                     </property>
-                    </widget>
-                   </item>
                    <item>
                     <widget class="QPushButton" name="tests_recent_btn">
                      <property name="text">
@@ -645,6 +675,74 @@ border:none;
                </layout>
               </widget>
              </item>
+             <item>
+              <widget class="QFrame" name="frame_2">
+               <property name="frameShape">
+                <enum>QFrame::StyledPanel</enum>
+               </property>
+               <property name="frameShadow">
+                <enum>QFrame::Raised</enum>
+               </property>
+               <layout class="QVBoxLayout" name="verticalLayout_8">
+                <item alignment="Qt::AlignVCenter">
+                 <widget class="QTreeWidget" name="treeWidget">
+                  <property name="maximumSize">
+                   <size>
+                    <width>0</width>
+                    <height>16777215</height>
+                   </size>
+                  </property>
+                  <column>
+                   <property name="text">
+                    <string notr="true"/>
+                   </property>
+                  </column>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QFrame" name="TestActionsFrame">
+                  <property name="maximumSize">
+                   <size>
+                    <width>500</width>
+                    <height>0</height>
+                   </size>
+                  </property>
+                  <property name="frameShape">
+                   <enum>QFrame::StyledPanel</enum>
+                  </property>
+                  <property name="frameShadow">
+                   <enum>QFrame::Raised</enum>
+                  </property>
+                  <layout class="QHBoxLayout" name="horizontalLayout_3">
+                   <item>
+                    <widget class="QPushButton" name="ExcTestBtn">
+                     <property name="text">
+                      <string>Excute test</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QPushButton" name="add2QueueBtn">
+                     <property name="styleSheet">
+                      <string notr="true"/>
+                     </property>
+                     <property name="text">
+                      <string>Add test to queue</string>
+                     </property>
+                     <property name="autoDefault">
+                      <bool>false</bool>
+                     </property>
+                     <property name="default">
+                      <bool>false</bool>
+                     </property>
+                    </widget>
+                   </item>
+                  </layout>
+                 </widget>
+                </item>
+               </layout>
+              </widget>
+             </item>
             </layout>
            </widget>
           </item>
@@ -705,7 +803,7 @@ border:none;
                    <string/>
                   </property>
                   <property name="icon">
-                   <iconset>
+                   <iconset resource="icons.qrc">
                     <normaloff>:/icons/icons/chevron-left.svg</normaloff>:/icons/icons/chevron-left.svg</iconset>
                   </property>
                   <property name="iconSize">
@@ -913,6 +1011,43 @@ border:none;
            </widget>
           </item>
           <item>
+           <widget class="QFrame" name="home_frame">
+            <property name="maximumSize">
+             <size>
+              <width>16777215</width>
+              <height>300</height>
+             </size>
+            </property>
+            <property name="frameShape">
+             <enum>QFrame::StyledPanel</enum>
+            </property>
+            <property name="frameShadow">
+             <enum>QFrame::Raised</enum>
+            </property>
+            <layout class="QGridLayout" name="gridLayout">
+             <item row="0" column="0">
+              <widget class="QLabel" name="label_2">
+               <property name="maximumSize">
+                <size>
+                 <width>400</width>
+                 <height>400</height>
+                </size>
+               </property>
+               <property name="text">
+                <string/>
+               </property>
+               <property name="pixmap">
+                <pixmap resource="icons.qrc">:/icons/icons/satellite.svg</pixmap>
+               </property>
+               <property name="scaledContents">
+                <bool>true</bool>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+          </item>
+          <item>
            <widget class="QFrame" name="confWokspace_menu">
             <property name="maximumSize">
              <size>
@@ -944,6 +1079,12 @@ border:none;
              </property>
              <item>
               <widget class="QFrame" name="workConfMenu">
+               <property name="maximumSize">
+                <size>
+                 <width>16777215</width>
+                 <height>800</height>
+                </size>
+               </property>
                <property name="frameShape">
                 <enum>QFrame::StyledPanel</enum>
                </property>
@@ -969,7 +1110,7 @@ border:none;
                 <item row="1" column="1">
                  <widget class="QStackedWidget" name="stackedWidgetWorkspace">
                   <property name="currentIndex">
-                   <number>2</number>
+                   <number>0</number>
                   </property>
                   <widget class="QWidget" name="home"/>
                   <widget class="QWidget" name="saveWorksMenu">
@@ -1192,6 +1333,13 @@ border:none;
                      </property>
                     </widget>
                    </item>
+                   <item row="0" column="2">
+                    <widget class="QPushButton" name="workOptBtn">
+                     <property name="text">
+                      <string>Workspace  options</string>
+                     </property>
+                    </widget>
+                   </item>
                   </layout>
                  </widget>
                 </item>
@@ -1236,10 +1384,35 @@ border:none;
       </layout>
      </widget>
     </item>
+    <item alignment="Qt::AlignRight">
+     <widget class="QFrame" name="size_grip">
+      <property name="minimumSize">
+       <size>
+        <width>10</width>
+        <height>10</height>
+       </size>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>10</width>
+        <height>10</height>
+       </size>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::StyledPanel</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+     </widget>
+    </item>
    </layout>
+   <zorder>size_grip</zorder>
+   <zorder>mainwindow</zorder>
   </widget>
  </widget>
  <resources>
+  <include location="icons.qrc"/>
   <include location="icons.qrc"/>
  </resources>
  <connections/>

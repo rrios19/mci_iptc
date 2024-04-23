@@ -13,17 +13,19 @@ from PySide2.QtGui import *
 from PySide2.QtWidgets import *
 
 import icons_rc
+import icons_rc
 
 class Ui_IPTC(object):
     def setupUi(self, IPTC):
         if not IPTC.objectName():
             IPTC.setObjectName(u"IPTC")
-        IPTC.resize(744, 549)
+        IPTC.resize(776, 532)
+        IPTC.setMaximumSize(QSize(16777215, 800))
         icon = QIcon()
         icon.addFile(u":/icons/icons/IPTC_logo.svg", QSize(), QIcon.Normal, QIcon.Off)
         IPTC.setWindowIcon(icon)
         IPTC.setStyleSheet(u"*{\n"
-"border:none;\n"
+"	border:none;\n"
 "}")
         self.centralwidget = QWidget(IPTC)
         self.centralwidget.setObjectName(u"centralwidget")
@@ -38,7 +40,7 @@ class Ui_IPTC(object):
         self.verticalLayout_2.setObjectName(u"verticalLayout_2")
         self.project_info = QFrame(self.mainwindow)
         self.project_info.setObjectName(u"project_info")
-        self.project_info.setMaximumSize(QSize(16777215, 50))
+        self.project_info.setMaximumSize(QSize(16777215, 75))
         self.project_info.setFrameShape(QFrame.StyledPanel)
         self.project_info.setFrameShadow(QFrame.Raised)
         self.horizontalLayout = QHBoxLayout(self.project_info)
@@ -57,7 +59,17 @@ class Ui_IPTC(object):
         self.horizontalLayout_7.setContentsMargins(0, 0, 0, 0)
         self.minimize_btn = QPushButton(self.frame_20)
         self.minimize_btn.setObjectName(u"minimize_btn")
+        self.minimize_btn.setMinimumSize(QSize(20, 20))
         self.minimize_btn.setMaximumSize(QSize(20, 20))
+        self.minimize_btn.setStyleSheet(u"QPushButton:hover{\n"
+"background-color:#ffff00;\n"
+"}\n"
+"QPushButton{\n"
+"border-top-left-radius:10px;\n"
+"border-top-right-radius:10px;\n"
+"border-bottom-left-radius:10px;\n"
+"border-bottom-right-radius:10px;\n"
+"}")
         icon1 = QIcon()
         icon1.addFile(u":/icons/icons/minus.svg", QSize(), QIcon.Normal, QIcon.Off)
         self.minimize_btn.setIcon(icon1)
@@ -67,7 +79,17 @@ class Ui_IPTC(object):
         self.maximize_btn = QPushButton(self.frame_20)
         self.maximize_btn.setObjectName(u"maximize_btn")
         self.maximize_btn.setEnabled(True)
+        self.maximize_btn.setMinimumSize(QSize(20, 20))
         self.maximize_btn.setMaximumSize(QSize(20, 20))
+        self.maximize_btn.setStyleSheet(u"QPushButton:hover{\n"
+"background-color:#00ff00;\n"
+"}\n"
+"QPushButton{\n"
+"border-top-left-radius:10px;\n"
+"border-top-right-radius:10px;\n"
+"border-bottom-left-radius:10px;\n"
+"border-bottom-right-radius:10px;\n"
+"}")
         icon2 = QIcon()
         icon2.addFile(u":/icons/icons/maximize-2.svg", QSize(), QIcon.Normal, QIcon.Off)
         self.maximize_btn.setIcon(icon2)
@@ -76,7 +98,17 @@ class Ui_IPTC(object):
 
         self.close_btn = QPushButton(self.frame_20)
         self.close_btn.setObjectName(u"close_btn")
+        self.close_btn.setMinimumSize(QSize(20, 20))
         self.close_btn.setMaximumSize(QSize(20, 20))
+        self.close_btn.setStyleSheet(u"QPushButton{\n"
+"border-top-left-radius:10px;\n"
+"border-top-right-radius:10px;\n"
+"border-bottom-left-radius:10px;\n"
+"border-bottom-right-radius:10px;\n"
+"}\n"
+"QPushButton:hover{\n"
+"background-color:#ff0000;\n"
+"}")
         icon3 = QIcon()
         icon3.addFile(u":/icons/icons/x.svg", QSize(), QIcon.Normal, QIcon.Off)
         self.close_btn.setIcon(icon3)
@@ -104,23 +136,50 @@ class Ui_IPTC(object):
 
         self.horizontalLayout.addWidget(self.IPTC_label, 0, Qt.AlignHCenter)
 
-        self.label_current_status = QLabel(self.project_info)
-        self.label_current_status.setObjectName(u"label_current_status")
-        self.label_current_status.setPixmap(QPixmap(u":/icons/icons/zap-off.svg"))
+        self.ConnectControlFrame = QFrame(self.project_info)
+        self.ConnectControlFrame.setObjectName(u"ConnectControlFrame")
+        self.ConnectControlFrame.setFrameShape(QFrame.StyledPanel)
+        self.ConnectControlFrame.setFrameShadow(QFrame.Raised)
+        self.verticalLayout_7 = QVBoxLayout(self.ConnectControlFrame)
+        self.verticalLayout_7.setObjectName(u"verticalLayout_7")
+        self.ssh_connect_btn = QPushButton(self.ConnectControlFrame)
+        self.ssh_connect_btn.setObjectName(u"ssh_connect_btn")
+        self.ssh_connect_btn.setStyleSheet(u"QPushButton:hover{\n"
+"background-color:#99ffee;\n"
+"}\n"
+"QPushButton{\n"
+"font:bold;\n"
+"color:black;\n"
+"}")
+        icon4 = QIcon()
+        icon4.addFile(u":/icons/icons/zap-off.svg", QSize(), QIcon.Normal, QIcon.Off)
+        self.ssh_connect_btn.setIcon(icon4)
+        self.ssh_connect_btn.setIconSize(QSize(30, 30))
 
-        self.horizontalLayout.addWidget(self.label_current_status)
+        self.verticalLayout_7.addWidget(self.ssh_connect_btn)
+
+        self.connectionStatus = QFrame(self.ConnectControlFrame)
+        self.connectionStatus.setObjectName(u"connectionStatus")
+        self.connectionStatus.setMaximumSize(QSize(16777215, 0))
+        self.connectionStatus.setFrameShape(QFrame.StyledPanel)
+        self.connectionStatus.setFrameShadow(QFrame.Raised)
+        self.horizontalLayout_5 = QHBoxLayout(self.connectionStatus)
+        self.horizontalLayout_5.setObjectName(u"horizontalLayout_5")
+        self.connectLabel = QLabel(self.connectionStatus)
+        self.connectLabel.setObjectName(u"connectLabel")
+
+        self.horizontalLayout_5.addWidget(self.connectLabel)
+
+
+        self.verticalLayout_7.addWidget(self.connectionStatus, 0, Qt.AlignHCenter)
+
+
+        self.horizontalLayout.addWidget(self.ConnectControlFrame)
 
         self.label_working_path = QLabel(self.project_info)
         self.label_working_path.setObjectName(u"label_working_path")
 
         self.horizontalLayout.addWidget(self.label_working_path)
-
-        self.size_grip = QFrame(self.project_info)
-        self.size_grip.setObjectName(u"size_grip")
-        self.size_grip.setFrameShape(QFrame.StyledPanel)
-        self.size_grip.setFrameShadow(QFrame.Raised)
-
-        self.horizontalLayout.addWidget(self.size_grip)
 
 
         self.verticalLayout_2.addWidget(self.project_info)
@@ -142,47 +201,59 @@ class Ui_IPTC(object):
         self.func_select.setFrameShadow(QFrame.Raised)
         self.gridLayout_5 = QGridLayout(self.func_select)
         self.gridLayout_5.setObjectName(u"gridLayout_5")
-        self.dataResultBtn = QPushButton(self.func_select)
-        self.dataResultBtn.setObjectName(u"dataResultBtn")
-        self.dataResultBtn.setMaximumSize(QSize(16777215, 50))
-        self.dataResultBtn.setStyleSheet(u"*{border:none;}")
-        icon4 = QIcon()
-        icon4.addFile(u":/icons/icons/bar-chart-2.svg", QSize(), QIcon.Normal, QIcon.Off)
-        self.dataResultBtn.setIcon(icon4)
-        self.dataResultBtn.setIconSize(QSize(20, 20))
-
-        self.gridLayout_5.addWidget(self.dataResultBtn, 0, 2, 1, 1)
-
-        self.confWorkspaceBtn = QPushButton(self.func_select)
-        self.confWorkspaceBtn.setObjectName(u"confWorkspaceBtn")
-        self.confWorkspaceBtn.setStyleSheet(u"*{border:none;}")
-        icon5 = QIcon()
-        icon5.addFile(u":/icons/icons/settings.svg", QSize(), QIcon.Normal, QIcon.Off)
-        self.confWorkspaceBtn.setIcon(icon5)
-        self.confWorkspaceBtn.setIconSize(QSize(20, 20))
-
-        self.gridLayout_5.addWidget(self.confWorkspaceBtn, 0, 0, 1, 1)
-
         self.devBtnTest = QPushButton(self.func_select)
         self.devBtnTest.setObjectName(u"devBtnTest")
-        self.devBtnTest.setStyleSheet(u"*{border:none;}")
-        icon6 = QIcon()
-        icon6.addFile(u":/icons/icons/battery-charging.svg", QSize(), QIcon.Normal, QIcon.Off)
-        self.devBtnTest.setIcon(icon6)
+        self.devBtnTest.setStyleSheet(u"*{border:none;}\n"
+"QPushButton:hover{\n"
+"background-color:#99ffee;\n"
+"}")
+        icon5 = QIcon()
+        icon5.addFile(u":/icons/icons/battery-charging.svg", QSize(), QIcon.Normal, QIcon.Off)
+        self.devBtnTest.setIcon(icon5)
         self.devBtnTest.setIconSize(QSize(20, 20))
 
         self.gridLayout_5.addWidget(self.devBtnTest, 0, 1, 1, 1)
 
+        self.confWorkspaceBtn = QPushButton(self.func_select)
+        self.confWorkspaceBtn.setObjectName(u"confWorkspaceBtn")
+        self.confWorkspaceBtn.setStyleSheet(u"*{border:none;}\n"
+"QPushButton:hover{\n"
+"background-color:#99ffee;\n"
+"}")
+        icon6 = QIcon()
+        icon6.addFile(u":/icons/icons/settings.svg", QSize(), QIcon.Normal, QIcon.Off)
+        self.confWorkspaceBtn.setIcon(icon6)
+        self.confWorkspaceBtn.setIconSize(QSize(20, 20))
+
+        self.gridLayout_5.addWidget(self.confWorkspaceBtn, 0, 0, 1, 1)
+
         self.helpBtn = QPushButton(self.func_select)
         self.helpBtn.setObjectName(u"helpBtn")
         self.helpBtn.setMaximumSize(QSize(16777215, 16777215))
-        self.helpBtn.setStyleSheet(u"*{border:none;}")
+        self.helpBtn.setStyleSheet(u"*{border:none;}\n"
+"QPushButton:hover{\n"
+"background-color:#99ffee;\n"
+"}")
         icon7 = QIcon()
         icon7.addFile(u":/icons/icons/help-circle.svg", QSize(), QIcon.Normal, QIcon.Off)
         self.helpBtn.setIcon(icon7)
         self.helpBtn.setIconSize(QSize(20, 20))
 
         self.gridLayout_5.addWidget(self.helpBtn, 0, 3, 1, 1)
+
+        self.dataResultBtn = QPushButton(self.func_select)
+        self.dataResultBtn.setObjectName(u"dataResultBtn")
+        self.dataResultBtn.setMaximumSize(QSize(16777215, 50))
+        self.dataResultBtn.setStyleSheet(u"*{border:none;}\n"
+"QPushButton:hover{\n"
+"background-color:#99ffee;\n"
+"}")
+        icon8 = QIcon()
+        icon8.addFile(u":/icons/icons/bar-chart-2.svg", QSize(), QIcon.Normal, QIcon.Off)
+        self.dataResultBtn.setIcon(icon8)
+        self.dataResultBtn.setIconSize(QSize(20, 20))
+
+        self.gridLayout_5.addWidget(self.dataResultBtn, 0, 2, 1, 1)
 
 
         self.verticalLayout.addWidget(self.func_select)
@@ -192,8 +263,8 @@ class Ui_IPTC(object):
         self.slide_devtstmenu.setMaximumSize(QSize(16777215, 0))
         self.slide_devtstmenu.setFrameShape(QFrame.StyledPanel)
         self.slide_devtstmenu.setFrameShadow(QFrame.Raised)
-        self.gridLayout_4 = QGridLayout(self.slide_devtstmenu)
-        self.gridLayout_4.setObjectName(u"gridLayout_4")
+        self.horizontalLayout_6 = QHBoxLayout(self.slide_devtstmenu)
+        self.horizontalLayout_6.setObjectName(u"horizontalLayout_6")
         self.slideBtnFrame = QFrame(self.slide_devtstmenu)
         self.slideBtnFrame.setObjectName(u"slideBtnFrame")
         self.slideBtnFrame.setEnabled(True)
@@ -208,15 +279,15 @@ class Ui_IPTC(object):
         self.side_btn_tests = QPushButton(self.slideBtnFrame)
         self.side_btn_tests.setObjectName(u"side_btn_tests")
         self.side_btn_tests.setMaximumSize(QSize(30, 30))
-        icon8 = QIcon()
-        icon8.addFile(u":/icons/icons/chevron-left.svg", QSize(), QIcon.Normal, QIcon.Off)
-        self.side_btn_tests.setIcon(icon8)
+        icon9 = QIcon()
+        icon9.addFile(u":/icons/icons/chevron-left.svg", QSize(), QIcon.Normal, QIcon.Off)
+        self.side_btn_tests.setIcon(icon9)
         self.side_btn_tests.setIconSize(QSize(25, 25))
 
         self.horizontalLayout_8.addWidget(self.side_btn_tests, 0, Qt.AlignTop)
 
 
-        self.gridLayout_4.addWidget(self.slideBtnFrame, 1, 0, 1, 1)
+        self.horizontalLayout_6.addWidget(self.slideBtnFrame)
 
         self.testsopt_slide = QFrame(self.slide_devtstmenu)
         self.testsopt_slide.setObjectName(u"testsopt_slide")
@@ -233,16 +304,6 @@ class Ui_IPTC(object):
         self.verticalLayout_4.setSpacing(0)
         self.verticalLayout_4.setObjectName(u"verticalLayout_4")
         self.verticalLayout_4.setContentsMargins(0, 0, 0, 0)
-        self.linkDeviceBtn = QPushButton(self.opt_menu)
-        self.linkDeviceBtn.setObjectName(u"linkDeviceBtn")
-
-        self.verticalLayout_4.addWidget(self.linkDeviceBtn)
-
-        self.closeCntBtn = QPushButton(self.opt_menu)
-        self.closeCntBtn.setObjectName(u"closeCntBtn")
-
-        self.verticalLayout_4.addWidget(self.closeCntBtn)
-
         self.tests_recent_btn = QPushButton(self.opt_menu)
         self.tests_recent_btn.setObjectName(u"tests_recent_btn")
 
@@ -281,7 +342,7 @@ class Ui_IPTC(object):
         self.gridLayout_7.addWidget(self.opt_menu, 0, 0, 1, 1)
 
 
-        self.gridLayout_4.addWidget(self.testsopt_slide, 1, 1, 1, 1)
+        self.horizontalLayout_6.addWidget(self.testsopt_slide)
 
         self.frame_2 = QFrame(self.slide_devtstmenu)
         self.frame_2.setObjectName(u"frame_2")
@@ -294,7 +355,7 @@ class Ui_IPTC(object):
         self.treeWidget.setObjectName(u"treeWidget")
         self.treeWidget.setMaximumSize(QSize(0, 16777215))
 
-        self.verticalLayout_8.addWidget(self.treeWidget)
+        self.verticalLayout_8.addWidget(self.treeWidget, 0, Qt.AlignVCenter)
 
         self.TestActionsFrame = QFrame(self.frame_2)
         self.TestActionsFrame.setObjectName(u"TestActionsFrame")
@@ -319,7 +380,7 @@ class Ui_IPTC(object):
         self.verticalLayout_8.addWidget(self.TestActionsFrame)
 
 
-        self.gridLayout_4.addWidget(self.frame_2, 1, 2, 1, 1)
+        self.horizontalLayout_6.addWidget(self.frame_2)
 
 
         self.verticalLayout.addWidget(self.slide_devtstmenu)
@@ -343,7 +404,7 @@ class Ui_IPTC(object):
         self.verticalLayout_15.setContentsMargins(0, 0, 0, 0)
         self.sideResultsBtn = QPushButton(self.frame_17)
         self.sideResultsBtn.setObjectName(u"sideResultsBtn")
-        self.sideResultsBtn.setIcon(icon8)
+        self.sideResultsBtn.setIcon(icon9)
         self.sideResultsBtn.setIconSize(QSize(25, 25))
 
         self.verticalLayout_15.addWidget(self.sideResultsBtn)
@@ -444,6 +505,24 @@ class Ui_IPTC(object):
 
         self.verticalLayout.addWidget(self.dataResults_menu)
 
+        self.home_frame = QFrame(self.body_window)
+        self.home_frame.setObjectName(u"home_frame")
+        self.home_frame.setMaximumSize(QSize(16777215, 300))
+        self.home_frame.setFrameShape(QFrame.StyledPanel)
+        self.home_frame.setFrameShadow(QFrame.Raised)
+        self.gridLayout = QGridLayout(self.home_frame)
+        self.gridLayout.setObjectName(u"gridLayout")
+        self.label_2 = QLabel(self.home_frame)
+        self.label_2.setObjectName(u"label_2")
+        self.label_2.setMaximumSize(QSize(400, 400))
+        self.label_2.setPixmap(QPixmap(u":/icons/icons/satellite.svg"))
+        self.label_2.setScaledContents(True)
+
+        self.gridLayout.addWidget(self.label_2, 0, 0, 1, 1)
+
+
+        self.verticalLayout.addWidget(self.home_frame)
+
         self.confWokspace_menu = QFrame(self.body_window)
         self.confWokspace_menu.setObjectName(u"confWokspace_menu")
         self.confWokspace_menu.setMaximumSize(QSize(16777215, 0))
@@ -455,6 +534,7 @@ class Ui_IPTC(object):
         self.verticalLayout_3.setContentsMargins(0, 0, 0, 0)
         self.workConfMenu = QFrame(self.confWokspace_menu)
         self.workConfMenu.setObjectName(u"workConfMenu")
+        self.workConfMenu.setMaximumSize(QSize(16777215, 800))
         self.workConfMenu.setFrameShape(QFrame.StyledPanel)
         self.workConfMenu.setFrameShadow(QFrame.Raised)
         self.gridLayout_2 = QGridLayout(self.workConfMenu)
@@ -614,6 +694,11 @@ class Ui_IPTC(object):
 
         self.gridLayout_8.addWidget(self.newWorkspaceBtn, 0, 1, 1, 1)
 
+        self.workOptBtn = QPushButton(self.workOptions)
+        self.workOptBtn.setObjectName(u"workOptBtn")
+
+        self.gridLayout_8.addWidget(self.workOptBtn, 0, 2, 1, 1)
+
 
         self.gridLayout_2.addWidget(self.workOptions, 0, 1, 1, 2)
 
@@ -640,13 +725,24 @@ class Ui_IPTC(object):
 
         self.verticalLayout_5.addWidget(self.mainwindow)
 
+        self.size_grip = QFrame(self.centralwidget)
+        self.size_grip.setObjectName(u"size_grip")
+        self.size_grip.setMinimumSize(QSize(10, 10))
+        self.size_grip.setMaximumSize(QSize(10, 10))
+        self.size_grip.setFrameShape(QFrame.StyledPanel)
+        self.size_grip.setFrameShadow(QFrame.Raised)
+
+        self.verticalLayout_5.addWidget(self.size_grip, 0, Qt.AlignRight)
+
         IPTC.setCentralWidget(self.centralwidget)
+        self.size_grip.raise_()
+        self.mainwindow.raise_()
 
         self.retranslateUi(IPTC)
 
         self.add2QueueBtn.setDefault(False)
         self.stackedDataResults.setCurrentIndex(6)
-        self.stackedWidgetWorkspace.setCurrentIndex(2)
+        self.stackedWidgetWorkspace.setCurrentIndex(0)
 
 
         QMetaObject.connectSlotsByName(IPTC)
@@ -659,15 +755,14 @@ class Ui_IPTC(object):
         self.close_btn.setText("")
         self.SETECLabel.setText("")
         self.IPTC_label.setText("")
-        self.label_current_status.setText("")
+        self.ssh_connect_btn.setText(QCoreApplication.translate("IPTC", u"SSH", None))
+        self.connectLabel.setText("")
         self.label_working_path.setText("")
-        self.dataResultBtn.setText(QCoreApplication.translate("IPTC", u"Data results", None))
-        self.confWorkspaceBtn.setText(QCoreApplication.translate("IPTC", u"Configure Workspace", None))
         self.devBtnTest.setText(QCoreApplication.translate("IPTC", u"Develop and run tests", None))
+        self.confWorkspaceBtn.setText(QCoreApplication.translate("IPTC", u"Configure Workspace", None))
         self.helpBtn.setText(QCoreApplication.translate("IPTC", u"Help", None))
+        self.dataResultBtn.setText(QCoreApplication.translate("IPTC", u"Data results", None))
         self.side_btn_tests.setText("")
-        self.linkDeviceBtn.setText(QCoreApplication.translate("IPTC", u"Link device", None))
-        self.closeCntBtn.setText(QCoreApplication.translate("IPTC", u"Close connection", None))
         self.tests_recent_btn.setText(QCoreApplication.translate("IPTC", u"Recents", None))
         self.newSeqBtn.setText(QCoreApplication.translate("IPTC", u"New sequence", None))
         self.uploadFile.setText(QCoreApplication.translate("IPTC", u"Upload file", None))
@@ -688,6 +783,7 @@ class Ui_IPTC(object):
         self.label_7.setText(QCoreApplication.translate("IPTC", u"Pattern and Anomaly detection", None))
         self.label_8.setText(QCoreApplication.translate("IPTC", u"Results comparison", None))
         self.label_9.setText(QCoreApplication.translate("IPTC", u"Customize reports", None))
+        self.label_2.setText("")
         self.manageNotifBtn.setText(QCoreApplication.translate("IPTC", u"Manage Notifications", None))
         self.logEventsBtn.setText(QCoreApplication.translate("IPTC", u"Log events", None))
         self.preloadTestsBtn.setText(QCoreApplication.translate("IPTC", u"Pre-load tests", None))
@@ -703,6 +799,7 @@ class Ui_IPTC(object):
         self.addBtn.setText(QCoreApplication.translate("IPTC", u"Add", None))
         self.selectWorkspaceBtn.setText(QCoreApplication.translate("IPTC", u"Choose a saved Workspace", None))
         self.newWorkspaceBtn.setText(QCoreApplication.translate("IPTC", u"Create a new workspace", None))
+        self.workOptBtn.setText(QCoreApplication.translate("IPTC", u"Workspace  options", None))
         self.hel_label_on_menu.setText(QCoreApplication.translate("IPTC", u"IPTC GUI is an application for writing tests.", None))
     # retranslateUi
 
