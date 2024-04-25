@@ -11,6 +11,8 @@
 
 import sys
 import os
+import re
+import shutil
 import json
 
 from PySide2 import *
@@ -116,7 +118,7 @@ class VentanaPrincipal(QMainWindow):
         self.ui.add2QueueBtn.clicked.connect(lambda: self.add_tests_to_queue)
 
 
-
+        self.ui.editNameBtn.clicked.connect(self.editFileName)
 
 
         # ###############################################
@@ -437,258 +439,352 @@ class VentanaPrincipal(QMainWindow):
         selected_file, _ = QFileDialog.getOpenFileName(self, "Select XML File", initialDir, "XML Files (*.xml)", options=options)
         self.upload_xml_to_tree_widget(selected_file)
 
+    #Function to add the "change name" functionality to the test
+
+
+
+    def editFileName(self):
+        new_filename, ok = QInputDialog.getText(self, "Change File Name", "Enter new file name:", text=self.ui.filenameLabel.text())
+        if ok and new_filename.split(".")[1] == "xml":
+            old_path = f'{self.currentPathToWorkspace}/develop and run tests/{self.currentlyOpenTest}'
+            self.ui.filenameLabel.setText(new_filename)
+            self.currentlyOpenTest = new_filename
+            new_path = f'{self.currentPathToWorkspace}/develop and run tests/{self.currentlyOpenTest}'
+
+
+            # Copy the file with a different name
+            shutil.copy(old_path, new_path)
+
+            # If the old file is different and exists, remove it
+            if old_path != new_path and os.path.exists(old_path):
+                os.remove(old_path)
+        else:
+            QMessageBox.warning(self, "warning","Unknown file format, only XML files are allowed")
+
     # Function to upload to the xml_tree
     def upload_xml_to_tree_widget(self, selected_file):
-        if selected_file:
-            # Clear existing items in the tree widget
-            self.ui.treeWidget.clear()
-            self.ui.treeWidget.setMaximumWidth(500)
-            self.ui.treeWidget.setColumnWidth(0, 250)  # Set the width of the first column to 200 pixels
-            self.ui.treeWidget.setColumnWidth(1,250)  # Adjust as necessary for your content
-
-            try:
-                # Parse the XML file
-                tree = ET.parse(selected_file)
-                root = tree.getroot()
+        if self.currentPathToWorkspace != "":
+            filename = os.path.basename(selected_file)
+            self.currentlyOpenTest = filename
+            if selected_file:
+                # Clear existing items in the tree widget
+                self.ui.treeWidget.setHeaderHidden(True)
+                self.ui.treeWidget.clear()
+                self.ui.treeWidget.setMaximumSize(16777215,16777215)
+                self.ui.treeWidget.setColumnWidth(0, 250)  # Set the width of the first column to 200 pixels
+                self.ui.treeWidget.setColumnWidth(1,250)  # Adjust as necessary for your content
                 
-                # Set the column count of the tree widget
-                self.ui.treeWidget.setColumnCount(2)
-                file_path = selected_file.split("/")
-                for file_dir in file_path:
-                    if ".xml" in file_dir:
-                        filename = file_dir
-                        self.currentlyOpenTest = filename
-                    else:
-                        filename = file_path[len(file_path)-1]
-                #self.ui.treeWidget.setHeaderHidden(True)
-                self.ui.treeWidget.setHeaderLabels(["File", filename])
-
-                # Add the root item to the tree widget
-                root_item = QTreeWidgetItem([root.tag])
-                self.ui.treeWidget.addTopLevelItem(root_item)
-
-                # Store the associated xml_element with the tree widget item for the root
-                root_item.setData(0, Qt.UserRole, root)
-
-                def add_items(parent_item, xml_element):
-                    for child in xml_element:
-                        child_item = QTreeWidgetItem([child.tag])
-                        parent_item.addChild(child_item)
-                        
-                        # Store the associated xml_element with the tree widget item
-                        child_item.setData(0, Qt.UserRole, child)
-                        
-                        # Add attributes as children of the element item
-                        for attr_name, attr_value in child.attrib.items():
-                            attr_item = QTreeWidgetItem([f"@{attr_name}", attr_value])
-                            child_item.addChild(attr_item)
-
-                        # Recursively add child elements
-                        add_items(child_item, child)
-
-                        # Add text content, if present and not just whitespace
-                        if child.text and not child.text.isspace():
-                            content_item = QTreeWidgetItem(["Value", child.text.strip()])
-                            child_item.addChild(content_item)
-
-                # Populate the tree widget with XML data
-                add_items(root_item, root)
-
                 
+                try:
+                    #Function to verify the name given to children or attributes
+                    def is_valid_tag(tag_name):
+                        return re.match("^[A-Za-z][\w.-]*$", tag_name) is not None
 
-                # Function to add a new child element
-                def add_child_element():
-                    selected_item = self.ui.treeWidget.currentItem()
-                    if selected_item is not None:
-                        xmlElement = selected_item.data(0, Qt.UserRole)  # Retrieve the associated XML element
-                        new_element_name, ok = QInputDialog.getText(self, "Add Child Element", "Enter the name of the new element:")
+                    save_test_copy_path = os.path.join(self.currentPathToWorkspace,'develop and run tests',self.currentlyOpenTest)
+                    # Copy the file
+                    if save_test_copy_path != selected_file:
+                        shutil.copy(selected_file, save_test_copy_path)
+
+                    # Parse the XML file
+                    tree = ET.parse(f'{self.currentPathToWorkspace}/develop and run tests/{self.currentlyOpenTest}')
+                    root = tree.getroot()
+                    
+                    # Set the column count of the tree widget
+                    self.ui.treeWidget.setColumnCount(2)
+                    
+                    #self.ui.treeWidget.setHeaderHidden(True)
+                    #self.ui.treeWidget.setHeaderLabels(["File", filename])
+
+                    # Add the root item to the tree widget
+                    root_item = QTreeWidgetItem([root.tag])
+                    self.ui.treeWidget.addTopLevelItem(root_item)
+
+                    # Store the associated xml_element with the tree widget item for the root
+                    root_item.setData(0, Qt.UserRole, root)
+
                         
-                        if ok and new_element_name:
-                            new_element = ET.SubElement(xmlElement, new_element_name)  # Create and append the new element
-                            new_element_text, ok = QInputDialog.getText(self, "Set Value", "Enter the value for the new element:") ##No es necesario agregar el valor al elemento
+
+                    def add_items(parent_item, xml_element):
+                        for child in xml_element:
+                            child_item = QTreeWidgetItem([child.tag])
+                            parent_item.addChild(child_item)
                             
-                            if ok:
-                                new_element.text = new_element_text  # Set text for the new element
-                                # Reflect the changes in the QTreeWidget
-                                new_item = QTreeWidgetItem([new_element.tag])
-                                selected_item.addChild(new_item)
-                                
-                                if new_element.text:
-                                    value_item = QTreeWidgetItem(["Value", new_element.text])
-                                    new_item.addChild(value_item)
-                                
-                                # Update the association for the new QTreeWidgetItem
-                                new_item.setData(0, Qt.UserRole, new_element)
-                                
-                                # Write changes to the file
-                                tree.write(selected_file, encoding="utf-8", xml_declaration=True)
+                            # Store the associated xml_element with the tree widget item
+                            child_item.setData(0, Qt.UserRole, child)
+                            
+                            # Add attributes as children of the element item
+                            for attr_name, attr_value in child.attrib.items():
+                                attr_item = QTreeWidgetItem([f"@{attr_name}", attr_value])
+                                child_item.addChild(attr_item)
 
-                
+                            # Recursively add child elements
+                            add_items(child_item, child)
 
+                            # Add text content, if present and not just whitespace
+                            if child.text and not child.text.isspace():
+                                content_item = QTreeWidgetItem(["Value", child.text.strip()])
+                                child_item.addChild(content_item)
 
-                def add_attribute():
-                    selected_item = self.ui.treeWidget.currentItem()
-                    if selected_item is not None:
-                        xmlElement = selected_item.data(0, Qt.UserRole)  # Retrieve the associated XML element
-                        
-                        if xmlElement is not None:
-                            attribute_name, ok = QInputDialog.getText(self, "Add Attribute", "Enter the name of the new attribute:")
-                            if ok and attribute_name:
-                                attribute_value, ok = QInputDialog.getText(self, "Set Attribute Value", "Enter the value for the new attribute:")
+                    # Populate the tree widget with XML data
+                    add_items(root_item, root)
+
+                    
+
+                    # Function to add a new child element
+                    def add_child_element():
+                        selected_item = self.ui.treeWidget.currentItem()
+                        if selected_item is not None:
+                            valid = False
+                            while not valid:
+                                xmlElement = selected_item.data(0, Qt.UserRole)  # Retrieve the associated XML element
+                                new_element_name, ok = QInputDialog.getText(self, "Add Child Element", "Enter the name of the new element:")
+                                
                                 if ok:
-                                    xmlElement.set(attribute_name, attribute_value)  # Set attribute for the element
+                                    if is_valid_tag(new_element_name):
+                                        valid = True
+                                        new_element = ET.SubElement(xmlElement, new_element_name)  # Create and append the new element
+                                        
+                                        
+                                        new_element.text = ""  # Set text for the new element
+                                        # Reflect the changes in the QTreeWidget
+                                        new_item = QTreeWidgetItem([new_element.tag])
+                                        selected_item.addChild(new_item)
+                                        
+                                        if new_element.text:
+                                            value_item = QTreeWidgetItem(["Value", new_element.text])
+                                            new_item.addChild(value_item)
+                                        
+                                        # Update the association for the new QTreeWidgetItem
+                                        new_item.setData(0, Qt.UserRole, new_element)
+                                        
+                                        # Write changes to the file
+                                        tree.write(f'{self.currentPathToWorkspace}/develop and run tests/{self.currentlyOpenTest}', encoding="utf-8", xml_declaration=True)
+                                    else:
+                                        QMessageBox.warning(self, "Invalid Tag", "The tag name is invalid. Please enter a valid tag name without spaces.")
+                                else:
+                                    break
+                                    
+
+                    def add_attribute():
+                        selected_item = self.ui.treeWidget.currentItem()
+                        if selected_item is not None:
+                            xmlElement = selected_item.data(0, Qt.UserRole)  # Retrieve the associated XML element
+                            
+                            if xmlElement is not None:
+                                attribute_name, ok = QInputDialog.getText(self, "Add Attribute", "Enter the name of the new attribute:")
+                                if ok and attribute_name:
+                                    attribute_value, ok = QInputDialog.getText(self, "Set Attribute Value", "Enter the value for the new attribute:")
+                                    if ok:
+                                        xmlElement.set(str(attribute_name), attribute_value)  # Set attribute for the element
+                                        
+                                        # Update the QTreeWidgetItem display
+                                        newAttr = QTreeWidgetItem([f"@{attribute_name}",attribute_value])
+                                        selected_item.addChild(newAttr)
+
+                                        
+                                        # Optionally: Write changes back to XML file
+                                        tree.write(f'{self.currentPathToWorkspace}/develop and run tests/{self.currentlyOpenTest}', encoding='utf-8', xml_declaration=True)
+
+                                        # Note: 'tree' should be accessible here, which might require you to manage the ElementTree object's scope appropriately.
+
+                    def remove_attribute():
+                        selected_item = self.ui.treeWidget.currentItem()
+                        if selected_item is not None:
+                            # Check if the selected item is an attribute
+                            if selected_item.text(0).startswith("@"):
+                                # Get the parent item and its associated XML element
+                                parent_item = selected_item.parent()
+                                xmlElement = parent_item.data(0, Qt.UserRole)
+                                if xmlElement is not None:
+                                    # Extract attribute name and remove '@' prefix
+                                    attribute_name = selected_item.text(0)[1:]
+                                    # Remove the attribute from the XML element
+                                    if xmlElement.get(attribute_name) is not None:
+                                        xmlElement.attrib.pop(attribute_name, None)
+                                        # Remove the attribute item from the tree
+                                        parent_item.removeChild(selected_item)
+                                        
+                                        # Optionally: Write changes back to XML file
+                            tree.write(f'{self.currentPathToWorkspace}/develop and run tests/{self.currentlyOpenTest}', encoding='utf-8', xml_declaration=True)
+
+                    # Function to modify the value of an element
+                    def modify_element_value():
+                        selected_item = self.ui.treeWidget.currentItem()
+                        if selected_item is not None:
+                            item_text = selected_item.text(0)
+                            new_value, ok = QInputDialog.getText(self, "Modify Value", "Enter the new value:")
+
+                            if ok:
+                                if item_text.startswith("@"):  # This item represents an attribute
+                                    attr_name = item_text[1:]  # Extract attribute name
+                                    parent_item = selected_item.parent()
+                                    parent_element_tag = parent_item.text(0)
+                                    parent_element = tree.find(f".//{parent_element_tag}")
+                                    if parent_element is not None:
+                                        parent_element.set(attr_name, new_value)
+                                        selected_item.setText(1, new_value)  # Update GUI
+
+                                elif item_text == "Value":  # This item represents element text content
+                                    parent_item = selected_item.parent()
+                                    parent_element_tag = parent_item.text(0)
+                                    parent_element = tree.find(f".//{parent_element_tag}")
+                                    if parent_element is not None:
+                                        parent_element.text = new_value
+                                        selected_item.setText(1, new_value)  # Update GUI
+                        tree.write(f'{self.currentPathToWorkspace}/develop and run tests/{self.currentlyOpenTest}', encoding="utf-8", xml_declaration=True)
+                        
+                    def remove_child():
+                        selected_item = self.ui.treeWidget.currentItem()
+                        if selected_item is None:
+                            return  # No selection made
+                        
+                        parent_item = selected_item.parent()
+                        xml_element = selected_item.data(0, Qt.UserRole)
+                        parent_xml_element = parent_item.data(0, Qt.UserRole) if parent_item else None
+
+                        if xml_element is not None:
+                            # Remove from the XML structure
+                            if parent_xml_element is not None:
+                                parent_xml_element.remove(xml_element)
+                            else:
+                                # Assuming xml_element is a top-level element in this case
+                                self.xml_root.remove(xml_element)  # xml_root is your XML document's root element
+                                
+                            # Remove from the QTreeWidget
+                            if parent_item is None:  # If it's a top-level item
+                                self.treeWidget.takeTopLevelItem(self.treeWidget.indexOfTopLevelItem(selected_item))
+                            else:
+                                parent_item.removeChild(selected_item)
+
+                        tree.write(f'{self.currentPathToWorkspace}/develop and run tests/{self.currentlyOpenTest}', encoding="utf-8", xml_declaration=True)
+
+                    def remove_attribute():
+                        selected_item = self.ui.treeWidget.currentItem()
+                        if selected_item is not None:
+                            # Check if the selected item is an attribute
+                            if selected_item.text(0).startswith("@"):
+                                # Get the parent item and its associated XML element
+                                parent_item = selected_item.parent()
+                                xmlElement = parent_item.data(0, Qt.UserRole)
+                                if xmlElement is not None:
+                                    # Extract attribute name and remove '@' prefix
+                                    attribute_name = selected_item.text(0)[1:]
+                                    # Remove the attribute from the XML element
+                                    if xmlElement.get(attribute_name) is not None:
+                                        xmlElement.attrib.pop(attribute_name, None)
+                                        # Remove the attribute item from the tree
+                                        parent_item.removeChild(selected_item)
+                                        
+                                        # Optionally: Write changes back to XML file
+                                        tree.write(f'{self.currentPathToWorkspace}/develop and run tests/{self.currentlyOpenTest}', encoding='utf-8', xml_declaration=True)
+
+                    def openMenu(position):
+                        selected_item = self.ui.treeWidget.itemAt(position)
+                        if selected_item is None:
+                            return
+
+                        menu = QMenu()
+                        
+                        ## Los atributos de los elementos tienen en su texto un @
+                        ## con eso se diferencian.
+
+                        if "@" in selected_item.text(0):
+                            #Cuando sólo es atributo no es solo es posible modificar su valor
+
+                            modify_attribute_value = menu.addAction("Modify Value")
+                            modify_attribute_value.triggered.connect(modify_element_value)
+
+                            action_remove_attr = menu.addAction("Remove Attribute")
+                            action_remove_attr.triggered.connect(remove_attribute)
+                            
+                        else:
+                            #Si es hijo o padre sí es posible agregar un hijo o un atributo al mismo
+
+                            action_remove_child = menu.addAction("Remove Child")
+                            action_remove_child.triggered.connect(remove_child)
+
+                            action_add_child = menu.addAction("Add Child")
+                            action_add_child.triggered.connect(add_child_element)
+                        
+                            action_add_attribute = menu.addAction("Add Attribute")
+                            action_add_attribute.triggered.connect(add_attribute)
+                        
+                        menu.exec_(self.ui.treeWidget.viewport().mapToGlobal(position))
+
+                    ##################################################
+                    # Add metadata
+                    ##################################################
+                    MdataItems = ['Authors','Organization']
+                    for Mdata_item in MdataItems:
+                        item_queue = [self.ui.treeWidget.topLevelItem(i) for i in range(self.ui.treeWidget.topLevelItemCount())]
+                        while item_queue:
+                            current_item = item_queue.pop(0)
+                            if current_item.text(0) == Mdata_item:
+                                selected_item = current_item
+                                break
+                            else:
+                                for i in range(current_item.childCount()):
+                                    item_queue.append(current_item.child(i))
+                        xmlElement = selected_item.data(0, Qt.UserRole)  # Retrieve the associated XML element
+                        if Mdata_item == "Authors":
+                            with open(os.path.join(self.currentPathToWorkspace,'Team_Members.txt'),'r') as Authors:
+                                AuthorsData = Authors.readlines()
+                            
+                            author_cnt = 1
+                            for author in AuthorsData:
+                                authorName = author.split('\n')[0]
+                                if xmlElement is not None:
+                                    attribute_name = f'Author_{author_cnt}'
+
+                                    author_cnt += 1
+
+                                    attribute_value = authorName
+                                    xmlElement.set(str(attribute_name), attribute_value)  # Set attribute for the element
                                     
                                     # Update the QTreeWidgetItem display
                                     newAttr = QTreeWidgetItem([f"@{attribute_name}",attribute_value])
                                     selected_item.addChild(newAttr)
-
-                                    
                                     # Optionally: Write changes back to XML file
-                                    tree.write(selected_file, encoding='utf-8', xml_declaration=True)
-
-                                    # Note: 'tree' should be accessible here, which might require you to manage the ElementTree object's scope appropriately.
-
-                def remove_attribute():
-                    selected_item = self.ui.treeWidget.currentItem()
-                    if selected_item is not None:
-                        # Check if the selected item is an attribute
-                        if selected_item.text(0).startswith("@"):
-                            # Get the parent item and its associated XML element
-                            parent_item = selected_item.parent()
-                            xmlElement = parent_item.data(0, Qt.UserRole)
-                            if xmlElement is not None:
-                                # Extract attribute name and remove '@' prefix
-                                attribute_name = selected_item.text(0)[1:]
-                                # Remove the attribute from the XML element
-                                if xmlElement.get(attribute_name) is not None:
-                                    xmlElement.attrib.pop(attribute_name, None)
-                                    # Remove the attribute item from the tree
-                                    parent_item.removeChild(selected_item)
-                                    
-                                    # Optionally: Write changes back to XML file
-                        tree.write(selected_file, encoding='utf-8', xml_declaration=True)
-
-                # Function to modify the value of an element
-                def modify_element_value():
-                    selected_item = self.ui.treeWidget.currentItem()
-                    if selected_item is not None:
-                        item_text = selected_item.text(0)
-                        new_value, ok = QInputDialog.getText(self, "Modify Value", "Enter the new value:")
-
-                        if ok:
-                            if item_text.startswith("@"):  # This item represents an attribute
-                                attr_name = item_text[1:]  # Extract attribute name
-                                parent_item = selected_item.parent()
-                                parent_element_tag = parent_item.text(0)
-                                parent_element = tree.find(f".//{parent_element_tag}")
-                                if parent_element is not None:
-                                    parent_element.set(attr_name, new_value)
-                                    selected_item.setText(1, new_value)  # Update GUI
-
-                            elif item_text == "Value":  # This item represents element text content
-                                parent_item = selected_item.parent()
-                                parent_element_tag = parent_item.text(0)
-                                parent_element = tree.find(f".//{parent_element_tag}")
-                                if parent_element is not None:
-                                    parent_element.text = new_value
-                                    selected_item.setText(1, new_value)  # Update GUI
-                    tree.write(selected_file, encoding="utf-8", xml_declaration=True)
-                    
-                def remove_child():
-                    selected_item = self.ui.treeWidget.currentItem()
-                    if selected_item is None:
-                        return  # No selection made
-                    
-                    parent_item = selected_item.parent()
-                    xml_element = selected_item.data(0, Qt.UserRole)
-                    parent_xml_element = parent_item.data(0, Qt.UserRole) if parent_item else None
-
-                    if xml_element is not None:
-                        # Remove from the XML structure
-                        if parent_xml_element is not None:
-                            parent_xml_element.remove(xml_element)
+                                    tree.write(f'{self.currentPathToWorkspace}/develop and run tests/{self.currentlyOpenTest}', encoding='utf-8', xml_declaration=True) 
                         else:
-                            # Assuming xml_element is a top-level element in this case
-                            self.xml_root.remove(xml_element)  # xml_root is your XML document's root element
-                            
-                        # Remove from the QTreeWidget
-                        if parent_item is None:  # If it's a top-level item
-                            self.treeWidget.takeTopLevelItem(self.treeWidget.indexOfTopLevelItem(selected_item))
-                        else:
-                            parent_item.removeChild(selected_item)
+                            with open(os.path.join(self.currentPathToWorkspace,'Workspace_Info.txt'),'r') as WorkspaceInfo: 
+                                OrgName = WorkspaceInfo.readlines()[1].split(':')[1].split('\n')[0]
+                                WorkspaceInfo.close()
 
-                    tree.write(selected_file, encoding="utf-8", xml_declaration=True)
-
-                def remove_attribute():
-                    selected_item = self.ui.treeWidget.currentItem()
-                    if selected_item is not None:
-                        # Check if the selected item is an attribute
-                        if selected_item.text(0).startswith("@"):
-                            # Get the parent item and its associated XML element
-                            parent_item = selected_item.parent()
-                            xmlElement = parent_item.data(0, Qt.UserRole)
                             if xmlElement is not None:
-                                # Extract attribute name and remove '@' prefix
-                                attribute_name = selected_item.text(0)[1:]
-                                # Remove the attribute from the XML element
-                                if xmlElement.get(attribute_name) is not None:
-                                    xmlElement.attrib.pop(attribute_name, None)
-                                    # Remove the attribute item from the tree
-                                    parent_item.removeChild(selected_item)
-                                    
-                                    # Optionally: Write changes back to XML file
-                                    tree.write(selected_file, encoding='utf-8', xml_declaration=True)
-
-                def openMenu(position):
-                    selected_item = self.ui.treeWidget.itemAt(position)
-                    if selected_item is None:
-                        return
-
-                    menu = QMenu()
-                    
-                    ## Los atributos de los elementos tienen en su texto un @
-                    ## con eso se diferencian.
-
-                    if "@" in selected_item.text(0):
-                        #Cuando sólo es atributo no es solo es posible modificar su valor
-
-                        modify_attribute_value = menu.addAction("Modify Value")
-                        modify_attribute_value.triggered.connect(modify_element_value)
-
-                        action_remove_attr = menu.addAction("Remove Attribute")
-                        action_remove_attr.triggered.connect(remove_attribute)
-                        
-                    else:
-                        #Si es hijo o padre sí es posible agregar un hijo o un atributo al mismo
-
-                        action_remove_child = menu.addAction("Remove Child")
-                        action_remove_child.triggered.connect(remove_child)
-
-                        action_add_child = menu.addAction("Add Child")
-                        action_add_child.triggered.connect(add_child_element)
+                                attribute_name = 'Organization'
+                                attribute_value = OrgName
+                                xmlElement.set(str(attribute_name), attribute_value)  # Set attribute for the element
+                                
+                                # Update the QTreeWidgetItem display
+                                newAttr = QTreeWidgetItem([f"@{attribute_name}",attribute_value])
+                                selected_item.addChild(newAttr)
+                                # Optionally: Write changes back to XML file
+                                tree.write(f'{self.currentPathToWorkspace}/develop and run tests/{self.currentlyOpenTest}', encoding='utf-8', xml_declaration=True) 
                      
-                        action_add_attribute = menu.addAction("Add Attribute")
-                        action_add_attribute.triggered.connect(add_attribute)
-                    
-                    menu.exec_(self.ui.treeWidget.viewport().mapToGlobal(position))
+                
 
                     
+                    # Enable context menu and connect signal
+                    self.ui.treeWidget.setContextMenuPolicy(Qt.CustomContextMenu)
+                    self.ui.treeWidget.customContextMenuRequested.connect(openMenu)
+                    
+                    
+                    
+
+                    QMessageBox.information(self, "Success", "XML data loaded successfully into the tree widget.")
+
+                except Exception as e:
+                    QMessageBox.warning(self, "Error", f"Failed to parse XML file: {str(e)}")
+
+            self.ui.TestActionsFrame.setMaximumHeight(50)
+            self.ui.filenameLabel.setText(self.currentlyOpenTest)
+            self.ui.TestNameFrame.setMaximumHeight(50)
+            #Change the test file name 
             
 
-                
-                # Enable context menu and connect signal
-                self.ui.treeWidget.setContextMenuPolicy(Qt.CustomContextMenu)
-                self.ui.treeWidget.customContextMenuRequested.connect(openMenu)
-                
-                
-                
-
-                QMessageBox.information(self, "Success", "XML data loaded successfully into the tree widget.")
-
-            except Exception as e:
-                QMessageBox.warning(self, "Error", f"Failed to parse XML file: {str(e)}")
-
-        self.ui.TestActionsFrame.setMaximumHeight(350)
+        else:
+            QMessageBox.warning(self, 'Warning','Please select a workspace before you attempt to create or load a test')
 
     #Función para enviar tests a la Raspberry y añadirlos a la cola
                 
@@ -702,11 +798,16 @@ class VentanaPrincipal(QMainWindow):
                     #Create self.currentPathToWorkspace} and tests (within workspace) directories   
                     result = self.ssh_link.execute_command(['touch file_dir_check.txt',f'echo IPTC/{self.currentWorkspaceName}/tests/queued_tests.txt > file_dir_check.txt','python file_check.py'])
 
+
                     ##Send the actual testfile
-                    result = self.ssh_link.send_file(self.currentPathToWorkspace.replace(self.currentWorkspaceName,'tests_templates')+f'/{self.currentlyOpenTest}',f'IPTC/{self.currentWorkspaceName}/tests/{self.currentlyOpenTest}',self.currentlyOpenTest)
-                    QMessageBox.information(self, "Success", f"{result} and added to queue")
+                    try:
+                        result = self.ssh_link.send_file(self.currentPathToWorkspace+f'/develop and run tests/{self.currentlyOpenTest}',f'IPTC/{self.currentWorkspaceName}/tests/{self.currentlyOpenTest}',self.currentlyOpenTest)
+                        QMessageBox.information(self, "Success", f"{result} and added to queue")
 
+                    except:
+                        QMessageBox.warning(self, "Warning", result)
 
+                        
                     result = self.ssh_link.execute_command([f"echo {self.currentlyOpenTest} >> IPTC/{self.currentWorkspaceName}/tests/queued_tests.txt"])
 
                 except:

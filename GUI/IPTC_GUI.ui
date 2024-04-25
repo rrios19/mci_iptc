@@ -26,7 +26,8 @@
   <property name="styleSheet">
    <string notr="true">*{
 	border:none;
-}</string>
+}
+</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -50,7 +51,7 @@
          <property name="maximumSize">
           <size>
            <width>16777215</width>
-           <height>75</height>
+           <height>100</height>
           </size>
          </property>
          <property name="frameShape">
@@ -684,7 +685,39 @@ background-color:#99ffee;
                 <enum>QFrame::Raised</enum>
                </property>
                <layout class="QVBoxLayout" name="verticalLayout_8">
-                <item alignment="Qt::AlignVCenter">
+                <item>
+                 <widget class="QFrame" name="TestNameFrame">
+                  <property name="maximumSize">
+                   <size>
+                    <width>16777215</width>
+                    <height>0</height>
+                   </size>
+                  </property>
+                  <property name="frameShape">
+                   <enum>QFrame::StyledPanel</enum>
+                  </property>
+                  <property name="frameShadow">
+                   <enum>QFrame::Raised</enum>
+                  </property>
+                  <layout class="QHBoxLayout" name="horizontalLayout_9">
+                   <item alignment="Qt::AlignHCenter|Qt::AlignVCenter">
+                    <widget class="QLabel" name="filenameLabel">
+                     <property name="text">
+                      <string/>
+                     </property>
+                    </widget>
+                   </item>
+                   <item alignment="Qt::AlignHCenter">
+                    <widget class="QPushButton" name="editNameBtn">
+                     <property name="text">
+                      <string>Change file name</string>
+                     </property>
+                    </widget>
+                   </item>
+                  </layout>
+                 </widget>
+                </item>
+                <item>
                  <widget class="QTreeWidget" name="treeWidget">
                   <property name="maximumSize">
                    <size>
@@ -1015,7 +1048,7 @@ background-color:#99ffee;
             <property name="maximumSize">
              <size>
               <width>16777215</width>
-              <height>300</height>
+              <height>500</height>
              </size>
             </property>
             <property name="frameShape">

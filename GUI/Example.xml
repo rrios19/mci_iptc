@@ -1,10 +1,11 @@
-<Test >
+<?xml version='1.0' encoding='utf-8'?>
+<Test>
     <Sequence>
         <Sequence_Properties>
-            <Tested_Module>
-                <Selected> BTM </Selected>
+            <Tested_Module Selected="10A" Type="Test23">
+                <Selected Value="NewValue"> BTM </Selected>
                 <Type> Charge </Type>
-            </Tested_Module>
+            <Selected Value="ValueExample">SAM</Selected></Tested_Module>
         </Sequence_Properties>
         <Module>
             <Selected_module> BTM </Selected_module>
@@ -26,10 +27,10 @@
     </Sequence>
     <Sequence>
         <Sequence_Properties>
-            <Tested_Module>
-                <Selected> SAM </Selected>
-                <Type> Emulate </Type>
-            </Tested_Module>
+            <Tested_Module Selected="SelectedValue" Type="TypeValue">
+                <Selected Value="NewValue"> BTM </Selected>
+                <Type> Charge </Type>
+            <Selected Value="ValueExample">SAM</Selected></Tested_Module>
         </Sequence_Properties>
         <Module>
             <Selected_module> SAM </Selected_module>
@@ -68,10 +69,10 @@
     </Sequence>
     <Sequence>
         <Sequence_Properties>
-            <Tested_Module>
-                <Selected> BTM </Selected>
-                <Type> Discharge </Type>
-            </Tested_Module>
+            <Tested_Module Selected="SelectedValue" Type="TypeValue">
+                <Selected Value="NewValue"> BTM </Selected>
+                <Type> Charge </Type>
+            <Selected Value="ValueExample">SAM</Selected></Tested_Module>
         </Sequence_Properties>
         <Module>
             <Selected_module> BTM </Selected_module>
@@ -107,4 +108,4 @@
             </Desired>
         </Module>
     </Sequence>
-</Test>
+<Sequence><Sequence Properties Selected="SAM" Type="Emulate" /></Sequence></Test>

@@ -26,7 +26,8 @@ class Ui_IPTC(object):
         IPTC.setWindowIcon(icon)
         IPTC.setStyleSheet(u"*{\n"
 "	border:none;\n"
-"}")
+"}\n"
+"")
         self.centralwidget = QWidget(IPTC)
         self.centralwidget.setObjectName(u"centralwidget")
         self.verticalLayout_5 = QVBoxLayout(self.centralwidget)
@@ -40,7 +41,7 @@ class Ui_IPTC(object):
         self.verticalLayout_2.setObjectName(u"verticalLayout_2")
         self.project_info = QFrame(self.mainwindow)
         self.project_info.setObjectName(u"project_info")
-        self.project_info.setMaximumSize(QSize(16777215, 75))
+        self.project_info.setMaximumSize(QSize(16777215, 100))
         self.project_info.setFrameShape(QFrame.StyledPanel)
         self.project_info.setFrameShadow(QFrame.Raised)
         self.horizontalLayout = QHBoxLayout(self.project_info)
@@ -350,12 +351,32 @@ class Ui_IPTC(object):
         self.frame_2.setFrameShadow(QFrame.Raised)
         self.verticalLayout_8 = QVBoxLayout(self.frame_2)
         self.verticalLayout_8.setObjectName(u"verticalLayout_8")
+        self.TestNameFrame = QFrame(self.frame_2)
+        self.TestNameFrame.setObjectName(u"TestNameFrame")
+        self.TestNameFrame.setMaximumSize(QSize(16777215, 0))
+        self.TestNameFrame.setFrameShape(QFrame.StyledPanel)
+        self.TestNameFrame.setFrameShadow(QFrame.Raised)
+        self.horizontalLayout_9 = QHBoxLayout(self.TestNameFrame)
+        self.horizontalLayout_9.setObjectName(u"horizontalLayout_9")
+        self.filenameLabel = QLabel(self.TestNameFrame)
+        self.filenameLabel.setObjectName(u"filenameLabel")
+
+        self.horizontalLayout_9.addWidget(self.filenameLabel, 0, Qt.AlignHCenter|Qt.AlignVCenter)
+
+        self.editNameBtn = QPushButton(self.TestNameFrame)
+        self.editNameBtn.setObjectName(u"editNameBtn")
+
+        self.horizontalLayout_9.addWidget(self.editNameBtn, 0, Qt.AlignHCenter)
+
+
+        self.verticalLayout_8.addWidget(self.TestNameFrame)
+
         self.treeWidget = QTreeWidget(self.frame_2)
         self.treeWidget.headerItem().setText(0, "")
         self.treeWidget.setObjectName(u"treeWidget")
         self.treeWidget.setMaximumSize(QSize(0, 16777215))
 
-        self.verticalLayout_8.addWidget(self.treeWidget, 0, Qt.AlignVCenter)
+        self.verticalLayout_8.addWidget(self.treeWidget)
 
         self.TestActionsFrame = QFrame(self.frame_2)
         self.TestActionsFrame.setObjectName(u"TestActionsFrame")
@@ -507,7 +528,7 @@ class Ui_IPTC(object):
 
         self.home_frame = QFrame(self.body_window)
         self.home_frame.setObjectName(u"home_frame")
-        self.home_frame.setMaximumSize(QSize(16777215, 300))
+        self.home_frame.setMaximumSize(QSize(16777215, 500))
         self.home_frame.setFrameShape(QFrame.StyledPanel)
         self.home_frame.setFrameShadow(QFrame.Raised)
         self.gridLayout = QGridLayout(self.home_frame)
@@ -767,6 +788,8 @@ class Ui_IPTC(object):
         self.newSeqBtn.setText(QCoreApplication.translate("IPTC", u"New sequence", None))
         self.uploadFile.setText(QCoreApplication.translate("IPTC", u"Upload file", None))
         self.template_2.setText(QCoreApplication.translate("IPTC", u"Template", None))
+        self.filenameLabel.setText("")
+        self.editNameBtn.setText(QCoreApplication.translate("IPTC", u"Change file name", None))
         self.ExcTestBtn.setText(QCoreApplication.translate("IPTC", u"Excute test", None))
         self.add2QueueBtn.setText(QCoreApplication.translate("IPTC", u"Add test to queue", None))
         self.sideResultsBtn.setText("")
