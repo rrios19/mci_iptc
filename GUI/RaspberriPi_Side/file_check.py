@@ -1,19 +1,9 @@
-import paramiko
+#import paramiko
 import time
 import json
 import os
 from pathlib import Path
 
-# Path object for the file
-file_path = Path('pathlib_new_file.txt')
-
-# Using 'write_text' for writing text to a file (creates or overwrites)
-file_path.write_text("This is some text.")
-
-# Check if the file exists
-if not file_path.exists():
-    # Using 'touch' to create a file similar to the UNIX touch command
-    file_path.touch()
 
 
 
@@ -33,26 +23,28 @@ def check_update_status(file_status,file_check):
         # If the file does not exist, return an empty dictionary
         file_status = {}
 
+    # Path object for the file/directory
+    file_path = Path(file_check)
+
     #Checking if the given path is a directory of a file to handle it accordingly
-    dir_split = file_check.split('/')
-    if "." in dir_split[len(dir_split)-1]:
-        # Path object for the file
-        file_path = Path(file_check)
+    if file_path.suffix:
+        file_path.parent.mkdir(parents=True, exist_ok=True)  # Create parent directories.:
+        
         # Check if the file exists
         if not file_path.exists():
             # Using 'touch' to create a file similar to the UNIX touch command
             file_path.touch()
 
     else:
-        #Check if the actual file or directory exists
+        #Check if the actual file or directory 
         try:
-            os.mkdir(file_check)
+            file_path.mkdir(parents=True)         # Create the directory.
             print(f"Directory '{file_check}' was created successfully.")
-            
+                
         except FileExistsError:
             print(f"Directory '{file_check}' already exists.")
-
-    file_status[file_check:1]
+            
+    file_status[file_check] = 1
 
 
 
@@ -71,23 +63,10 @@ dir_status = "Rpi_dir_status.txt"
 file_check = "file_dir_check.txt"
 
 with open(file_check, "r") as file:
-    dir_check = file.readlines()
+    dir_check = file.readlines()[0].split("\n")[0]
     file.close()
 
 #Load dictionary containing the file status
 check_update_status(dir_status,dir_check)
 
 
-    
-
-
-'''
-username = 'luis'
-hostname = '192.168.43.104'
-
-client = paramiko.SSHClient()
-# Add the server's host key automatically without prompting
-client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-
-key = paramiko.RSAKey.from_private_key_file('~/.ssh/id_rsa')
-client.connect(hostname = hostname, username = username, pkey = key)'''

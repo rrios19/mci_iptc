@@ -1,5 +1,11 @@
 <?xml version='1.0' encoding='utf-8'?>
 <Test>
+ <Metadata>
+    	<Authors>
+    	</Authors>
+    	<Organization>
+    	</Organization>
+    </Metadata>
     <Sequence>
         <Sequence_Properties>
             <Tested_Module Selected="10A" Type="Test23">
@@ -108,4 +114,4 @@
             </Desired>
         </Module>
     </Sequence>
-<Sequence><Sequence Properties Selected="SAM" Type="Emulate" /></Sequence></Test>
+</Test>

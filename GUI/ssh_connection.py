@@ -91,7 +91,7 @@ class SshCommunication:
             ##Opens a shell and keeps the context, it does not restart the session when a new command is executed
             for command in cmd_list:
                 channel.send(command + "\n")
-                time.sleep(1.25)  # Adjust based on command execution time
+                time.sleep(1.5)  # Adjust based on command execution time
 
                 """   #Receive output 
                 while not channel.recv_ready():  # Wait for the command to execute

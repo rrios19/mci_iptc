@@ -349,6 +349,8 @@ class VentanaPrincipal(QMainWindow):
         name = self.ui.line_name.text()
         org = self.ui.line_org.text()
         team = self.ui.line_team.text()
+
+    
         self.currentWorkspaceName = name
         parentDir = os.getcwd()
         pathToWorkspace = os.path.join(parentDir, name)
@@ -356,11 +358,13 @@ class VentanaPrincipal(QMainWindow):
         if os.path.exists(pathToWorkspace):
             QMessageBox.warning(self, "Warning", f"{name} workspace already exists, try using another name.")
         else:
+            #if self.currentlyOpenTest != "":
+            #    orig_test_path = f'{self.currentPathToWorkspace}/develop and run tests/{self.#currentlyOpenTest}'
             self.currentPathToWorkspace = pathToWorkspace
             os.mkdir(pathToWorkspace)
             pathWorkspaceResults = os.path.join(pathToWorkspace, "results")
             os.mkdir(pathWorkspaceResults)
-            pathDevnRunTest = os.path.join(pathToWorkspace, "develop and run test")
+            pathDevnRunTest = os.path.join(pathToWorkspace, "develop and run tests")
             os.mkdir(pathDevnRunTest)
             pathConfigure = os.path.join(pathToWorkspace, "configuration")
             os.mkdir(pathConfigure)
