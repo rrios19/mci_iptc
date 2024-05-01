@@ -1,0 +1,17 @@
+<?xml version='1.0' encoding='utf-8'?>
+<Test>
+ <Metadata>
+    	<Authors Author_1="Alejandro" Author_2="Johan" Author_3="Ronals">
+    	</Authors>
+    	<Organization Organization="TEC">
+    	</Organization>
+    </Metadata>
+    <Sequence>
+        <Sequence_Properties>
+            <Tested_Module Selected="VELM" Type="Test">
+                </Tested_Module>
+        </Sequence_Properties>
+        <Module Selected="VELM">
+            <Step Value_Type="Voltage" Time="20" Value_selected="5" /></Module>
+    </Sequence>
+    </Test>

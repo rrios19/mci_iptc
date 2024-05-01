@@ -1,0 +1,17 @@
+<?xml version='1.0' encoding='utf-8'?>
+<Test>
+ <Metadata>
+    	<Authors Author_1="Alejandro" Author_2="Johan" Author_3="Ronals">
+    	</Authors>
+    	<Organization Organization="TEC">
+    	</Organization>
+    </Metadata>
+    <Sequence>
+        <Sequence_Properties>
+            <Tested_Module Selected="SAM" Type="Test">
+                </Tested_Module>
+        </Sequence_Properties>
+        <Module Selected="SAM" ANGLE="0" RIN="15" IRRADIANCE="1000">
+            </Module>
+    </Sequence>
+    </Test>

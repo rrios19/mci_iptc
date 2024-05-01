@@ -1,0 +1,17 @@
+<?xml version='1.0' encoding='utf-8'?>
+<Test>
+ <Metadata>
+    	<Authors Author_1="Alejandro" Author_2="Johan" Author_3="Ronals">
+    	</Authors>
+    	<Organization Organization="TEC">
+    	</Organization>
+    </Metadata>
+    <Sequence>
+        <Sequence_Properties>
+            <Tested_Module Selected="Name_of_the_selected_module" Type="Type_of_test_or_function_for_the_selected_module">
+                </Tested_Module>
+        </Sequence_Properties>
+        <Module Selected="BTM_VELM_OR_SAM" Different_Properties="In_here_you_can_instantiate_the_properties_for_each_module_during_the_test">
+            </Module>
+    </Sequence>
+    </Test>

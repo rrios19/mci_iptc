@@ -358,13 +358,11 @@ class VentanaPrincipal(QMainWindow):
         if os.path.exists(pathToWorkspace):
             QMessageBox.warning(self, "Warning", f"{name} workspace already exists, try using another name.")
         else:
-            #if self.currentlyOpenTest != "":
-            #    orig_test_path = f'{self.currentPathToWorkspace}/develop and run tests/{self.#currentlyOpenTest}'
             self.currentPathToWorkspace = pathToWorkspace
             os.mkdir(pathToWorkspace)
             pathWorkspaceResults = os.path.join(pathToWorkspace, "results")
             os.mkdir(pathWorkspaceResults)
-            pathDevnRunTest = os.path.join(pathToWorkspace, "develop and run tests")
+            pathDevnRunTest = os.path.join(pathToWorkspace, "develop_and_run_tests")
             os.mkdir(pathDevnRunTest)
             pathConfigure = os.path.join(pathToWorkspace, "configuration")
             os.mkdir(pathConfigure)
@@ -450,10 +448,10 @@ class VentanaPrincipal(QMainWindow):
     def editFileName(self):
         new_filename, ok = QInputDialog.getText(self, "Change File Name", "Enter new file name:", text=self.ui.filenameLabel.text())
         if ok and new_filename.split(".")[1] == "xml":
-            old_path = f'{self.currentPathToWorkspace}/develop and run tests/{self.currentlyOpenTest}'
+            old_path = f'{self.currentPathToWorkspace}/develop_and_run_tests/{self.currentlyOpenTest}'
             self.ui.filenameLabel.setText(new_filename)
             self.currentlyOpenTest = new_filename
-            new_path = f'{self.currentPathToWorkspace}/develop and run tests/{self.currentlyOpenTest}'
+            new_path = f'{self.currentPathToWorkspace}/develop_and_run_tests/{self.currentlyOpenTest}'
 
 
             # Copy the file with a different name
@@ -484,13 +482,13 @@ class VentanaPrincipal(QMainWindow):
                     def is_valid_tag(tag_name):
                         return re.match("^[A-Za-z][\w.-]*$", tag_name) is not None
 
-                    save_test_copy_path = os.path.join(self.currentPathToWorkspace,'develop and run tests',self.currentlyOpenTest)
+                    save_test_copy_path = os.path.join(self.currentPathToWorkspace,'develop_and_run_tests',self.currentlyOpenTest)
                     # Copy the file
                     if save_test_copy_path != selected_file:
                         shutil.copy(selected_file, save_test_copy_path)
 
                     # Parse the XML file
-                    tree = ET.parse(f'{self.currentPathToWorkspace}/develop and run tests/{self.currentlyOpenTest}')
+                    tree = ET.parse(f'{self.currentPathToWorkspace}/develop_and_run_tests/{self.currentlyOpenTest}')
                     root = tree.getroot()
                     
                     # Set the column count of the tree widget
@@ -562,7 +560,7 @@ class VentanaPrincipal(QMainWindow):
                                         new_item.setData(0, Qt.UserRole, new_element)
                                         
                                         # Write changes to the file
-                                        tree.write(f'{self.currentPathToWorkspace}/develop and run tests/{self.currentlyOpenTest}', encoding="utf-8", xml_declaration=True)
+                                        tree.write(f'{self.currentPathToWorkspace}/develop_and_run_tests/{self.currentlyOpenTest}', encoding="utf-8", xml_declaration=True)
                                     else:
                                         QMessageBox.warning(self, "Invalid Tag", "The tag name is invalid. Please enter a valid tag name without spaces.")
                                 else:
@@ -587,7 +585,7 @@ class VentanaPrincipal(QMainWindow):
 
                                         
                                         # Optionally: Write changes back to XML file
-                                        tree.write(f'{self.currentPathToWorkspace}/develop and run tests/{self.currentlyOpenTest}', encoding='utf-8', xml_declaration=True)
+                                        tree.write(f'{self.currentPathToWorkspace}/develop_and_run_tests/{self.currentlyOpenTest}', encoding='utf-8', xml_declaration=True)
 
                                         # Note: 'tree' should be accessible here, which might require you to manage the ElementTree object's scope appropriately.
 
@@ -609,7 +607,7 @@ class VentanaPrincipal(QMainWindow):
                                         parent_item.removeChild(selected_item)
                                         
                                         # Optionally: Write changes back to XML file
-                            tree.write(f'{self.currentPathToWorkspace}/develop and run tests/{self.currentlyOpenTest}', encoding='utf-8', xml_declaration=True)
+                            tree.write(f'{self.currentPathToWorkspace}/develop_and_run_tests/{self.currentlyOpenTest}', encoding='utf-8', xml_declaration=True)
 
                     # Function to modify the value of an element
                     def modify_element_value():
@@ -635,7 +633,7 @@ class VentanaPrincipal(QMainWindow):
                                     if parent_element is not None:
                                         parent_element.text = new_value
                                         selected_item.setText(1, new_value)  # Update GUI
-                        tree.write(f'{self.currentPathToWorkspace}/develop and run tests/{self.currentlyOpenTest}', encoding="utf-8", xml_declaration=True)
+                        tree.write(f'{self.currentPathToWorkspace}/develop_and_run_tests/{self.currentlyOpenTest}', encoding="utf-8", xml_declaration=True)
                         
                     def remove_child():
                         selected_item = self.ui.treeWidget.currentItem()
@@ -660,7 +658,7 @@ class VentanaPrincipal(QMainWindow):
                             else:
                                 parent_item.removeChild(selected_item)
 
-                        tree.write(f'{self.currentPathToWorkspace}/develop and run tests/{self.currentlyOpenTest}', encoding="utf-8", xml_declaration=True)
+                        tree.write(f'{self.currentPathToWorkspace}/develop_and_run_tests/{self.currentlyOpenTest}', encoding="utf-8", xml_declaration=True)
 
                     def remove_attribute():
                         selected_item = self.ui.treeWidget.currentItem()
@@ -680,7 +678,7 @@ class VentanaPrincipal(QMainWindow):
                                         parent_item.removeChild(selected_item)
                                         
                                         # Optionally: Write changes back to XML file
-                                        tree.write(f'{self.currentPathToWorkspace}/develop and run tests/{self.currentlyOpenTest}', encoding='utf-8', xml_declaration=True)
+                                        tree.write(f'{self.currentPathToWorkspace}/develop_and_run_tests/{self.currentlyOpenTest}', encoding='utf-8', xml_declaration=True)
 
                     def openMenu(position):
                         selected_item = self.ui.treeWidget.itemAt(position)
@@ -749,7 +747,7 @@ class VentanaPrincipal(QMainWindow):
                                     newAttr = QTreeWidgetItem([f"@{attribute_name}",attribute_value])
                                     selected_item.addChild(newAttr)
                                     # Optionally: Write changes back to XML file
-                                    tree.write(f'{self.currentPathToWorkspace}/develop and run tests/{self.currentlyOpenTest}', encoding='utf-8', xml_declaration=True) 
+                                    tree.write(f'{self.currentPathToWorkspace}/develop_and_run_tests/{self.currentlyOpenTest}', encoding='utf-8', xml_declaration=True) 
                         else:
                             with open(os.path.join(self.currentPathToWorkspace,'Workspace_Info.txt'),'r') as WorkspaceInfo: 
                                 OrgName = WorkspaceInfo.readlines()[1].split(':')[1].split('\n')[0]
@@ -764,7 +762,7 @@ class VentanaPrincipal(QMainWindow):
                                 newAttr = QTreeWidgetItem([f"@{attribute_name}",attribute_value])
                                 selected_item.addChild(newAttr)
                                 # Optionally: Write changes back to XML file
-                                tree.write(f'{self.currentPathToWorkspace}/develop and run tests/{self.currentlyOpenTest}', encoding='utf-8', xml_declaration=True) 
+                                tree.write(f'{self.currentPathToWorkspace}/develop_and_run_tests/{self.currentlyOpenTest}', encoding='utf-8', xml_declaration=True) 
                      
                 
 
@@ -800,17 +798,17 @@ class VentanaPrincipal(QMainWindow):
                     ##EXECUTED IN RASPBERRY PI
                     ##Create a IPTC directory to store all the app's data
                     #Create self.currentPathToWorkspace} and tests (within workspace) directories   
-                    result = self.ssh_link.execute_command(['touch file_dir_check.txt',f'echo IPTC/{self.currentWorkspaceName}/tests/queued_tests.txt > file_dir_check.txt','python file_check.py'])
+                    result = self.ssh_link.execute_command(['touch file_dir_check.txt',f'echo IPTC/{self.currentWorkspaceName}/tests/queued_tests.txt > file_dir_check.txt','python3 file_check.py'])
 
 
                     ##Send the actual testfile
-                    try:
-                        result = self.ssh_link.send_file(self.currentPathToWorkspace+f'/develop and run tests/{self.currentlyOpenTest}',f'IPTC/{self.currentWorkspaceName}/tests/{self.currentlyOpenTest}',self.currentlyOpenTest)
+                    result,flag = self.ssh_link.send_file(self.currentPathToWorkspace+f'/develop_and_run_tests/{self.currentlyOpenTest}',f'IPTC/{self.currentWorkspaceName}/tests/{self.currentlyOpenTest}',self.currentlyOpenTest)
+                    if not flag:
                         QMessageBox.information(self, "Success", f"{result} and added to queue")
 
-                    except:
+                    else:
                         QMessageBox.warning(self, "Warning", result)
-
+                        return
                         
                     result = self.ssh_link.execute_command([f"echo {self.currentlyOpenTest} >> IPTC/{self.currentWorkspaceName}/tests/queued_tests.txt"])
 

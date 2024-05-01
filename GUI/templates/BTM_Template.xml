@@ -1,0 +1,17 @@
+<?xml version='1.0' encoding='utf-8'?>
+<Test>
+ <Metadata>
+    	<Authors Author_1="Alejandro" Author_2="Johan" Author_3="Ronals">
+    	</Authors>
+    	<Organization Organization="TEC">
+    	</Organization>
+    </Metadata>
+    <Sequence>
+        <Sequence_Properties>
+            <Tested_Module Selected="BTM" Type="Charge">
+                </Tested_Module>
+        </Sequence_Properties>
+        <Module Selected="BTM" Voltage="4.2" Max_Pow="10" Rin="100" NominalCapacity="2900">
+            </Module>
+    </Sequence>
+    </Test>

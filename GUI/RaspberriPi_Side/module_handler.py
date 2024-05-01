@@ -52,13 +52,13 @@ def GetSequence():
                 #############################################
                 
                 print(f'       {list(module.attrib.values())[0]}\n       Configuracion de modulo')
-                if module[0].attrib:
-                    for confKey in list(module[0].attrib):
-                        print(f'                {confKey}------->{module[0].attrib[confKey]}')
+                if module.attrib:
+                    for confKey in list(module.attrib):
+                        print(f'                {confKey}------->{module.attrib[confKey]}')
 
                 else:
 
-                    for step in module[0].iter('Step'):
+                    for step in module.iter('Step'):
                         print(f'                 {step.tag}\n                   Pow ------> {step.attrib["Pow"]}\n                  Time --------> {step.attrib["Time"]}')
 
                 ###############################################################################

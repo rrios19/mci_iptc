@@ -79,10 +79,10 @@ class SshCommunication:
             # Close the SFTP session
             sftp.close()
 
-            return f"File {filename} has been transferred to {self.username}"
+            return f"File {filename} has been transferred to {self.username}",0
 
         except Exception as e:
-            return f"An error occurred: {e}"
+            return f"An error occurred: {e}",1
 
     def execute_command(self,cmd_list):
         try:
