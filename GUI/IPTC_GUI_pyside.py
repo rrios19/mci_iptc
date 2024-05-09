@@ -14,6 +14,7 @@ from PySide2.QtWidgets import *
 
 import icons_rc
 import icons_rc
+import icons_rc
 
 class Ui_IPTC(object):
     def setupUi(self, IPTC):
@@ -408,7 +409,7 @@ class Ui_IPTC(object):
 
         self.dataResults_menu = QFrame(self.body_window)
         self.dataResults_menu.setObjectName(u"dataResults_menu")
-        self.dataResults_menu.setMaximumSize(QSize(16777215, 0))
+        self.dataResults_menu.setMaximumSize(QSize(16777215, 800))
         self.dataResults_menu.setFrameShape(QFrame.StyledPanel)
         self.dataResults_menu.setFrameShadow(QFrame.Raised)
         self.gridLayout_9 = QGridLayout(self.dataResults_menu)
@@ -443,35 +444,20 @@ class Ui_IPTC(object):
         self.formLayout.setHorizontalSpacing(0)
         self.formLayout.setVerticalSpacing(0)
         self.formLayout.setContentsMargins(0, 0, 0, 0)
-        self.intAnalysisBtn = QPushButton(self.dataresult_sidemenu)
-        self.intAnalysisBtn.setObjectName(u"intAnalysisBtn")
-
-        self.formLayout.setWidget(0, QFormLayout.LabelRole, self.intAnalysisBtn)
-
-        self.filTagsGrBtn = QPushButton(self.dataresult_sidemenu)
-        self.filTagsGrBtn.setObjectName(u"filTagsGrBtn")
-
-        self.formLayout.setWidget(1, QFormLayout.LabelRole, self.filTagsGrBtn)
-
         self.interacGraphBtn = QPushButton(self.dataresult_sidemenu)
         self.interacGraphBtn.setObjectName(u"interacGraphBtn")
 
-        self.formLayout.setWidget(2, QFormLayout.LabelRole, self.interacGraphBtn)
-
-        self.patAnoDetBtn = QPushButton(self.dataresult_sidemenu)
-        self.patAnoDetBtn.setObjectName(u"patAnoDetBtn")
-
-        self.formLayout.setWidget(3, QFormLayout.LabelRole, self.patAnoDetBtn)
+        self.formLayout.setWidget(0, QFormLayout.LabelRole, self.interacGraphBtn)
 
         self.resultCompBtn = QPushButton(self.dataresult_sidemenu)
         self.resultCompBtn.setObjectName(u"resultCompBtn")
 
-        self.formLayout.setWidget(4, QFormLayout.LabelRole, self.resultCompBtn)
+        self.formLayout.setWidget(1, QFormLayout.LabelRole, self.resultCompBtn)
 
         self.customReportBtn = QPushButton(self.dataresult_sidemenu)
         self.customReportBtn.setObjectName(u"customReportBtn")
 
-        self.formLayout.setWidget(5, QFormLayout.LabelRole, self.customReportBtn)
+        self.formLayout.setWidget(2, QFormLayout.LabelRole, self.customReportBtn)
 
 
         self.gridLayout_9.addWidget(self.dataresult_sidemenu, 0, 1, 1, 1, Qt.AlignHCenter)
@@ -484,30 +470,118 @@ class Ui_IPTC(object):
         self.label.setObjectName(u"label")
         self.label.setGeometry(QRect(140, 160, 67, 17))
         self.stackedDataResults.addWidget(self.homeDataResOpt)
-        self.intAnalysisOpt = QWidget()
-        self.intAnalysisOpt.setObjectName(u"intAnalysisOpt")
-        self.label_3 = QLabel(self.intAnalysisOpt)
-        self.label_3.setObjectName(u"label_3")
-        self.label_3.setGeometry(QRect(110, 160, 131, 17))
-        self.stackedDataResults.addWidget(self.intAnalysisOpt)
-        self.ftgOpt = QWidget()
-        self.ftgOpt.setObjectName(u"ftgOpt")
-        self.label_4 = QLabel(self.ftgOpt)
-        self.label_4.setObjectName(u"label_4")
-        self.label_4.setGeometry(QRect(100, 160, 161, 17))
-        self.stackedDataResults.addWidget(self.ftgOpt)
         self.interactiveGrphOpt = QWidget()
         self.interactiveGrphOpt.setObjectName(u"interactiveGrphOpt")
-        self.label_5 = QLabel(self.interactiveGrphOpt)
+        self.gridLayout_4 = QGridLayout(self.interactiveGrphOpt)
+        self.gridLayout_4.setObjectName(u"gridLayout_4")
+        self.stackedWidgetResGraphs = QStackedWidget(self.interactiveGrphOpt)
+        self.stackedWidgetResGraphs.setObjectName(u"stackedWidgetResGraphs")
+        self.BTMres = QWidget()
+        self.BTMres.setObjectName(u"BTMres")
+        self.horizontalLayout_10 = QHBoxLayout(self.BTMres)
+        self.horizontalLayout_10.setObjectName(u"horizontalLayout_10")
+        self.Graph1 = QFrame(self.BTMres)
+        self.Graph1.setObjectName(u"Graph1")
+        self.Graph1.setFrameShape(QFrame.StyledPanel)
+        self.Graph1.setFrameShadow(QFrame.Raised)
+        self.verticalLayout_9 = QVBoxLayout(self.Graph1)
+        self.verticalLayout_9.setObjectName(u"verticalLayout_9")
+        self.label_5 = QLabel(self.Graph1)
         self.label_5.setObjectName(u"label_5")
-        self.label_5.setGeometry(QRect(110, 160, 141, 17))
+
+        self.verticalLayout_9.addWidget(self.label_5)
+
+        self.VlayGraph1 = QVBoxLayout()
+        self.VlayGraph1.setObjectName(u"VlayGraph1")
+
+        self.verticalLayout_9.addLayout(self.VlayGraph1)
+
+        self.verticalLayout_9.setStretch(0, 1)
+        self.verticalLayout_9.setStretch(1, 5)
+
+        self.horizontalLayout_10.addWidget(self.Graph1)
+
+        self.stackedWidgetResGraphs.addWidget(self.BTMres)
+        self.SAMres = QWidget()
+        self.SAMres.setObjectName(u"SAMres")
+        self.horizontalLayout_11 = QHBoxLayout(self.SAMres)
+        self.horizontalLayout_11.setObjectName(u"horizontalLayout_11")
+        self.Graph2 = QFrame(self.SAMres)
+        self.Graph2.setObjectName(u"Graph2")
+        self.Graph2.setFrameShape(QFrame.StyledPanel)
+        self.Graph2.setFrameShadow(QFrame.Raised)
+        self.verticalLayout_10 = QVBoxLayout(self.Graph2)
+        self.verticalLayout_10.setObjectName(u"verticalLayout_10")
+        self.label_3 = QLabel(self.Graph2)
+        self.label_3.setObjectName(u"label_3")
+
+        self.verticalLayout_10.addWidget(self.label_3)
+
+        self.VlayGraph2 = QVBoxLayout()
+        self.VlayGraph2.setObjectName(u"VlayGraph2")
+
+        self.verticalLayout_10.addLayout(self.VlayGraph2)
+
+        self.verticalLayout_10.setStretch(0, 1)
+        self.verticalLayout_10.setStretch(1, 5)
+
+        self.horizontalLayout_11.addWidget(self.Graph2)
+
+        self.stackedWidgetResGraphs.addWidget(self.SAMres)
+        self.VELMres = QWidget()
+        self.VELMres.setObjectName(u"VELMres")
+        self.horizontalLayout_12 = QHBoxLayout(self.VELMres)
+        self.horizontalLayout_12.setObjectName(u"horizontalLayout_12")
+        self.Graph3 = QFrame(self.VELMres)
+        self.Graph3.setObjectName(u"Graph3")
+        self.Graph3.setFrameShape(QFrame.StyledPanel)
+        self.Graph3.setFrameShadow(QFrame.Raised)
+        self.verticalLayout_11 = QVBoxLayout(self.Graph3)
+        self.verticalLayout_11.setObjectName(u"verticalLayout_11")
+        self.label_4 = QLabel(self.Graph3)
+        self.label_4.setObjectName(u"label_4")
+
+        self.verticalLayout_11.addWidget(self.label_4)
+
+        self.VlayGraph3 = QVBoxLayout()
+        self.VlayGraph3.setObjectName(u"VlayGraph3")
+
+        self.verticalLayout_11.addLayout(self.VlayGraph3)
+
+        self.verticalLayout_11.setStretch(0, 1)
+        self.verticalLayout_11.setStretch(1, 5)
+
+        self.horizontalLayout_12.addWidget(self.Graph3)
+
+        self.stackedWidgetResGraphs.addWidget(self.VELMres)
+
+        self.gridLayout_4.addWidget(self.stackedWidgetResGraphs, 0, 0, 1, 1)
+
+        self.frame_3 = QFrame(self.interactiveGrphOpt)
+        self.frame_3.setObjectName(u"frame_3")
+        self.frame_3.setFrameShape(QFrame.StyledPanel)
+        self.frame_3.setFrameShadow(QFrame.Raised)
+        self.horizontalLayout_13 = QHBoxLayout(self.frame_3)
+        self.horizontalLayout_13.setObjectName(u"horizontalLayout_13")
+        self.BTMresBtn = QPushButton(self.frame_3)
+        self.BTMresBtn.setObjectName(u"BTMresBtn")
+
+        self.horizontalLayout_13.addWidget(self.BTMresBtn)
+
+        self.SAMresBtn = QPushButton(self.frame_3)
+        self.SAMresBtn.setObjectName(u"SAMresBtn")
+
+        self.horizontalLayout_13.addWidget(self.SAMresBtn)
+
+        self.VELMresBtn = QPushButton(self.frame_3)
+        self.VELMresBtn.setObjectName(u"VELMresBtn")
+
+        self.horizontalLayout_13.addWidget(self.VELMresBtn)
+
+
+        self.gridLayout_4.addWidget(self.frame_3, 1, 0, 1, 1)
+
         self.stackedDataResults.addWidget(self.interactiveGrphOpt)
-        self.pandAnomDetOpt = QWidget()
-        self.pandAnomDetOpt.setObjectName(u"pandAnomDetOpt")
-        self.label_7 = QLabel(self.pandAnomDetOpt)
-        self.label_7.setObjectName(u"label_7")
-        self.label_7.setGeometry(QRect(70, 160, 211, 17))
-        self.stackedDataResults.addWidget(self.pandAnomDetOpt)
         self.resCompOpt = QWidget()
         self.resCompOpt.setObjectName(u"resCompOpt")
         self.label_8 = QLabel(self.resCompOpt)
@@ -521,14 +595,14 @@ class Ui_IPTC(object):
         self.label_9.setGeometry(QRect(110, 160, 131, 17))
         self.stackedDataResults.addWidget(self.customRepOpt)
 
-        self.gridLayout_9.addWidget(self.stackedDataResults, 0, 2, 1, 1)
+        self.gridLayout_9.addWidget(self.stackedDataResults, 0, 3, 1, 1)
 
 
         self.verticalLayout.addWidget(self.dataResults_menu)
 
         self.home_frame = QFrame(self.body_window)
         self.home_frame.setObjectName(u"home_frame")
-        self.home_frame.setMaximumSize(QSize(16777215, 500))
+        self.home_frame.setMaximumSize(QSize(16777215, 0))
         self.home_frame.setFrameShape(QFrame.StyledPanel)
         self.home_frame.setFrameShadow(QFrame.Raised)
         self.gridLayout = QGridLayout(self.home_frame)
@@ -762,7 +836,8 @@ class Ui_IPTC(object):
         self.retranslateUi(IPTC)
 
         self.add2QueueBtn.setDefault(False)
-        self.stackedDataResults.setCurrentIndex(6)
+        self.stackedDataResults.setCurrentIndex(1)
+        self.stackedWidgetResGraphs.setCurrentIndex(0)
         self.stackedWidgetWorkspace.setCurrentIndex(0)
 
 
@@ -793,17 +868,16 @@ class Ui_IPTC(object):
         self.ExcTestBtn.setText(QCoreApplication.translate("IPTC", u"Excute test", None))
         self.add2QueueBtn.setText(QCoreApplication.translate("IPTC", u"Add test to queue", None))
         self.sideResultsBtn.setText("")
-        self.intAnalysisBtn.setText(QCoreApplication.translate("IPTC", u"Integrated analysis", None))
-        self.filTagsGrBtn.setText(QCoreApplication.translate("IPTC", u"Filters, Tags & Groups", None))
         self.interacGraphBtn.setText(QCoreApplication.translate("IPTC", u"Interactive graphics", None))
-        self.patAnoDetBtn.setText(QCoreApplication.translate("IPTC", u"Pattern and Anomaly detection", None))
         self.resultCompBtn.setText(QCoreApplication.translate("IPTC", u"Results Comparison ", None))
         self.customReportBtn.setText(QCoreApplication.translate("IPTC", u"Customize reports", None))
         self.label.setText(QCoreApplication.translate("IPTC", u"Home", None))
-        self.label_3.setText(QCoreApplication.translate("IPTC", u"Integrated Analysis", None))
-        self.label_4.setText(QCoreApplication.translate("IPTC", u"Filters, Tags and Groups", None))
-        self.label_5.setText(QCoreApplication.translate("IPTC", u"Interactive graphics", None))
-        self.label_7.setText(QCoreApplication.translate("IPTC", u"Pattern and Anomaly detection", None))
+        self.label_5.setText(QCoreApplication.translate("IPTC", u"Graph1", None))
+        self.label_3.setText(QCoreApplication.translate("IPTC", u"Graph2", None))
+        self.label_4.setText(QCoreApplication.translate("IPTC", u"Graph3", None))
+        self.BTMresBtn.setText(QCoreApplication.translate("IPTC", u"BTM results", None))
+        self.SAMresBtn.setText(QCoreApplication.translate("IPTC", u"SAM results", None))
+        self.VELMresBtn.setText(QCoreApplication.translate("IPTC", u"VELM results", None))
         self.label_8.setText(QCoreApplication.translate("IPTC", u"Results comparison", None))
         self.label_9.setText(QCoreApplication.translate("IPTC", u"Customize reports", None))
         self.label_2.setText("")

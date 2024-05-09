@@ -14,6 +14,7 @@ import os
 import re
 import shutil
 import json
+import pandas as pd
 
 from PySide2 import *
 
@@ -23,6 +24,8 @@ from qt_material import apply_stylesheet
 import xml.etree.ElementTree as ET
 from AuthWindow import AuthDialog
 from ssh_connection import SshCommunication as ssh
+import pyqtgraph as pg
+
 class VentanaPrincipal(QMainWindow):
     def __init__(self):
         QMainWindow.__init__(self)
@@ -36,6 +39,44 @@ class VentanaPrincipal(QMainWindow):
         ## # Remover la barra de título
         ########################################################################    
         self.setWindowFlags(QtCore.Qt.FramelessWindowHint) 
+        
+        # Setup the plot widget
+        self.graphWidget1 = pg.PlotWidget()
+        self.ui.VlayGraph1.addWidget(self.graphWidget1)
+        self.ui.Graph1.setLayout(self.ui.VlayGraph1)
+
+        self.graphWidget2 = pg.PlotWidget()
+        self.ui.VlayGraph2.addWidget(self.graphWidget2)
+        self.ui.Graph2.setLayout(self.ui.VlayGraph2)
+
+        self.graphWidget3 = pg.PlotWidget()
+        self.ui.VlayGraph3.addWidget(self.graphWidget3)
+        self.ui.Graph3.setLayout(self.ui.VlayGraph3)
+
+        # Graph styling
+        self.graphWidget1.setBackground('w')
+        self.graphWidget2.setBackground('w')
+        self.graphWidget3.setBackground('w')
+
+        # Data lists for each plot
+        self.data1 = {'x': [], 'y': []}
+        self.data2 = {'x': [], 'y': []}
+        self.data3 = {'x': [], 'y': []}
+
+        # Create a plot in the graph widget
+        
+        self.pen = pg.mkPen(color=(255, 0, 0), width=2)
+        self.plot1 = self.graphWidget1.plot(pen=self.pen)  # 'y' for yellow color
+        self.plot2 = self.graphWidget2.plot(pen=self.pen)  # 'y' for yellow color
+        self.plot3 = self.graphWidget3.plot(pen=self.pen)  # 'y' for yellow color
+
+        # Timer setup to refresh the graph
+        self.timer = QTimer()
+        self.timer.setInterval(2000)  # update every 2000 milliseconds (2 seconds)
+        self.timer.timeout.connect(self.update_plots)
+        self.timer.start()
+
+
 
 
         #######################################################################
@@ -91,21 +132,28 @@ class VentanaPrincipal(QMainWindow):
         #Cambiar a la página designada para espacio de nueva estación de trabajo
         self.ui.newWorkspaceBtn.clicked.connect(lambda: self.ui.stackedWidgetWorkspace.setCurrentWidget(self.ui.newWorkMenu))
 
+        #Cambiar a la página designada resultados de BTM
+        self.ui.BTMresBtn.clicked.connect(lambda: self.ui.stackedWidgetResGraphs.setCurrentWidget(self.ui.BTMres))
+
+        #Cambiar a la página designada resultados de BTM
+        self.ui.SAMresBtn.clicked.connect(lambda: self.ui.stackedWidgetResGraphs.setCurrentWidget(self.ui.SAMres))
+
+
+        #Cambiar a la página designada resultados de BTM
+        self.ui.VELMresBtn.clicked.connect(lambda: self.ui.stackedWidgetResGraphs.setCurrentWidget(self.ui.VELMres))
+
         #########################################################################################
         #Stacked Widget para las opciones de resultados
         self.ui.stackedDataResults.setCurrentWidget(self.ui.homeDataResOpt)
 
-        #Selecciona frame de integrated analysis
-        self.ui.intAnalysisBtn.clicked.connect(lambda: self.ui.stackedDataResults.setCurrentWidget(self.ui.intAnalysisOpt))
 
-        #Selecciona frame de Filters, Tags and Groups
-        self.ui.filTagsGrBtn.clicked.connect(lambda: self.ui.stackedDataResults.setCurrentWidget(self.ui.ftgOpt))
+
+ 
 
         #Selecciona frame de Interactive graphics
         self.ui.interacGraphBtn.clicked.connect(lambda: self.ui.stackedDataResults.setCurrentWidget(self.ui.interactiveGrphOpt))
 
-        #Selecciona frame de pattern and anomaly detection
-        self.ui.patAnoDetBtn.clicked.connect(lambda: self.ui.stackedDataResults.setCurrentWidget(self.ui.pandAnomDetOpt))
+ 
 
         #Selecciona frame de results comparison
         self.ui.resultCompBtn.clicked.connect(lambda: self.ui.stackedDataResults.setCurrentWidget(self.ui.resCompOpt))
@@ -201,6 +249,9 @@ class VentanaPrincipal(QMainWindow):
         #Add tests to queue
 
         self.ui.add2QueueBtn.clicked.connect(lambda: self.add_tests_to_queue())
+
+        self.ui.ExcTestBtn.clicked.connect(lambda: self.execute_test())
+
 
         self.show()
 
@@ -819,7 +870,41 @@ class VentanaPrincipal(QMainWindow):
         else:
             QMessageBox.warning(self, "Warning", f"An ssh connection must be established first, please select a device and then send the test")
 
+    def execute_test(self):
+        if self.ssh_link.connected:
+            self.ssh_link.execute_command(["python3 execute_test.py"])
+        else:
+            QMessageBox.warning(self, "Warning", f"An ssh connection must be established first, please select a device, send the test and execute it")
 
+
+
+
+
+    def update_plots(self):
+            # This function needs to be modified to handle reading each dataset correctly
+            try:
+                # Read new data for each graph from separate CSVs
+                data1 = pd.read_csv(f'{self.currentPathToWorkspace}/results/BTM.csv').iloc[-1]
+                data2 = pd.read_csv(f'{self.currentPathToWorkspace}/results/SAM.csv').iloc[-1]
+                data3 = pd.read_csv(f'{self.currentPathToWorkspace}/results/VELM.csv').iloc[-1]
+
+                # Append data for each graph
+                self.data1['x'].append(data1['time'])
+                self.data1['y'].append(data1['value'])
+
+                self.data2['x'].append(data2['time'])
+                self.data2['y'].append(data2['value'])
+
+                self.data3['x'].append(data3['time'])
+                self.data3['y'].append(data3['value'])
+
+                # Update each plot
+                self.plot1.setData(self.data1['x'], self.data1['y'])
+                self.plot2.setData(self.data2['x'], self.data2['y'])
+                self.plot3.setData(self.data3['x'], self.data3['y'])
+
+            except Exception as e:
+                print(f"An error occurred: {e}")
 
 
     ##########################################################

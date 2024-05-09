@@ -784,7 +784,7 @@ background-color:#99ffee;
             <property name="maximumSize">
              <size>
               <width>16777215</width>
-              <height>0</height>
+              <height>800</height>
              </size>
             </property>
             <property name="frameShape">
@@ -884,41 +884,20 @@ background-color:#99ffee;
                  <number>0</number>
                 </property>
                 <item row="0" column="0">
-                 <widget class="QPushButton" name="intAnalysisBtn">
-                  <property name="text">
-                   <string>Integrated analysis</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="1" column="0">
-                 <widget class="QPushButton" name="filTagsGrBtn">
-                  <property name="text">
-                   <string>Filters, Tags &amp; Groups</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="2" column="0">
                  <widget class="QPushButton" name="interacGraphBtn">
                   <property name="text">
                    <string>Interactive graphics</string>
                   </property>
                  </widget>
                 </item>
-                <item row="3" column="0">
-                 <widget class="QPushButton" name="patAnoDetBtn">
-                  <property name="text">
-                   <string>Pattern and Anomaly detection</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="4" column="0">
+                <item row="1" column="0">
                  <widget class="QPushButton" name="resultCompBtn">
                   <property name="text">
                    <string>Results Comparison </string>
                   </property>
                  </widget>
                 </item>
-                <item row="5" column="0">
+                <item row="2" column="0">
                  <widget class="QPushButton" name="customReportBtn">
                   <property name="text">
                    <string>Customize reports</string>
@@ -928,10 +907,10 @@ background-color:#99ffee;
                </layout>
               </widget>
              </item>
-             <item row="0" column="2">
+             <item row="0" column="3">
               <widget class="QStackedWidget" name="stackedDataResults">
                <property name="currentIndex">
-                <number>6</number>
+                <number>1</number>
                </property>
                <widget class="QWidget" name="homeDataResOpt">
                 <widget class="QLabel" name="label">
@@ -948,65 +927,127 @@ background-color:#99ffee;
                  </property>
                 </widget>
                </widget>
-               <widget class="QWidget" name="intAnalysisOpt">
-                <widget class="QLabel" name="label_3">
-                 <property name="geometry">
-                  <rect>
-                   <x>110</x>
-                   <y>160</y>
-                   <width>131</width>
-                   <height>17</height>
-                  </rect>
-                 </property>
-                 <property name="text">
-                  <string>Integrated Analysis</string>
-                 </property>
-                </widget>
-               </widget>
-               <widget class="QWidget" name="ftgOpt">
-                <widget class="QLabel" name="label_4">
-                 <property name="geometry">
-                  <rect>
-                   <x>100</x>
-                   <y>160</y>
-                   <width>161</width>
-                   <height>17</height>
-                  </rect>
-                 </property>
-                 <property name="text">
-                  <string>Filters, Tags and Groups</string>
-                 </property>
-                </widget>
-               </widget>
                <widget class="QWidget" name="interactiveGrphOpt">
-                <widget class="QLabel" name="label_5">
-                 <property name="geometry">
-                  <rect>
-                   <x>110</x>
-                   <y>160</y>
-                   <width>141</width>
-                   <height>17</height>
-                  </rect>
-                 </property>
-                 <property name="text">
-                  <string>Interactive graphics</string>
-                 </property>
-                </widget>
-               </widget>
-               <widget class="QWidget" name="pandAnomDetOpt">
-                <widget class="QLabel" name="label_7">
-                 <property name="geometry">
-                  <rect>
-                   <x>70</x>
-                   <y>160</y>
-                   <width>211</width>
-                   <height>17</height>
-                  </rect>
-                 </property>
-                 <property name="text">
-                  <string>Pattern and Anomaly detection</string>
-                 </property>
-                </widget>
+                <layout class="QGridLayout" name="gridLayout_4">
+                 <item row="0" column="0">
+                  <widget class="QStackedWidget" name="stackedWidgetResGraphs">
+                   <property name="currentIndex">
+                    <number>0</number>
+                   </property>
+                   <widget class="QWidget" name="BTMres">
+                    <layout class="QHBoxLayout" name="horizontalLayout_10">
+                     <item>
+                      <widget class="QFrame" name="Graph1">
+                       <property name="frameShape">
+                        <enum>QFrame::StyledPanel</enum>
+                       </property>
+                       <property name="frameShadow">
+                        <enum>QFrame::Raised</enum>
+                       </property>
+                       <layout class="QVBoxLayout" name="verticalLayout_9" stretch="1,5">
+                        <item>
+                         <widget class="QLabel" name="label_5">
+                          <property name="text">
+                           <string>Graph1</string>
+                          </property>
+                         </widget>
+                        </item>
+                        <item>
+                         <layout class="QVBoxLayout" name="VlayGraph1"/>
+                        </item>
+                       </layout>
+                      </widget>
+                     </item>
+                    </layout>
+                   </widget>
+                   <widget class="QWidget" name="SAMres">
+                    <layout class="QHBoxLayout" name="horizontalLayout_11">
+                     <item>
+                      <widget class="QFrame" name="Graph2">
+                       <property name="frameShape">
+                        <enum>QFrame::StyledPanel</enum>
+                       </property>
+                       <property name="frameShadow">
+                        <enum>QFrame::Raised</enum>
+                       </property>
+                       <layout class="QVBoxLayout" name="verticalLayout_10" stretch="1,5">
+                        <item>
+                         <widget class="QLabel" name="label_3">
+                          <property name="text">
+                           <string>Graph2</string>
+                          </property>
+                         </widget>
+                        </item>
+                        <item>
+                         <layout class="QVBoxLayout" name="VlayGraph2"/>
+                        </item>
+                       </layout>
+                      </widget>
+                     </item>
+                    </layout>
+                   </widget>
+                   <widget class="QWidget" name="VELMres">
+                    <layout class="QHBoxLayout" name="horizontalLayout_12">
+                     <item>
+                      <widget class="QFrame" name="Graph3">
+                       <property name="frameShape">
+                        <enum>QFrame::StyledPanel</enum>
+                       </property>
+                       <property name="frameShadow">
+                        <enum>QFrame::Raised</enum>
+                       </property>
+                       <layout class="QVBoxLayout" name="verticalLayout_11" stretch="1,5">
+                        <item>
+                         <widget class="QLabel" name="label_4">
+                          <property name="text">
+                           <string>Graph3</string>
+                          </property>
+                         </widget>
+                        </item>
+                        <item>
+                         <layout class="QVBoxLayout" name="VlayGraph3"/>
+                        </item>
+                       </layout>
+                      </widget>
+                     </item>
+                    </layout>
+                   </widget>
+                  </widget>
+                 </item>
+                 <item row="1" column="0">
+                  <widget class="QFrame" name="frame_3">
+                   <property name="frameShape">
+                    <enum>QFrame::StyledPanel</enum>
+                   </property>
+                   <property name="frameShadow">
+                    <enum>QFrame::Raised</enum>
+                   </property>
+                   <layout class="QHBoxLayout" name="horizontalLayout_13">
+                    <item>
+                     <widget class="QPushButton" name="BTMresBtn">
+                      <property name="text">
+                       <string>BTM results</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QPushButton" name="SAMresBtn">
+                      <property name="text">
+                       <string>SAM results</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QPushButton" name="VELMresBtn">
+                      <property name="text">
+                       <string>VELM results</string>
+                      </property>
+                     </widget>
+                    </item>
+                   </layout>
+                  </widget>
+                 </item>
+                </layout>
                </widget>
                <widget class="QWidget" name="resCompOpt">
                 <widget class="QLabel" name="label_8">
@@ -1048,7 +1089,7 @@ background-color:#99ffee;
             <property name="maximumSize">
              <size>
               <width>16777215</width>
-              <height>500</height>
+              <height>0</height>
              </size>
             </property>
             <property name="frameShape">
@@ -1447,6 +1488,7 @@ background-color:#99ffee;
  <resources>
   <include location="icons.qrc"/>
   <include location="icons.qrc"/>
+  <include location="../../../.designer/backup/icons.qrc"/>
  </resources>
  <connections/>
 </ui>
