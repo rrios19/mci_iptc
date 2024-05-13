@@ -1,6 +1,6 @@
 ################################################################################
 # Automatically-generated file. Do not edit!
-# Toolchain: GNU Tools for STM32 (10.3-2021.10)
+# Toolchain: GNU Tools for STM32 (11.3.rel1)
 ################################################################################
 
 -include ../makefile.init
@@ -63,8 +63,8 @@ all: main-build
 main-build: spi_slave.elf secondary-outputs
 
 # Tool invocations
-spi_slave.elf spi_slave.map: $(OBJS) $(USER_OBJS) C:\Users\pc180\STM32CubeIDE\workspace_1.12.1\spi_slave\STM32L073RZTX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-gcc -o "spi_slave.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m0plus -T"C:\Users\pc180\STM32CubeIDE\workspace_1.12.1\spi_slave\STM32L073RZTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="spi_slave.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+spi_slave.elf spi_slave.map: $(OBJS) $(USER_OBJS) /home/alejandro7570/Documents/2023_2S/mci_iptc/ifaces/spi_slave/STM32L073RZTX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-gcc -o "spi_slave.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m0plus -T"/home/alejandro7570/Documents/2023_2S/mci_iptc/ifaces/spi_slave/STM32L073RZTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="spi_slave.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 

@@ -57,18 +57,24 @@ class VentanaPrincipal(QMainWindow):
         self.graphWidget1.setBackground('w')
         self.graphWidget2.setBackground('w')
         self.graphWidget3.setBackground('w')
+        
+        # Enable the plot legend
+        self.graphWidget3.addLegend()
 
         # Data lists for each plot
         self.data1 = {'x': [], 'y': []}
         self.data2 = {'x': [], 'y': []}
-        self.data3 = {'x': [], 'y': []}
+        self.data3 = {'x': [], 'y1': [],'y2': [],'y3': [], 'y4': []}
 
         # Create a plot in the graph widget
         
         self.pen = pg.mkPen(color=(255, 0, 0), width=2)
         self.plot1 = self.graphWidget1.plot(pen=self.pen)  # 'y' for yellow color
         self.plot2 = self.graphWidget2.plot(pen=self.pen)  # 'y' for yellow color
-        self.plot3 = self.graphWidget3.plot(pen=self.pen)  # 'y' for yellow color
+        self.plot3a = self.graphWidget3.plot(pen=self.pen, name = "Voltage (V)")  # 'y' for yellow color
+        self.plot3b = self.graphWidget3.plot(pen='r', name = "Current (mA)")  # 'y' for yellow color
+        self.plot3c = self.graphWidget3.plot(pen='b', name = "Resistance (Ohms)")  # 'y' for yellow color
+        self.plot3d = self.graphWidget3.plot(pen='g', name = "Power (W)")  # 'y' for yellow color
 
         # Timer setup to refresh the graph
         self.timer = QTimer()
@@ -160,10 +166,6 @@ class VentanaPrincipal(QMainWindow):
 
         #Selecciona frame de customize report
         self.ui.customReportBtn.clicked.connect(lambda: self.ui.stackedDataResults.setCurrentWidget(self.ui.customRepOpt))
-
-        #Función para enviar pruebas a la cola
-
-        self.ui.add2QueueBtn.clicked.connect(lambda: self.add_tests_to_queue)
 
 
         self.ui.editNameBtn.clicked.connect(self.editFileName)
@@ -872,7 +874,13 @@ class VentanaPrincipal(QMainWindow):
 
     def execute_test(self):
         if self.ssh_link.connected:
-            self.ssh_link.execute_command(["python3 execute_test.py"])
+            try:
+                result = self.ssh_link.execute_command(['python3 module_handler.py'])
+
+            except:
+                QMessageBox.warning(self, "Warning", result)
+
+
         else:
             QMessageBox.warning(self, "Warning", f"An ssh connection must be established first, please select a device, send the test and execute it")
 
@@ -881,27 +889,41 @@ class VentanaPrincipal(QMainWindow):
 
 
     def update_plots(self):
+            self.graphWidget1.setLabel('left', 'Voltage', units='V')
+            self.graphWidget1.setLabel('bottom', 'Time', units='s')
+            self.graphWidget2.setLabel('left', 'Voltage', units='V')
+            self.graphWidget2.setLabel('bottom', 'Current', units='mA')
+            self.graphWidget3.setLabel('bottom', 'Time', units='s')
+        
+
+
             # This function needs to be modified to handle reading each dataset correctly
             try:
-                # Read new data for each graph from separate CSVs
-                data1 = pd.read_csv(f'{self.currentPathToWorkspace}/results/BTM.csv').iloc[-1]
-                data2 = pd.read_csv(f'{self.currentPathToWorkspace}/results/SAM.csv').iloc[-1]
-                data3 = pd.read_csv(f'{self.currentPathToWorkspace}/results/VELM.csv').iloc[-1]
+                if os.path.exists(f'{self.currentPathToWorkspace}/results/'):
+                    # Read new data for each graph from separate CSVs
+                    data1 = pd.read_csv(f'{self.currentPathToWorkspace}/results/BTM.csv')
+                    data2 = pd.read_csv(f'{self.currentPathToWorkspace}/results/SAM.csv')
+                    data3 = pd.read_csv(f'{self.currentPathToWorkspace}/results/VELM.csv')
 
-                # Append data for each graph
-                self.data1['x'].append(data1['time'])
-                self.data1['y'].append(data1['value'])
+                    # Append data for each graph
+                    self.data1['x'] = data1['Time(s)']
+                    self.data1['y'] = data1['Voltage(V)']
+                    self.data2['x'] = data2['Current(mA)']
+                    self.data2['y'] = data2['Voltage(V)']
 
-                self.data2['x'].append(data2['time'])
-                self.data2['y'].append(data2['value'])
+                    self.data3['x'] = data3['Time(s)']
+                    self.data3['y1'] = data3['Voltage(V)']
+                    self.data3['y2'] = data3['Current(mA)']
+                    self.data3['y3'] = data3['Resistance(Ohms)']
+                    self.data3['y4'] = data3['Power(W)']
 
-                self.data3['x'].append(data3['time'])
-                self.data3['y'].append(data3['value'])
-
-                # Update each plot
-                self.plot1.setData(self.data1['x'], self.data1['y'])
-                self.plot2.setData(self.data2['x'], self.data2['y'])
-                self.plot3.setData(self.data3['x'], self.data3['y'])
+                    # Update each plot
+                    self.plot1.setData(self.data1['x'], self.data1['y'])
+                    self.plot2.setData(self.data2['x'], self.data2['y'])
+                    self.plot3a.setData(self.data3['x'], self.data3['y1'])
+                    self.plot3b.setData(self.data3['x'], self.data3['y2'])
+                    self.plot3c.setData(self.data3['x'], self.data3['y3'])
+                    self.plot3d.setData(self.data3['x'], self.data3['y4'])
 
             except Exception as e:
                 print(f"An error occurred: {e}")
