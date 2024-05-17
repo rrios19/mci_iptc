@@ -60,7 +60,7 @@ int sync_in[32] = {1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0
 int sync_out[32] ={0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1};
 int test = 0;
 int measure = 0;
-bool executing_test = false;  // esta variable es muy muy importante, porque hay muchas partes del flujo que dependen de esto,
+int executing_test = 0;  // esta variable es muy muy importante, porque hay muchas partes del flujo que dependen de esto,
 					  // por ejemplo el comportamiento del trato que se le da al chip select, o a la toma de instrucciones
 int data_ready = 0; // we use this varibale to check if we have the 32 bits from the rasp
 int response_ready = 0;// we use this variable to check if we want to send something back to the rasp, or if everything is set up
@@ -151,8 +151,10 @@ int main(void)
       Velm_CS_handler();
       SAM_CS_handler();
       BTM_CS_handler();
+    }
 	}
 }
+
   // yo acabo de decir que voy a mandar el sync_out siempre que algo este listo
 
   // el otro problema es que estoy pensando solo en las intrucciones, tengo que enviar datos periodiocos de el estado de la ejecucion
